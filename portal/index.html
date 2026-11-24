@@ -1,0 +1,775 @@
+<!DOCTYPE html>
+<html lang="en-ZA">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Harambee Client Portal</title>
+<meta name="robots" content="noindex">
+<link rel="icon" href="../favicon.svg" type="image/svg+xml">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#f4f5f2;--card:#fff;--ink:#14181a;--ink2:#545a5c;--muted:#8a9093;--line:#e3e5e0;
+  --brand:#1f6b45;--brand-ink:#fff;--brand-soft:#e6f1ea;
+  --rec:#2a78d6;--land:#eb6834;--danger:#c23b3a;--warn:#b07400;
+  --r:10px;
+}
+*{box-sizing:border-box}
+body{margin:0;font-family:Inter,system-ui,sans-serif;background:var(--bg);color:var(--ink);font-size:14px;line-height:1.45}
+button,input,select,textarea{font:inherit;color:inherit}
+.app{display:grid;grid-template-columns:220px 1fr;min-height:100vh}
+nav{background:#12281c;color:#dfe9e2;padding:18px 12px;position:sticky;top:0;height:100vh}
+nav .logo{font-weight:700;font-size:16px;color:#fff;padding:0 10px 4px}
+nav .sub{font-size:12px;color:#93ab9c;padding:0 10px 18px}
+nav a{display:block;padding:9px 10px;border-radius:8px;color:#cfdcd3;text-decoration:none;margin-bottom:2px}
+nav a:hover{background:#1c3a29}
+nav a.on{background:#2b5a40;color:#fff;font-weight:600}
+nav .foot{position:absolute;bottom:16px;left:22px;right:12px;font-size:11px;color:#7f998a}
+main{padding:24px 28px 60px;max-width:1280px;min-width:0}
+h1{font-size:22px;margin:0 0 4px}
+.lead{color:var(--ink2);margin:0 0 20px}
+h2{font-size:15px;margin:0 0 12px}
+.card{background:var(--card);border:1px solid var(--line);border-radius:var(--r);padding:18px;margin-bottom:18px}
+.row{display:flex;gap:12px;flex-wrap:wrap;align-items:flex-end}
+.grid{display:grid;gap:14px}
+.kpis{grid-template-columns:repeat(auto-fit,minmax(170px,1fr))}
+.kpi{background:var(--card);border:1px solid var(--line);border-radius:var(--r);padding:14px 16px}
+.kpi .l{font-size:12px;color:var(--ink2)}
+.kpi .v{font-size:24px;font-weight:700;margin-top:4px;font-variant-numeric:tabular-nums}
+.kpi .s{font-size:12px;color:var(--muted);margin-top:2px}
+label.f{display:flex;flex-direction:column;gap:4px;font-size:12px;color:var(--ink2);font-weight:500}
+input,select,textarea{border:1px solid #cfd3cc;border-radius:8px;padding:7px 9px;background:#fff;min-width:0}
+input:focus,select:focus,textarea:focus{outline:2px solid var(--brand);outline-offset:-1px;border-color:var(--brand)}
+input[type=number]{text-align:right}
+.btn{border:1px solid #cfd3cc;background:#fff;border-radius:8px;padding:7px 13px;cursor:pointer;font-weight:500}
+.btn:hover{background:#f4f5f2}
+.btn.p{background:var(--brand);border-color:var(--brand);color:var(--brand-ink)}
+.btn.p:hover{background:#185a39}
+.btn.d{color:var(--danger)}
+.btn.sm{padding:4px 9px;font-size:12px}
+.btn:disabled{opacity:.5;cursor:default}
+table{width:100%;border-collapse:collapse;font-variant-numeric:tabular-nums}
+th{text-align:left;font-size:12px;color:var(--ink2);font-weight:600;border-bottom:1px solid var(--line);padding:8px}
+td{border-bottom:1px solid #eef0ec;padding:7px 8px;vertical-align:middle}
+td.n,th.n{text-align:right}
+tr.tot td{font-weight:700;border-top:2px solid var(--line)}
+tr.grp td{background:#f7f8f5;font-weight:600;font-size:12px;color:var(--ink2);text-transform:uppercase;letter-spacing:.04em}
+.tbl-wrap{overflow:auto}
+.pill{display:inline-block;font-size:11px;padding:2px 8px;border-radius:99px;background:#eef0ec;color:var(--ink2)}
+.pill.paper{background:#f3ecdf;color:#7a5418}.pill.plastic{background:#e4effb;color:#1f5aa0}.pill.metal{background:#ebebeb;color:#444}
+.pill.landfill{background:#fde9df;color:#a84418}.pill.organic{background:#e6f4e6;color:#2d6a2d}.pill.other{background:#f0e9f7;color:#5d3c86}
+.muted{color:var(--muted)}
+.banner{padding:10px 14px;border-radius:8px;margin-bottom:16px;font-size:13px}
+.banner.w{background:#fff6e0;border:1px solid #f0d58a;color:#6b4c00}
+.banner.e{background:#fde8e8;border:1px solid #f1b5b5;color:#7c1f1f}
+.banner.ok{background:var(--brand-soft);border:1px solid #b9d9c5;color:#1b4d33}
+.chart{position:relative}
+.chart svg{display:block;width:100%;height:auto}
+.legend{display:flex;gap:16px;font-size:12px;color:var(--ink2);margin-bottom:8px}
+.legend i{display:inline-block;width:10px;height:10px;border-radius:3px;margin-right:6px;vertical-align:-1px}
+.tip{position:absolute;pointer-events:none;background:#14181a;color:#fff;font-size:12px;padding:8px 10px;border-radius:8px;white-space:nowrap;display:none;z-index:5}
+.modal-bg{position:fixed;inset:0;background:rgba(10,20,15,.4);display:flex;align-items:center;justify-content:center;z-index:50}
+.modal{background:#fff;border-radius:12px;padding:20px;width:min(560px,94vw);max-height:90vh;overflow:auto}
+.modal h2{margin-bottom:14px}
+.fgrid{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.fgrid .full{grid-column:1/-1}
+.toast{position:fixed;bottom:20px;right:20px;background:#14181a;color:#fff;padding:10px 16px;border-radius:8px;z-index:60;font-size:13px}
+.env{grid-template-columns:repeat(auto-fit,minmax(190px,1fr))}
+.env .kpi .v{font-size:20px}
+.cap-in{width:110px}
+.cap-rate{width:80px}
+.right{margin-left:auto}
+body.portal .app{grid-template-columns:minmax(0,1fr)}body.portal nav{display:none}body.portal main{max-width:1120px;width:100%;margin:0 auto;padding-top:0}
+.pv-bar{background:#fff6e0;border-bottom:1px solid #f0d58a;padding:8px 28px;display:flex;gap:12px;align-items:center;font-size:13px;flex-wrap:wrap;margin:0 -28px 0}
+.pv-head{display:flex;align-items:center;gap:16px;padding:22px 0 18px;border-bottom:1px solid var(--line);margin-bottom:20px;flex-wrap:wrap}
+.pv-logo{width:44px;height:44px;border-radius:10px;background:var(--brand);color:#fff;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:20px}
+.pv-tabs{display:flex;gap:4px;overflow-x:auto;white-space:nowrap;margin-bottom:18px;border-bottom:1px solid var(--line)}
+.pv-tabs button{border:0;background:none;padding:10px 14px;cursor:pointer;color:var(--ink2);font-weight:500;border-bottom:2px solid transparent;margin-bottom:-1px}
+.pv-tabs button.on{color:var(--brand);border-bottom-color:var(--brand);font-weight:600}
+.hbar{display:grid;grid-template-columns:160px 1fr 90px;gap:10px;align-items:center;font-size:13px;margin-bottom:8px}
+.hbar .t{height:14px;background:#eef0ec;border-radius:4px;overflow:hidden}.hbar .t i{display:block;height:100%;border-radius:0 4px 4px 0}
+.hero{background:linear-gradient(135deg,#1f6b45,#2a8a5a);color:#fff;border-radius:12px;padding:22px 24px;margin-bottom:18px;display:flex;gap:30px;flex-wrap:wrap;align-items:center}
+.hero .big{font-size:44px;font-weight:700;line-height:1}.hero .l{opacity:.85;font-size:13px}
+@media (max-width:820px){.pv-bar{margin:0 -16px;padding:8px 16px}.kpis{grid-template-columns:repeat(2,minmax(0,1fr))}.kpi .v{font-size:19px}.hero .big{font-size:36px}.hbar{grid-template-columns:110px 1fr 80px}.pv-head>div{min-width:0}main{overflow-x:hidden}.app{grid-template-columns:minmax(0,1fr)}nav{position:static;height:auto}nav .foot{display:none}main{padding:16px}.fgrid{grid-template-columns:1fr}}
+
+[hidden]{display:none!important}
+#auth{min-height:100vh;display:flex;align-items:center;justify-content:center;padding:20px;background:linear-gradient(160deg,#12281c,#1f6b45)}
+.auth-card{background:#fff;border-radius:14px;padding:28px;width:min(400px,100%);display:flex;flex-direction:column;gap:12px;box-shadow:0 20px 60px rgba(0,0,0,.25)}
+.auth-card h2{margin:0;font-size:20px}.auth-card p{margin:0}
+.auth-brand{display:flex;gap:12px;align-items:center;margin-bottom:6px}
+nav .who{font-size:12px;color:#93ab9c;padding:0 10px 14px;word-break:break-all}
+nav .so{background:none;border:1px solid #3d5c4a;color:#cfdcd3;border-radius:8px;padding:5px 10px;cursor:pointer;font-size:12px;margin:0 10px 14px}
+body.cust .pv-bar{display:flex}
+</style>
+</head>
+<body>
+<div id="auth" hidden><div class="auth-card"><div class="auth-brand"><div class="pv-logo">H</div><div><div style="font-weight:700">Harambee</div><div class="muted" style="font-size:12px">Waste Management Solutions</div></div></div><div id="auth-body" style="display:flex;flex-direction:column;gap:12px"></div>
+<p class="muted" style="font-size:12px;text-align:center"><a href="../">← Back to hwssa.co.za</a></p></div></div>
+<div class="app" id="shell" hidden>
+  <nav>
+    <div class="logo">Harambee</div>
+    <div class="sub">Waste Management · Back office</div>
+    <div class="who" id="who"></div><button class="so" onclick="signOut()">Sign out</button>
+    <a href="#dashboard" data-v="dashboard">Dashboard</a>
+    <a href="#capture" data-v="capture">Capture collection</a>
+    <a href="#collections" data-v="collections">Collections log</a>
+    <a href="#reports" data-v="reports">Customer reports</a>
+    <a href="#requests" data-v="requests">Collection requests <span id="req-n"></span></a>
+    <a href="#enquiries" data-v="enquiries">Website enquiries <span id="enq-n"></span></a>
+    <a href="#customers" data-v="customers">Customers</a>
+    <a href="#materials" data-v="materials">Materials &amp; rates</a>
+    <a href="#settings" data-v="settings" data-admin>Report factors</a>
+    <a href="#users" data-v="users" data-admin>Users &amp; access</a>
+    <a href="#portal" data-v="portal" style="margin-top:14px;border:1px dashed #4d7a60">Customer portal preview ↗</a>
+    <div class="foot">Internal use only. All rand amounts excl. VAT.</div>
+  </nav>
+  <main id="main"></main>
+</div>
+<div class="tip" id="tip"></div>
+<div id="modal-root"></div>
+<script src="config.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script>
+const SITE=(window.HWS_CONFIG&&HWS_CONFIG.site)||{};
+
+const S={requests:[],customers:[],materials:[],entries:[],factors:null,enquiries:[],profiles:[],role:null,profile:null,user:null,readOnly:false,loading:true};
+let db=null;const isStaff=()=>S.role==='staff'||S.role==='admin';const isAdmin=()=>S.role==='admin';
+const DEF_F={paperCO2:3.66,plasticCO2:0.86,metalCO2:0.6173,landfillDensity:940.22,treesPerTonnePaper:17,waterPerKgPaper:26.5,energyPaper:4100,energyPlastic:5774,energyMetal:1400,carbonTax:{"2025":236,"2026":308},vatRate:15};
+const CATS={paper:'Paper & cardboard',plastic:'Plastics',metal:'Metals',other:'Other recyclables',organic:'Organic / food',landfill:'Landfill'};
+const CAT_ORDER=['paper','plastic','metal','other','organic','landfill'];
+
+// ---------- helpers ----------
+const $=s=>document.querySelector(s);
+const esc=s=>String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const nf0=new Intl.NumberFormat('en-ZA',{maximumFractionDigits:0});
+const nf1=new Intl.NumberFormat('en-ZA',{maximumFractionDigits:1});
+const nf2=new Intl.NumberFormat('en-ZA',{minimumFractionDigits:2,maximumFractionDigits:2});
+const kg=v=>nf0.format(v||0)+' kg';
+const R=v=>'R '+nf2.format(v||0);
+const pct=v=>isFinite(v)?nf1.format(v*100)+'%':'–';
+const num=v=>{const n=parseFloat(String(v).replace(',','.'));return isFinite(n)?n:0};
+const MONTHS=['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+const mLabel=m=>{const[y,mm]=m.split('-');return MONTHS[+mm-1]+' '+y.slice(2)};
+const mLong=m=>{const[y,mm]=m.split('-');return ['January','February','March','April','May','June','July','August','September','October','November','December'][+mm-1]+' '+y};
+const today=()=>new Date().toISOString().slice(0,10);
+function addMonths(m,n){let[y,mm]=m.split('-').map(Number);mm+=n;while(mm>12){mm-=12;y++}while(mm<1){mm+=12;y--}return y+'-'+String(mm).padStart(2,'0')}
+function monthRange(a,b){const out=[];let m=a;while(m<=b&&out.length<120){out.push(m);m=addMonths(m,1)}return out}
+function toast(t){const d=document.createElement('div');d.className='toast';d.textContent=t;document.body.appendChild(d);setTimeout(()=>d.remove(),2600)}
+const F=()=>Object.assign({},DEF_F,S.factors||{});
+const matById=id=>S.materials.find(m=>m.id===id);
+const custById=id=>S.customers.find(c=>c.id===id);
+const slug=s=>s.toLowerCase().replace(/[^a-z0-9]+/g,'-').replace(/^-|-$/g,'').slice(0,60)||'item';
+function lsGet(k,d){try{return localStorage.getItem(k)??d}catch(e){return d}}
+function lsSet(k,v){try{localStorage.setItem(k,v)}catch(e){}}
+const isRecycled=e=>e.category!=='landfill';
+
+// ---------- aggregation ----------
+function summarise(list){
+  const s={gen:0,rec:0,land:0,rebate:0,skips:0,cat:{}};
+  for(const e of list){
+    const k=num(e.kg);s.gen+=k;
+    if(isRecycled(e)){s.rec+=k}else{s.land+=k;s.skips+=num(e.units)}
+    s.rebate+=num(e.rebate);
+    s.cat[e.category]=(s.cat[e.category]||0)+k;
+  }
+  s.pct=s.gen?s.rec/s.gen:NaN;return s;
+}
+function envMetrics(list){
+  const f=F();let P=0,Mt=0,O=0,co2=0,tax=0;
+  for(const e of list){
+    if(!isRecycled(e))continue;const k=num(e.kg);let c;
+    if(e.category==='paper'){P+=k;c=k*f.paperCO2}else if(e.category==='metal'){Mt+=k;c=k*f.metalCO2}else{O+=k;c=k*f.plasticCO2}
+    co2+=c;const rate=(f.carbonTax||{})[String(e.month||'').slice(0,4)]??Object.values(f.carbonTax||{}).slice(-1)[0]??0;
+    tax+=c/1000*rate;
+  }
+  const rec=P+Mt+O;
+  return{rec,P,Mt,O,co2,space:rec/f.landfillDensity,tax,trees:P/1000*f.treesPerTonnePaper,water:P*f.waterPerKgPaper,energy:(P*f.energyPaper+O*f.energyPlastic+Mt*f.energyMetal)/1000};
+}
+
+// ---------- routing ----------
+const VIEWS={users:vUsers,enquiries:vEnquiries,portal:vPortal,requests:vRequests,dashboard:vDashboard,capture:vCapture,collections:vCollections,reports:vReports,customers:vCustomers,materials:vMaterials,settings:vSettings};
+const STAFF_VIEWS=['dashboard','capture','collections','reports','customers','materials','settings','requests','enquiries','users','portal'];
+function view(){if(!isStaff())return 'portal';const h=location.hash.replace('#','');if(!VIEWS[h])return 'dashboard';if((h==='users'||h==='settings')&&!isAdmin())return 'dashboard';return h}
+let lastView=null;
+function render(force){
+  const v=view();
+  document.querySelectorAll('nav a').forEach(a=>a.classList.toggle('on',a.dataset.v===v));
+  // don't wipe a form the user is typing in when live data arrives
+  if(!force&&lastView===v&&((v==='capture'&&document.querySelector('#cap'))||document.querySelector('.modal'))){return}
+  lastView=v;document.body.classList.toggle('portal',v==='portal');document.body.classList.toggle('cust',!isStaff());const en=S.enquiries.filter(r=>r.status==='new').length;const eq=document.getElementById('enq-n');if(eq)eq.innerHTML=en?`<span class="pill landfill">${en}</span>`:'';const rn=S.requests.filter(r=>r.status==='new').length;const rq=document.getElementById('req-n');if(rq)rq.innerHTML=rn?`<span class="pill landfill">${rn}</span>`:'';
+  const m=$('#main');let pre='';
+  if(S.loadError)pre='<div class="banner e">Could not load data: '+esc(S.loadError)+'. Check your connection and refresh.</div>';
+  else if(S.loading)pre='<div class="banner w">Loading…</div>';
+  m.innerHTML=pre+VIEWS[v]();
+  (AFTER[v]||(()=>{}))();
+}
+window.addEventListener('hashchange',()=>render(true));
+const AFTER={};
+
+// ---------- Dashboard ----------
+function latestMonth(){const ms=S.entries.map(e=>e.month).filter(Boolean).sort();return ms.length?ms[ms.length-1]:today().slice(0,7)}
+let dashMonth=null;
+function vDashboard(){
+  const m=dashMonth||latestMonth();
+  const list=S.entries.filter(e=>e.month===m);
+  const s=summarise(list);
+  const prev=summarise(S.entries.filter(e=>e.month===addMonths(m,-1)));
+  const months=[...new Set(S.entries.map(e=>e.month))].sort();
+  const opts=(months.includes(m)?months:[...months,m]).sort().reverse().map(x=>`<option value="${x}" ${x===m?'selected':''}>${mLong(x)}</option>`).join('');
+  const custs=[...new Set(list.map(e=>e.customerId))].length;
+  const recent=[...S.entries].sort((a,b)=>(b.createdAt||'').localeCompare(a.createdAt||'')).slice(0,8);
+  const delta=(a,b)=>b?((a-b)/b>=0?'▲ ':'▼ ')+nf1.format(Math.abs((a-b)/b*100))+'% vs last month':'';
+  return `
+  <h1>Dashboard</h1><p class="lead">All customers, one month at a time.</p>
+  <div class="row" style="margin-bottom:16px"><label class="f">Month<select id="dm">${opts}</select></label>
+  <a class="btn p right" href="#capture">+ Capture collection</a></div>
+  ${S.entries.length?'':'<div class="banner w">No collections captured yet. Start with <a href="#capture">Capture collection</a>.</div>'}
+  <div class="grid kpis" style="margin-bottom:18px">
+    <div class="kpi"><div class="l">Total waste handled</div><div class="v">${kg(s.gen)}</div><div class="s">${delta(s.gen,prev.gen)}</div></div>
+    <div class="kpi"><div class="l">Recycled / diverted</div><div class="v">${kg(s.rec)}</div><div class="s">${pct(s.pct)} diversion rate</div></div>
+    <div class="kpi"><div class="l">To landfill</div><div class="v">${kg(s.land)}</div><div class="s">${nf0.format(s.skips)} skips</div></div>
+    <div class="kpi"><div class="l">Rebates (excl. VAT)</div><div class="v">${R(s.rebate)}</div><div class="s">${delta(s.rebate,prev.rebate)}</div></div>
+    <div class="kpi"><div class="l">Customers serviced</div><div class="v">${custs}</div><div class="s">${list.length} line items</div></div>
+  </div>
+  <div class="card"><h2>Recycled vs landfill: last 12 months</h2>
+    <div class="legend"><span><i style="background:var(--rec)"></i>Recycled</span><span><i style="background:var(--land)"></i>Landfill</span></div>
+    <div class="chart" id="trend"></div></div>
+  <div class="card"><h2>Recently captured</h2>${entryTable(recent,false)}</div>`;
+}
+AFTER.dashboard=()=>{
+  $('#dm').onchange=e=>{dashMonth=e.target.value;render(true)};
+  const end=dashMonth||latestMonth();
+  const ms=monthRange(addMonths(end,-11),end);
+  barChart($('#trend'),ms.map(m=>{const s=summarise(S.entries.filter(e=>e.month===m));return{label:mLabel(m),a:s.rec,b:s.land,rebate:s.rebate,pct:s.pct}}));
+};
+
+function barChart(el,data){
+  const W=900,H=260,pl=56,pr=10,pt=10,pb=28;const max=Math.max(1,...data.map(d=>d.a+d.b));
+  const raw=max/4,mag=Math.pow(10,Math.floor(Math.log10(raw)));const tick=[1,2,2.5,5,10].map(x=>x*mag).find(x=>x>=raw);const nice=tick*4;
+  const iw=W-pl-pr,ih=H-pt-pb,bw=iw/data.length;const bar=Math.min(38,bw*0.6);
+  const y=v=>pt+ih-(v/nice)*ih;let g='';
+  for(let i=0;i<=4;i++){const v=nice*i/4;g+=`<line x1="${pl}" x2="${W-pr}" y1="${y(v)}" y2="${y(v)}" stroke="#eceee9"/><text x="${pl-8}" y="${y(v)+4}" text-anchor="end" font-size="11" fill="#8a9093">${nf1.format(v/1000)}t</text>`}
+  data.forEach((d,i)=>{
+    const x=pl+bw*i+(bw-bar)/2;const ya=y(d.a),yb=y(d.a+d.b);
+    if(d.a>0)g+=`<rect x="${x}" y="${ya}" width="${bar}" height="${Math.max(0,pt+ih-ya)}" fill="var(--rec)" rx="2"/>`;
+    if(d.b>0)g+=`<rect x="${x}" y="${yb}" width="${bar}" height="${Math.max(0,ya-yb-2)}" fill="var(--land)" rx="3"/>`;
+    g+=`<text x="${x+bar/2}" y="${H-8}" text-anchor="middle" font-size="11" fill="#545a5c">${d.label}</text>`;
+    g+=`<rect class="hit" data-i="${i}" x="${pl+bw*i}" y="${pt}" width="${bw}" height="${ih}" fill="transparent"/>`;
+  });
+  el.innerHTML=`<svg viewBox="0 0 ${W} ${H}" role="img" aria-label="Monthly recycled and landfill tonnage">${g}</svg>`;
+  const tip=$('#tip');
+  el.querySelectorAll('.hit').forEach(r=>{
+    r.addEventListener('mousemove',ev=>{const d=data[+r.dataset.i];
+      tip.innerHTML=`<b>${d.label}</b><br>Recycled: ${kg(d.a)}<br>Landfill: ${kg(d.b)}<br>Diversion: ${pct(d.pct)}<br>Rebate: ${R(d.rebate)}`;
+      tip.style.display='block';tip.style.left=(ev.pageX+14)+'px';tip.style.top=(ev.pageY-10)+'px';});
+    r.addEventListener('mouseleave',()=>tip.style.display='none');
+  });
+}
+
+// ---------- entry table ----------
+function entryTable(list,actions){
+  if(!list.length)return '<p class="muted">Nothing to show.</p>';
+  return `<div class="tbl-wrap"><table><thead><tr><th>Date</th><th>Customer</th><th>Site</th><th>Material</th><th>Type</th><th class="n">Weight</th><th class="n">Units</th><th class="n">Rate R/kg</th><th class="n">Rebate</th><th>Slip</th><th>Captured by</th>${actions?'<th></th>':''}</tr></thead><tbody>
+  ${list.map(e=>`<tr><td>${esc(e.date)}</td><td>${esc(e.customerName)}</td><td>${esc(e.site)}</td><td>${esc(e.materialName)}${e.notes?` <span class="muted" title="${esc(e.notes)}">ⓘ</span>`:''}</td><td><span class="pill ${esc(e.category)}">${esc(CATS[e.category]||e.category)}</span></td><td class="n">${kg(e.kg)}</td><td class="n">${e.units?nf0.format(e.units):''}</td><td class="n">${e.rate?nf2.format(e.rate):''}</td><td class="n">${e.rebate?R(e.rebate):''}</td><td>${esc(e.slip)}</td><td>${esc(e.capturedBy)}</td>${actions?`<td style="white-space:nowrap"><button class="btn sm" data-edit="${esc(e.id)}">Edit</button> <button class="btn sm d" data-del="${esc(e.id)}">Delete</button></td>`:''}</tr>`).join('')}
+  </tbody></table></div>`;
+}
+
+// ---------- Capture ----------
+function vCapture(){
+  const cs=S.customers.filter(c=>c.active!==false).sort((a,b)=>a.name.localeCompare(b.name));
+  const mats=S.materials.filter(m=>m.active!==false).sort((a,b)=>(a.sort??99)-(b.sort??99));
+  if(!cs.length)return `<h1>Capture collection</h1><div class="banner w">Add a customer first under <a href="#customers">Customers</a>.</div>`;
+  let rows='';
+  for(const c of CAT_ORDER){const ms=mats.filter(m=>m.category===c);if(!ms.length)continue;
+    rows+=`<tr class="grp"><td colspan="5">${CATS[c]}</td></tr>`;
+    rows+=ms.map(m=>`<tr data-m="${esc(m.id)}"><td>${esc(m.name)} <span class="muted">· ${esc(m.method)}</span></td>
+      <td class="n"><input class="cap-in" type="number" min="0" step="any" data-k="kg" inputmode="decimal" placeholder="0"></td>
+      <td class="n"><input class="cap-in" type="number" min="0" step="1" data-k="units" inputmode="numeric" placeholder="${m.unit==='skip'?'skips':'bales'}"></td>
+      <td class="n"><input class="cap-rate" type="number" min="0" step="any" data-k="rate" value="${m.rate??0}"></td>
+      <td class="n" data-reb>–</td></tr>`).join('');
+  }
+  const lastCust=lsGet('hb-cust',cs[0].id);
+  return `<h1>Capture collection</h1><p class="lead">Enter the weights for one collection, or a month's total, the same way you fill in the Weights tab now. Only rows with a weight or unit count are saved.</p>
+  <div class="card"><div class="fgrid" style="grid-template-columns:repeat(auto-fit,minmax(180px,1fr))">
+    <label class="f">Customer<select id="c-cust">${cs.map(c=>`<option value="${esc(c.id)}" ${c.id===lastCust?'selected':''}>${esc(c.name)}</option>`).join('')}</select></label>
+    <label class="f">Collection date<input type="date" id="c-date" value="${today()}"></label>
+    <label class="f">Site / branch<input id="c-site" list="sites"><datalist id="sites"></datalist></label>
+    <label class="f">Weighbridge slip / ref<input id="c-slip"></label>
+    <label class="f">Captured by<input id="c-by" value="${esc(lsGet('hb-by',''))}" placeholder="Your name"></label>
+    <label class="f">Notes<input id="c-notes"></label>
+  </div></div>
+  <div class="card"><div class="tbl-wrap"><table id="cap"><thead><tr><th>Material</th><th class="n">Weight (kg)</th><th class="n">Units</th><th class="n">Rebate rate (R/kg excl.)</th><th class="n">Rebate</th></tr></thead><tbody>${rows}</tbody>
+  <tfoot><tr class="tot"><td>Total</td><td class="n" id="t-kg">0 kg</td><td></td><td></td><td class="n" id="t-reb">R 0,00</td></tr></tfoot></table></div>
+  <div class="row" style="margin-top:14px"><span class="muted" id="cap-sum"></span><button class="btn right" id="c-clear">Clear</button><button class="btn p" id="c-save" ${S.readOnly?'disabled':''}>Save collection</button></div></div>`;
+}
+AFTER.capture=()=>{
+  const sel=$('#c-cust');if(!sel)return;
+  const setSites=()=>{const c=custById(sel.value);const sites=String(c?.sites||'').split(',').map(s=>s.trim()).filter(Boolean);
+    $('#sites').innerHTML=sites.map(s=>`<option value="${esc(s)}">`).join('');if(!$('#c-site').value&&sites.length)$('#c-site').value=sites[0];};
+  sel.onchange=()=>{$('#c-site').value='';setSites();lsSet('hb-cust',sel.value)};setSites();
+  const recalc=()=>{let tk=0,tr=0,n=0,rec=0;
+    document.querySelectorAll('#cap tbody tr[data-m]').forEach(tr_=>{const k=num(tr_.querySelector('[data-k=kg]').value),r=num(tr_.querySelector('[data-k=rate]').value),u=num(tr_.querySelector('[data-k=units]').value);
+      const reb=k*r;tr_.querySelector('[data-reb]').textContent=k?R(reb):'–';tk+=k;tr+=reb;if(k||u)n++;const m=matById(tr_.dataset.m);if(m&&m.category!=='landfill')rec+=k;});
+    $('#t-kg').textContent=kg(tk);$('#t-reb').textContent=R(tr);$('#cap-sum').textContent=n?`${n} line(s) · ${pct(tk?rec/tk:NaN)} recycled`:'';};
+  $('#cap').addEventListener('input',recalc);
+  $('#c-clear').onclick=()=>{document.querySelectorAll('#cap [data-k=kg],#cap [data-k=units]').forEach(i=>i.value='');recalc()};
+  $('#c-save').onclick=async()=>{
+    const cust=custById(sel.value),date=$('#c-date').value,by=$('#c-by').value.trim();
+    if(!date){toast('Pick a collection date');return}
+    if(!by){toast('Add your name under Captured by');$('#c-by').focus();return}
+    lsSet('hb-by',by);
+    const lines=[];
+    document.querySelectorAll('#cap tbody tr[data-m]').forEach(tr=>{const k=num(tr.querySelector('[data-k=kg]').value),u=num(tr.querySelector('[data-k=units]').value),r=num(tr.querySelector('[data-k=rate]').value);
+      if(k>0||u>0){const m=matById(tr.dataset.m);lines.push({m,k,u,r})}});
+    if(!lines.length){toast('Enter at least one weight or unit count');return}
+    const btn=$('#c-save');btn.disabled=true;btn.textContent='Saving…';
+    const now=new Date().toISOString();let ok=0;
+    try{
+      const rows=[];for(const l of lines){
+        rows.push({date,month:date.slice(0,7),customerId:cust.id,customerName:cust.name,site:$('#c-site').value.trim(),
+          materialId:l.m.id,materialName:l.m.name,category:l.m.category,method:l.m.method,kg:l.k,units:l.u,rate:l.m.category==='landfill'?0:l.r,rebate:l.m.category==='landfill'?0:Math.round(l.k*l.r*100)/100,
+          slip:$('#c-slip').value.trim(),notes:$('#c-notes').value.trim(),capturedBy:by,source:'manual'});
+      }
+      await DB.insert('entries',rows);ok=rows.length;
+      toast(`Saved ${ok} line(s) for ${cust.name}`);
+      document.querySelectorAll('#cap [data-k=kg],#cap [data-k=units]').forEach(i=>i.value='');$('#c-slip').value='';$('#c-notes').value='';recalc();
+    }catch(e){dbErr(e,`Saved ${ok} of ${lines.length} lines.`)}
+    btn.disabled=false;btn.textContent='Save collection';
+  };
+};
+
+// ---------- Collections ----------
+const CF={cust:'',from:'',to:'',mat:'',q:''};
+function filtered(){
+  return S.entries.filter(e=>(!CF.cust||e.customerId===CF.cust)&&(!CF.from||e.month>=CF.from)&&(!CF.to||e.month<=CF.to)&&(!CF.mat||e.materialId===CF.mat)
+    &&(!CF.q||[e.materialName,e.customerName,e.slip,e.notes,e.capturedBy,e.site].join(' ').toLowerCase().includes(CF.q.toLowerCase())))
+    .sort((a,b)=>(b.date||'').localeCompare(a.date||'')||(a.materialName||'').localeCompare(b.materialName||''));
+}
+function vCollections(){
+  const list=filtered();const s=summarise(list);
+  return `<h1>Collections log</h1><p class="lead">Every line captured, newest first. This replaces the Collection &amp; Disposal Details tab and the monthly Weights tabs.</p>
+  <div class="card"><div class="row">
+    <label class="f">Customer<select id="f-cust"><option value="">All customers</option>${S.customers.map(c=>`<option value="${esc(c.id)}" ${CF.cust===c.id?'selected':''}>${esc(c.name)}</option>`).join('')}</select></label>
+    <label class="f">From month<input type="month" id="f-from" value="${CF.from}"></label>
+    <label class="f">To month<input type="month" id="f-to" value="${CF.to}"></label>
+    <label class="f">Material<select id="f-mat"><option value="">All materials</option>${S.materials.map(m=>`<option value="${esc(m.id)}" ${CF.mat===m.id?'selected':''}>${esc(m.name)}</option>`).join('')}</select></label>
+    <label class="f">Search<input id="f-q" value="${esc(CF.q)}" placeholder="slip, notes, name…"></label>
+    <button class="btn right" id="f-copy">Copy as CSV</button>
+  </div></div>
+  <div class="grid kpis" style="margin-bottom:18px">
+    <div class="kpi"><div class="l">Lines</div><div class="v">${nf0.format(list.length)}</div></div>
+    <div class="kpi"><div class="l">Total weight</div><div class="v">${kg(s.gen)}</div></div>
+    <div class="kpi"><div class="l">Recycled</div><div class="v">${pct(s.pct)}</div></div>
+    <div class="kpi"><div class="l">Rebates (excl. VAT)</div><div class="v">${R(s.rebate)}</div></div>
+  </div>
+  <div class="card">${entryTable(list.slice(0,500),!S.readOnly)}${list.length>500?'<p class="muted">Showing the first 500. Narrow the filters to see more.</p>':''}</div>`;
+}
+AFTER.collections=()=>{
+  const bind=(id,k,ev='change')=>{$(id).addEventListener(ev,e=>{CF[k]=e.target.value;render(true);if(ev==='input'){const i=$(id);i.focus();i.setSelectionRange(i.value.length,i.value.length)}})};
+  bind('#f-cust','cust');bind('#f-from','from');bind('#f-to','to');bind('#f-mat','mat');bind('#f-q','q','input');
+  $('#f-copy').onclick=()=>copyCSV([['Date','Month','Customer','Site','Material','Category','Method','Weight kg','Units','Rate R/kg excl VAT','Rebate R excl VAT','Slip','Captured by','Notes'],
+    ...filtered().map(e=>[e.date,e.month,e.customerName,e.site,e.materialName,CATS[e.category],e.method,e.kg,e.units,e.rate,e.rebate,e.slip,e.capturedBy,e.notes])]);
+  document.querySelectorAll('[data-edit]').forEach(b=>b.onclick=()=>editEntry(b.dataset.edit));
+  document.querySelectorAll('[data-del]').forEach(b=>b.onclick=()=>confirmBox('Delete this line? This can\'t be undone.',async()=>{try{await DB.del('entries',b.dataset.del);toast('Deleted')}catch(e){dbErr(e)}}));
+};
+function copyCSV(rows){
+  const csv=rows.map(r=>r.map(v=>{v=v??'';v=String(v);return /[",\n]/.test(v)?'"'+v.replace(/"/g,'""')+'"':v}).join(',')).join('\n');
+  navigator.clipboard.writeText(csv).then(()=>toast(`Copied ${rows.length-1} rows. Paste into Excel.`),()=>toast('Copy was blocked by the browser'));
+}
+
+// ---------- modals ----------
+function modal(html,onMount){const r=$('#modal-root');r.innerHTML=`<div class="modal-bg"><div class="modal">${html}</div></div>`;
+  r.querySelector('.modal-bg').addEventListener('click',e=>{if(e.target.classList.contains('modal-bg'))closeModal()});onMount&&onMount(r)}
+function closeModal(){$('#modal-root').innerHTML=''}
+function confirmBox(msg,fn){modal(`<h2>${esc(msg)}</h2><div class="row"><button class="btn right" id="cx">Cancel</button><button class="btn p" id="cy" style="background:var(--danger);border-color:var(--danger)">Delete</button></div>`,()=>{$('#cx').onclick=closeModal;$('#cy').onclick=async()=>{closeModal();await fn()}})}
+function editEntry(id){
+  const e=S.entries.find(x=>x.id===id);if(!e)return;
+  modal(`<h2>Edit line</h2><div class="fgrid">
+    <label class="f">Date<input type="date" id="e-date" value="${esc(e.date)}"></label>
+    <label class="f">Customer<select id="e-cust">${S.customers.map(c=>`<option value="${esc(c.id)}" ${c.id===e.customerId?'selected':''}>${esc(c.name)}</option>`).join('')}</select></label>
+    <label class="f">Material<select id="e-mat">${S.materials.map(m=>`<option value="${esc(m.id)}" ${m.id===e.materialId?'selected':''}>${esc(m.name)}</option>`).join('')}</select></label>
+    <label class="f">Site<input id="e-site" value="${esc(e.site)}"></label>
+    <label class="f">Weight (kg)<input type="number" step="any" id="e-kg" value="${e.kg??0}"></label>
+    <label class="f">Units<input type="number" step="1" id="e-units" value="${e.units??0}"></label>
+    <label class="f">Rate (R/kg excl.)<input type="number" step="any" id="e-rate" value="${e.rate??0}"></label>
+    <label class="f">Slip / ref<input id="e-slip" value="${esc(e.slip)}"></label>
+    <label class="f full">Notes<input id="e-notes" value="${esc(e.notes)}"></label></div>
+    <div class="row" style="margin-top:16px"><button class="btn right" id="e-x">Cancel</button><button class="btn p" id="e-s">Save changes</button></div>`,()=>{
+    $('#e-x').onclick=closeModal;
+    $('#e-s').onclick=async()=>{const m=matById($('#e-mat').value),c=custById($('#e-cust').value),k=num($('#e-kg').value),r=num($('#e-rate').value),d=$('#e-date').value;
+      const land=m.category==='landfill';
+      try{await DB.update('entries',id,{date:d,month:d.slice(0,7),customerId:c.id,customerName:c.name,site:$('#e-site').value.trim(),materialId:m.id,materialName:m.name,category:m.category,method:m.method,
+        kg:k,units:num($('#e-units').value),rate:land?0:r,rebate:land?0:Math.round(k*r*100)/100,slip:$('#e-slip').value.trim(),notes:$('#e-notes').value.trim(),editedAt:new Date().toISOString()});closeModal();toast('Saved')}catch(err){dbErr(err)}};
+  });
+}
+
+// ---------- Reports ----------
+const RF={cust:'',from:'',to:''};
+function vReports(){
+  if(!S.customers.length)return '<h1>Customer reports</h1><p class="muted">No customers yet.</p>';
+  if(!RF.cust)RF.cust=S.customers[0].id;
+  const cl=S.entries.filter(e=>e.customerId===RF.cust);
+  const ms=[...new Set(cl.map(e=>e.month))].sort();
+  if(!RF.to)RF.to=ms[ms.length-1]||today().slice(0,7);
+  if(!RF.from)RF.from=addMonths(RF.to,-11);
+  const list=cl.filter(e=>e.month>=RF.from&&e.month<=RF.to);
+  const s=summarise(list),env=envMetrics(list),c=custById(RF.cust);
+  const months=monthRange(RF.from,RF.to);
+  const mrows=months.map(m=>{const x=summarise(list.filter(e=>e.month===m));return{m,...x}});
+  const byMat={};for(const e of list){const k=e.materialId;byMat[k]=byMat[k]||{name:e.materialName,cat:e.category,kg:0,reb:0,units:0};byMat[k].kg+=num(e.kg);byMat[k].reb+=num(e.rebate);byMat[k].units+=num(e.units)}
+  const mats=Object.values(byMat).sort((a,b)=>CAT_ORDER.indexOf(a.cat)-CAT_ORDER.indexOf(b.cat)||b.kg-a.kg);
+  const missing=mrows.filter(r=>!r.gen).map(r=>mLabel(r.m));
+  return `<h1>Customer reports</h1><p class="lead">This replaces the Waste Summary and Environmental Impact Metrics tabs. Customers will see this same report in the customer portal later.</p>
+  <div class="card"><div class="row">
+    <label class="f">Customer<select id="r-cust">${S.customers.map(x=>`<option value="${esc(x.id)}" ${x.id===RF.cust?'selected':''}>${esc(x.name)}</option>`).join('')}</select></label>
+    <label class="f">From<input type="month" id="r-from" value="${RF.from}"></label>
+    <label class="f">To<input type="month" id="r-to" value="${RF.to}"></label>
+    <button class="btn right" id="r-copy">Copy monthly table as CSV</button></div></div>
+  ${missing.length&&missing.length<months.length?`<div class="banner w">No collections captured for: ${missing.join(', ')}.</div>`:''}
+  <h2 style="margin-top:4px">${esc(c?.name||'')} · ${mLong(RF.from)} to ${mLong(RF.to)}</h2>
+  <div class="grid kpis" style="margin-bottom:18px">
+    <div class="kpi"><div class="l">Total waste generated</div><div class="v">${kg(s.gen)}</div></div>
+    <div class="kpi"><div class="l">Recycled / diverted</div><div class="v">${kg(s.rec)}</div><div class="s">${pct(s.pct)} of total</div></div>
+    <div class="kpi"><div class="l">Landfilled</div><div class="v">${kg(s.land)}</div><div class="s">${nf0.format(s.skips)} skips</div></div>
+    <div class="kpi"><div class="l">Recyclables rebate (excl. VAT)</div><div class="v">${R(s.rebate)}</div><div class="s">${R(s.rebate*(1+F().vatRate/100))} incl. VAT</div></div>
+  </div>
+  <div class="card"><h2>Monthly recycled vs landfill</h2><div class="legend"><span><i style="background:var(--rec)"></i>Recycled</span><span><i style="background:var(--land)"></i>Landfill</span></div><div class="chart" id="r-chart"></div></div>
+  <div class="card"><h2>Environmental impact</h2>
+  <div class="grid env kpis">
+    <div class="kpi"><div class="l">CO₂e avoided</div><div class="v">${nf1.format(env.co2/1000)} t</div></div>
+    <div class="kpi"><div class="l">Landfill space saved</div><div class="v">${nf1.format(env.space)} m³</div></div>
+    <div class="kpi"><div class="l">Carbon tax equivalent</div><div class="v">${R(env.tax)}</div></div>
+    <div class="kpi"><div class="l">Trees saved</div><div class="v">${nf0.format(env.trees)}</div></div>
+    <div class="kpi"><div class="l">Water saved</div><div class="v">${nf0.format(env.water)} L</div></div>
+    <div class="kpi"><div class="l">Energy saved</div><div class="v">${nf0.format(env.energy)} kWh</div></div>
+  </div><p class="muted" style="margin:10px 0 0;font-size:12px">Based on the conversion factors under <a href="#settings">Report factors</a>. Paper ${kg(env.P)} · metals ${kg(env.Mt)} · plastics &amp; other ${kg(env.O)}.</p></div>
+  <div class="card"><h2>Month by month</h2><div class="tbl-wrap"><table><thead><tr><th>Month</th><th class="n">Generated</th><th class="n">Recycled</th><th class="n">Landfill</th><th class="n">Skips</th><th class="n">Recycled %</th><th class="n">Rebate (excl.)</th></tr></thead><tbody>
+  ${mrows.map(r=>`<tr><td>${mLong(r.m)}</td><td class="n">${kg(r.gen)}</td><td class="n">${kg(r.rec)}</td><td class="n">${kg(r.land)}</td><td class="n">${nf0.format(r.skips)}</td><td class="n">${pct(r.pct)}</td><td class="n">${R(r.rebate)}</td></tr>`).join('')}
+  <tr class="tot"><td>Total</td><td class="n">${kg(s.gen)}</td><td class="n">${kg(s.rec)}</td><td class="n">${kg(s.land)}</td><td class="n">${nf0.format(s.skips)}</td><td class="n">${pct(s.pct)}</td><td class="n">${R(s.rebate)}</td></tr></tbody></table></div></div>
+  <div class="card"><h2>By material</h2><div class="tbl-wrap"><table><thead><tr><th>Material</th><th>Type</th><th class="n">Weight</th><th class="n">Share</th><th class="n">Rebate (excl.)</th></tr></thead><tbody>
+  ${mats.map(m=>`<tr><td>${esc(m.name)}</td><td><span class="pill ${m.cat}">${CATS[m.cat]||m.cat}</span></td><td class="n">${kg(m.kg)}</td><td class="n">${pct(s.gen?m.kg/s.gen:NaN)}</td><td class="n">${m.reb?R(m.reb):''}</td></tr>`).join('')}
+  </tbody></table></div></div>`;
+}
+AFTER.reports=()=>{
+  if(!$('#r-cust'))return;
+  $('#r-cust').onchange=e=>{RF.cust=e.target.value;RF.from='';RF.to='';render(true)};
+  $('#r-from').onchange=e=>{RF.from=e.target.value;render(true)};
+  $('#r-to').onchange=e=>{RF.to=e.target.value;render(true)};
+  const list=S.entries.filter(e=>e.customerId===RF.cust&&e.month>=RF.from&&e.month<=RF.to);
+  const months=monthRange(RF.from,RF.to);
+  barChart($('#r-chart'),months.map(m=>{const s=summarise(list.filter(e=>e.month===m));return{label:mLabel(m),a:s.rec,b:s.land,rebate:s.rebate,pct:s.pct}}));
+  $('#r-copy').onclick=()=>copyCSV([['Month','Generated kg','Recycled kg','Landfill kg','Skips','Recycled %','Rebate R excl VAT'],...months.map(m=>{const s=summarise(list.filter(e=>e.month===m));return[m,s.gen,s.rec,s.land,s.skips,s.gen?(s.pct*100).toFixed(1):'',s.rebate.toFixed(2)]})]);
+};
+
+// ---------- Customers ----------
+function vCustomers(){
+  const cs=[...S.customers].sort((a,b)=>a.name.localeCompare(b.name));
+  return `<h1>Customers</h1><p class="lead">Harambee customers only. Rand Waste customers stay in their own system.</p>
+  <div class="row" style="margin-bottom:14px"><button class="btn p" id="cu-add" ${S.readOnly?'disabled':''}>+ Add customer</button></div>
+  <div class="card"><div class="tbl-wrap"><table><thead><tr><th>Customer</th><th>Sites</th><th>Contact</th><th>Phone</th><th>Email</th><th class="n">Last collection</th><th class="n">Status</th><th></th></tr></thead><tbody>
+  ${cs.map(c=>{const last=S.entries.filter(e=>e.customerId===c.id).map(e=>e.date).sort().pop()||'–';
+    return `<tr><td><b>${esc(c.name)}</b></td><td>${esc(c.sites)}</td><td>${esc(c.contact)}</td><td>${esc(c.phone)}</td><td>${esc(c.email)}</td><td class="n">${esc(last)}</td><td class="n">${c.active===false?'<span class="pill">Inactive</span>':'<span class="pill organic">Active</span>'}</td><td><button class="btn sm" data-cu="${esc(c.id)}" ${S.readOnly?'disabled':''}>Edit</button></td></tr>`}).join('')||'<tr><td colspan="8" class="muted">No customers yet.</td></tr>'}
+  </tbody></table></div></div>`;
+}
+AFTER.customers=()=>{
+  $('#cu-add').onclick=()=>editCustomer(null);
+  document.querySelectorAll('[data-cu]').forEach(b=>b.onclick=()=>editCustomer(b.dataset.cu));
+};
+function editCustomer(id){
+  const c=id?custById(id):{name:'',sites:'',contact:'',phone:'',email:'',address:'',vatNo:'',notes:'',active:true};
+  const fld=(k,l,full)=>`<label class="f ${full?'full':''}">${l}<input id="cu-${k}" value="${esc(c[k]||'')}"></label>`;
+  modal(`<h2>${id?'Edit':'Add'} customer</h2><div class="fgrid">${fld('name','Company name',1)}${fld('sites','Sites / branches (comma separated)',1)}${fld('contact','Contact person')}${fld('phone','Phone')}${fld('email','Email')}${fld('vatNo','VAT number')}${fld('address','Address',1)}${fld('notes','Notes',1)}
+    <label class="f"><span><input type="checkbox" id="cu-active" ${c.active!==false?'checked':''}> Active customer</span></label></div>
+    <div class="row" style="margin-top:16px"><button class="btn right" id="cu-x">Cancel</button><button class="btn p" id="cu-s">Save</button></div>`,()=>{
+    $('#cu-x').onclick=closeModal;
+    $('#cu-s').onclick=async()=>{const d={};['name','sites','contact','phone','email','vatNo','address','notes'].forEach(k=>d[k]=$('#cu-'+k).value.trim());d.active=$('#cu-active').checked;
+      if(!d.name){toast('Company name is needed');return}
+      try{if(id){await DB.update('customers',id,d);
+          if(d.name!==c.name){await DB.updateWhere('entries',{customer_id:id},{customerName:d.name})}}
+        else{let nid=slug(d.name);if(custById(nid))nid+='-'+Date.now().toString(36);await DB.insert('customers',{id:nid,...d})}
+        closeModal();toast('Customer saved')}catch(e){dbErr(e)}};
+  });
+}
+
+// ---------- Materials ----------
+function vMaterials(){
+  const ms=[...S.materials].sort((a,b)=>CAT_ORDER.indexOf(a.category)-CAT_ORDER.indexOf(b.category)||(a.sort??99)-(b.sort??99));
+  return `<h1>Materials &amp; rebate rates</h1><p class="lead">One list of materials, so the same stream isn't logged under two names (the spreadsheet had "LDPE" in one tab and "LD Mix" in another, for example). Rates are the default rebate per kg excl. VAT that comes up when capturing. Changing a rate doesn't change lines already captured.</p>
+  <div class="banner w">These rates are the last ones used in the spreadsheet. Several haven't been used since early 2025, so check them against current buyer prices.</div>
+  <div class="row" style="margin-bottom:14px"><button class="btn p" id="ma-add" ${isAdmin()?'':'disabled'}>+ Add material</button></div>
+  <div class="card"><div class="tbl-wrap"><table><thead><tr><th>Material</th><th>Type</th><th>Disposal</th><th>Counted in</th><th class="n">Rate R/kg (excl.)</th><th class="n">Status</th><th></th></tr></thead><tbody>
+  ${ms.map(m=>`<tr><td>${esc(m.name)}</td><td><span class="pill ${esc(m.category)}">${CATS[m.category]||m.category}</span></td><td>${esc(m.method)}</td><td>${m.unit==='skip'?'kg + skips':'kg (+ bales)'}</td><td class="n">${m.category==='landfill'?'–':nf2.format(m.rate||0)}</td><td class="n">${m.active===false?'<span class="pill">Hidden</span>':''}</td><td><button class="btn sm" data-ma="${esc(m.id)}" ${isAdmin()?'':'disabled'}>Edit</button></td></tr>`).join('')}
+  </tbody></table></div></div>`;
+}
+AFTER.materials=()=>{$('#ma-add').onclick=()=>editMaterial(null);document.querySelectorAll('[data-ma]').forEach(b=>b.onclick=()=>editMaterial(b.dataset.ma))};
+function editMaterial(id){
+  const m=id?matById(id):{name:'',category:'plastic',method:'Recycling',unit:'kg',rate:0,active:true,sort:99};
+  modal(`<h2>${id?'Edit':'Add'} material</h2><div class="fgrid">
+    <label class="f full">Name<input id="ma-name" value="${esc(m.name)}"></label>
+    <label class="f">Type<select id="ma-cat">${CAT_ORDER.map(c=>`<option value="${c}" ${m.category===c?'selected':''}>${CATS[c]}</option>`).join('')}</select></label>
+    <label class="f">Disposal method<select id="ma-meth">${['Recycling','Composting','Landfill','Treatment / incineration','Reuse'].map(x=>`<option ${m.method===x?'selected':''}>${x}</option>`).join('')}</select></label>
+    <label class="f">Counted in<select id="ma-unit"><option value="kg" ${m.unit!=='skip'?'selected':''}>kg (+ bales)</option><option value="skip" ${m.unit==='skip'?'selected':''}>kg + skips</option></select></label>
+    <label class="f">Rebate rate R/kg (excl. VAT)<input type="number" step="any" id="ma-rate" value="${m.rate??0}"></label>
+    <label class="f">Sort order<input type="number" id="ma-sort" value="${m.sort??99}"></label>
+    <label class="f"><span><input type="checkbox" id="ma-active" ${m.active!==false?'checked':''}> Show on capture screen</span></label></div>
+    <p class="muted" style="font-size:12px">Only admins can change materials and rates.</p>
+    <div class="row" style="margin-top:12px"><button class="btn right" id="ma-x">Cancel</button><button class="btn p" id="ma-s">Save</button></div>`,()=>{
+    $('#ma-x').onclick=closeModal;
+    $('#ma-s').onclick=async()=>{const d={name:$('#ma-name').value.trim(),category:$('#ma-cat').value,method:$('#ma-meth').value,unit:$('#ma-unit').value,rate:num($('#ma-rate').value),sort:num($('#ma-sort').value),active:$('#ma-active').checked};
+      if(!d.name){toast('Name is needed');return}
+      try{if(id)await DB.update('materials',id,d);else{let nid=slug(d.name);if(matById(nid))nid+='-'+Date.now().toString(36);await DB.insert('materials',{id:nid,...d})}closeModal();toast('Material saved')}catch(e){dbErr(e)}};
+  });
+}
+
+// ---------- Settings ----------
+const FACTORS=[['paperCO2','CO₂e saved: paper & cardboard (kg CO₂e per kg)','US EPA WARM v16, corrugated containers'],['plasticCO2','CO₂e saved: plastics & other recyclables (kg CO₂e per kg)','US EPA WARM v16, HDPE. Also used for pallets, food waste and other recyclables, as in the spreadsheet'],['metalCO2','CO₂e saved: metals (kg CO₂e per kg)','Spreadsheet factor 1/1.62. Source not documented'],['landfillDensity','Compacted landfill density (kg per m³)','Spreadsheet factor'],['treesPerTonnePaper','Trees saved per tonne of paper','US EPA (2008)'],['waterPerKgPaper','Water saved per kg of paper (litres)','26 500 L per tonne'],['energyPaper','Energy saved: paper (kWh per tonne)','US EPA (2008)'],['energyPlastic','Energy saved: plastics (kWh per tonne)','US EPA'],['energyMetal','Energy saved: steel (kWh per tonne)','World Steel Association'],['vatRate','VAT rate (%)','Used only to show incl.-VAT rebate figures']];
+function vSettings(){
+  const f=F();const ct=f.carbonTax||{};
+  return `<h1>Report factors</h1><p class="lead">The conversion factors behind the environmental figures on customer reports. They come straight from the Environmental Impact Metrics tab.</p>
+  <div class="card"><div class="tbl-wrap"><table><thead><tr><th>Factor</th><th class="n">Value</th><th>Source / note</th></tr></thead><tbody>
+  ${FACTORS.map(([k,l,n])=>`<tr><td>${l}</td><td class="n"><input type="number" step="any" data-f="${k}" value="${f[k]}" style="width:110px"></td><td class="muted">${n}</td></tr>`).join('')}
+  ${Object.keys(ct).sort().map(y=>`<tr><td>Carbon tax rate ${y} (R per tonne CO₂e)</td><td class="n"><input type="number" step="any" data-ct="${y}" value="${ct[y]}" style="width:110px"></td><td class="muted">National Treasury carbon tax rate</td></tr>`).join('')}
+  <tr><td>Add a carbon tax year</td><td class="n"><input type="number" id="ct-new" placeholder="${new Date().getFullYear()+1}" style="width:110px"></td><td class="muted">Months with no rate for their year use the latest year's rate.</td></tr>
+  </tbody></table></div>
+  <div class="row" style="margin-top:14px"><button class="btn p right" id="fs" ${S.readOnly?'disabled':''}>Save factors</button></div></div>`;
+}
+AFTER.settings=()=>{$('#fs').onclick=async()=>{
+  const d={};document.querySelectorAll('[data-f]').forEach(i=>d[i.dataset.f]=num(i.value));
+  const ct={};document.querySelectorAll('[data-ct]').forEach(i=>ct[i.dataset.ct]=num(i.value));
+  const ny=$('#ct-new').value.trim();if(/^\d{4}$/.test(ny)&&!ct[ny])ct[ny]=Object.values(ct).slice(-1)[0]||0;
+  d.carbonTax=ct;try{await DB.upsert('settings',{id:'factors',data:d});toast('Factors saved')}catch(e){dbErr(e)}}};
+
+// ---------- Customer portal (preview) ----------
+const PV={cust:'',range:'12',tab:'overview'};
+function pvList(){
+  const cl=S.entries.filter(e=>e.customerId===PV.cust);
+  const ms=[...new Set(cl.map(e=>e.month))].sort();const last=ms[ms.length-1]||today().slice(0,7);
+  let from;if(PV.range==='all')from=ms[0]||last;else if(PV.range==='ytd')from=last.slice(0,4)+'-01';else from=addMonths(last,-(+PV.range-1));
+  return{cl,from,to:last,list:cl.filter(e=>e.month>=from&&e.month<=last)};
+}
+function vPortal(){
+  const cs=S.customers.filter(c=>c.active!==false).sort((a,b)=>a.name.localeCompare(b.name));
+  if(!cs.length)return '<p class="muted">'+(isStaff()?'No customers yet.':'Your account isn\'t linked to a customer yet. Please contact Harambee.')+'</p>';
+  if(!isStaff())PV.cust=S.profile.customerId;else if(!PV.cust||!custById(PV.cust))PV.cust=cs[0].id;
+  const c=custById(PV.cust);const {from,to,list}=pvList();const s=summarise(list),env=envMetrics(list);
+  const bar=!isStaff()?`<div class="pv-bar" style="background:#fff;border-color:var(--line)"><span class="muted">Signed in as ${esc(S.user.email)}</span><button class="btn sm right" onclick="signOut()">Sign out</button></div>`:`<div class="pv-bar"><b>Preview:</b> this is what <b>${esc(c.name)}</b> sees after logging in. Internal notes, staff names and rates are hidden.
+    <label class="f" style="flex-direction:row;align-items:center;gap:6px">View as <select id="pv-c">${cs.map(x=>`<option value="${esc(x.id)}" ${x.id===PV.cust?'selected':''}>${esc(x.name)}</option>`).join('')}</select></label>
+    <a class="btn sm right" href="#dashboard">← Back to back office</a></div>`;
+  const head=`<div class="pv-head"><div class="pv-logo">H</div><div><div style="font-weight:700;font-size:17px">Harambee Waste Management Solutions</div><div class="muted">Client portal · ${esc(c.name)}</div></div>
+    <label class="f right">Period<select id="pv-r">${[['3','Last 3 months'],['6','Last 6 months'],['12','Last 12 months'],['ytd','This year'],['all','All time']].map(([v,l])=>`<option value="${v}" ${PV.range===v?'selected':''}>${l}</option>`).join('')}</select></label></div>`;
+  const tabs=`<div class="pv-tabs">${[['overview','Overview'],['impact','Environmental impact'],['statements','Monthly statements'],['history','Collection history'],['request','Request a collection']].map(([k,l])=>`<button data-pt="${k}" class="${PV.tab===k?'on':''}">${l}</button>`).join('')}</div>`;
+  let body='';
+  if(!list.length&&PV.tab!=='request')body='<div class="card"><p class="muted">No collections recorded for this period yet.</p></div>';
+  else if(PV.tab==='overview'){
+    const byMat={};list.filter(isRecycled).forEach(e=>{byMat[e.materialName]=(byMat[e.materialName]||0)+num(e.kg)});
+    const top=Object.entries(byMat).sort((a,b)=>b[1]-a[1]);const mx=top.length?top[0][1]:1;
+    const shown=top.slice(0,7),rest=top.slice(7).reduce((a,[,v])=>a+v,0);if(rest)shown.push(['Other recyclables',rest]);
+    body=`<div class="hero"><div><div class="l">Recycling rate · ${mLong(from)} to ${mLong(to)}</div><div class="big">${pct(s.pct)}</div><div class="l" style="margin-top:6px">of your waste was kept out of landfill</div></div>
+      <div><div class="l">Diverted from landfill</div><div style="font-size:26px;font-weight:700">${nf1.format(s.rec/1000)} tonnes</div></div>
+      <div><div class="l">CO₂e avoided</div><div style="font-size:26px;font-weight:700">${nf1.format(env.co2/1000)} tonnes</div></div></div>
+    <div class="grid kpis" style="margin-bottom:18px">
+      <div class="kpi"><div class="l">Total waste collected</div><div class="v">${kg(s.gen)}</div></div>
+      <div class="kpi"><div class="l">Recycled</div><div class="v">${kg(s.rec)}</div></div>
+      <div class="kpi"><div class="l">Sent to landfill</div><div class="v">${kg(s.land)}</div><div class="s">${nf0.format(s.skips)} skips</div></div>
+      <div class="kpi"><div class="l">Recycling rebates earned</div><div class="v">${R(s.rebate)}</div><div class="s">excl. VAT</div></div></div>
+    <div class="card"><h2>Recycled vs landfill by month</h2><div class="legend"><span><i style="background:var(--rec)"></i>Recycled</span><span><i style="background:var(--land)"></i>Landfill</span></div><div class="chart" id="pv-chart"></div></div>
+    <div class="card"><h2>What we recycled for you</h2>${shown.map(([n,v])=>`<div class="hbar"><span>${esc(n)}</span><span class="t"><i style="width:${(v/mx*100).toFixed(1)}%;background:var(--rec)"></i></span><span style="text-align:right">${kg(v)}</span></div>`).join('')}</div>`;
+  }else if(PV.tab==='impact'){
+    body=`<div class="card"><h2>Your environmental impact · ${mLong(from)} to ${mLong(to)}</h2><div class="grid env kpis">
+      <div class="kpi"><div class="l">CO₂e emissions avoided</div><div class="v">${nf1.format(env.co2/1000)} t</div></div>
+      <div class="kpi"><div class="l">Landfill space saved</div><div class="v">${nf1.format(env.space)} m³</div></div>
+      <div class="kpi"><div class="l">Carbon tax equivalent</div><div class="v">${R(env.tax)}</div></div>
+      <div class="kpi"><div class="l">Trees saved</div><div class="v">${nf0.format(env.trees)}</div></div>
+      <div class="kpi"><div class="l">Water saved</div><div class="v">${nf0.format(env.water)} L</div></div>
+      <div class="kpi"><div class="l">Energy saved</div><div class="v">${nf0.format(env.energy)} kWh</div></div></div>
+      <p class="muted" style="font-size:12px;margin:12px 0 0">Calculated from recycled weights using US EPA WARM v16 (paper, plastics), US EPA and World Steel Association energy figures, and the National Treasury carbon tax rate for each year. Figures are estimates for sustainability reporting.</p></div>`;
+  }else if(PV.tab==='statements'){
+    const months=[...new Set(list.map(e=>e.month))].sort().reverse();
+    body=`<div class="card"><h2>Monthly statements</h2><div class="tbl-wrap"><table><thead><tr><th>Month</th><th class="n">Total</th><th class="n">Recycled</th><th class="n">Landfill</th><th class="n">Recycling rate</th><th class="n">Rebate (excl. VAT)</th><th></th></tr></thead><tbody>
+    ${months.map(m=>{const x=summarise(list.filter(e=>e.month===m));return `<tr><td>${mLong(m)}</td><td class="n">${kg(x.gen)}</td><td class="n">${kg(x.rec)}</td><td class="n">${kg(x.land)}</td><td class="n">${pct(x.pct)}</td><td class="n">${R(x.rebate)}</td><td><button class="btn sm" data-stm="${m}">View</button></td></tr>`}).join('')}
+    </tbody></table></div></div><div id="stm"></div>`;
+  }else if(PV.tab==='history'){
+    const rows=[...list].sort((a,b)=>(b.date||'').localeCompare(a.date||''));
+    body=`<div class="card"><div class="row" style="margin-bottom:10px"><h2 style="margin:0">Collection history</h2><button class="btn sm right" id="pv-csv">Copy as CSV</button></div><div class="tbl-wrap"><table><thead><tr><th>Date</th><th>Site</th><th>Material</th><th>Destination</th><th class="n">Weight</th><th class="n">Skips</th><th class="n">Rebate (excl.)</th></tr></thead><tbody>
+    ${rows.map(e=>`<tr><td>${esc(e.date)}</td><td>${esc(e.site)}</td><td>${esc(e.materialName)}</td><td>${esc(e.method)}</td><td class="n">${kg(e.kg)}</td><td class="n">${e.category==='landfill'&&e.units?nf0.format(e.units):''}</td><td class="n">${e.rebate?R(e.rebate):''}</td></tr>`).join('')}</tbody></table></div></div>`;
+  }else if(PV.tab==='request'){
+    const mine=S.requests.filter(r=>r.customerId===PV.cust).sort((a,b)=>(b.createdAt||'').localeCompare(a.createdAt||''));
+    body=`<div class="card"><h2>Request a collection</h2><p class="muted" style="margin-top:-6px">Our team will confirm the date with you.</p><div class="fgrid">
+      <label class="f">Preferred date<input type="date" id="rq-date" min="${today()}"></label>
+      <label class="f">Site<input id="rq-site" value="${esc(String(c.sites||'').split(',')[0].trim())}"></label>
+      <label class="f full">What needs collecting?<input id="rq-what" placeholder="e.g. 2 skips general waste, cardboard bales, scrap metal"></label>
+      <label class="f">Contact name<input id="rq-name"></label><label class="f">Contact number<input id="rq-tel"></label>
+      <label class="f full">Notes<textarea id="rq-notes" rows="2"></textarea></label></div>
+      <div class="row" style="margin-top:12px"><button class="btn p right" id="rq-send">Send request</button></div></div>
+      ${mine.length?`<div class="card"><h2>Your requests</h2><table><thead><tr><th>Requested</th><th>Preferred date</th><th>What</th><th>Status</th></tr></thead><tbody>${mine.map(r=>`<tr><td>${esc((r.createdAt||'').slice(0,10))}</td><td>${esc(r.date)}</td><td>${esc(r.what)}</td><td>${reqPill(r.status)}</td></tr>`).join('')}</tbody></table></div>`:''}`;
+  }
+  return bar+head+tabs+body+`<p class="muted" style="font-size:12px;margin-top:24px">All rand amounts exclude VAT. Questions about your report? Contact Harambee Waste Management Solutions${SITE.email?' at <a href="mailto:'+esc(SITE.email)+'">'+esc(SITE.email)+'</a>':''}${SITE.phone?' or call '+esc(SITE.phone):''}.</p>`;
+}
+function reqPill(s){return {new:'<span class="pill landfill">Received</span>',scheduled:'<span class="pill plastic">Scheduled</span>',done:'<span class="pill organic">Completed</span>',cancelled:'<span class="pill">Cancelled</span>'}[s]||esc(s)}
+AFTER.portal=()=>{
+  const sc=$('#pv-c');if(sc)sc.onchange=e=>{PV.cust=e.target.value;render(true)};
+  if(!$('#pv-r'))return;
+  $('#pv-r').onchange=e=>{PV.range=e.target.value;render(true)};
+  document.querySelectorAll('[data-pt]').forEach(b=>b.onclick=()=>{PV.tab=b.dataset.pt;render(true)});
+  const {from,to,list}=pvList();
+  if($('#pv-chart'))barChart($('#pv-chart'),monthRange(from,to).map(m=>{const x=summarise(list.filter(e=>e.month===m));return{label:mLabel(m),a:x.rec,b:x.land,rebate:x.rebate,pct:x.pct}}));
+  if($('#pv-csv'))$('#pv-csv').onclick=()=>copyCSV([['Date','Site','Material','Destination','Weight kg','Skips','Rebate R excl VAT'],...[...list].sort((a,b)=>(a.date||'').localeCompare(b.date||'')).map(e=>[e.date,e.site,e.materialName,e.method,e.kg,e.category==='landfill'?e.units||'':'',e.rebate||''])]);
+  document.querySelectorAll('[data-stm]').forEach(b=>b.onclick=()=>{const m=b.dataset.stm;const l=list.filter(e=>e.month===m);const x=summarise(l),ev=envMetrics(l);
+    $('#stm').innerHTML=`<div class="card"><h2>Statement: ${mLong(m)} · ${esc(custById(PV.cust).name)}</h2><table><thead><tr><th>Material</th><th>Destination</th><th class="n">Weight</th><th class="n">Rebate (excl.)</th></tr></thead><tbody>
+    ${l.sort((a,b)=>CAT_ORDER.indexOf(a.category)-CAT_ORDER.indexOf(b.category)).map(e=>`<tr><td>${esc(e.materialName)}</td><td>${esc(e.method)}</td><td class="n">${kg(e.kg)}</td><td class="n">${e.rebate?R(e.rebate):''}</td></tr>`).join('')}
+    <tr class="tot"><td>Total</td><td>${pct(x.pct)} recycled</td><td class="n">${kg(x.gen)}</td><td class="n">${R(x.rebate)}</td></tr></tbody></table>
+    <p class="muted" style="font-size:12px">Rebate incl. VAT: ${R(x.rebate*(1+F().vatRate/100))} · CO₂e avoided: ${nf0.format(ev.co2)} kg · Landfill space saved: ${nf1.format(ev.space)} m³</p></div>`;$('#stm').scrollIntoView({behavior:'smooth'})});
+  if($('#rq-send'))$('#rq-send').onclick=async()=>{const d={customerId:PV.cust,customerName:custById(PV.cust).name,date:$('#rq-date').value,site:$('#rq-site').value.trim(),what:$('#rq-what').value.trim(),contact:$('#rq-name').value.trim(),phone:$('#rq-tel').value.trim(),notes:$('#rq-notes').value.trim(),status:'new'};if(!d.date)d.date=null;
+    if(!d.what){toast('Say what needs collecting');return}
+    try{await DB.insert('requests',d);toast('Request sent. Harambee will confirm the date.');render(true)}catch(e){dbErr(e)}};
+};
+
+// ---------- Collection requests (back office) ----------
+function vRequests(){
+  const rs=[...S.requests].sort((a,b)=>(a.status==='new'?0:1)-(b.status==='new'?0:1)||(b.createdAt||'').localeCompare(a.createdAt||''));
+  return `<h1>Collection requests</h1><p class="lead">Requests customers send from the portal. Update the status and the customer sees it in their portal.</p>
+  <div class="card">${rs.length?`<div class="tbl-wrap"><table><thead><tr><th>Received</th><th>Customer</th><th>Site</th><th>Preferred date</th><th>What</th><th>Contact</th><th>Notes</th><th>Status</th></tr></thead><tbody>
+  ${rs.map(r=>`<tr><td>${esc((r.createdAt||'').slice(0,16).replace('T',' '))}</td><td>${esc(r.customerName)}</td><td>${esc(r.site)}</td><td>${esc(r.date)}</td><td>${esc(r.what)}</td><td>${esc(r.contact)} ${esc(r.phone)}</td><td>${esc(r.notes)}</td>
+  <td><select data-rs="${esc(r.id)}" ${S.readOnly?'disabled':''}>${['new','scheduled','done','cancelled'].map(x=>`<option value="${x}" ${r.status===x?'selected':''}>${{new:'New',scheduled:'Scheduled',done:'Completed',cancelled:'Cancelled'}[x]}</option>`).join('')}</select></td></tr>`).join('')}
+  </tbody></table></div>`:'<p class="muted">No requests yet. Customers send these from their portal.</p>'}</div>`;
+}
+AFTER.requests=()=>document.querySelectorAll('[data-rs]').forEach(sel=>sel.onchange=async()=>{try{await DB.update('requests',sel.dataset.rs,{status:sel.value,updatedAt:new Date().toISOString()});toast('Status updated')}catch(e){dbErr(e)}});
+
+
+
+// ---------- data layer (Supabase) ----------
+const camel=s=>s.replace(/_([a-z])/g,(_,c)=>c.toUpperCase());
+const snake=s=>s.replace(/[A-Z]/g,c=>'_'+c.toLowerCase());
+const fromRow=r=>{const o={};for(const k in r)o[camel(k)]=r[k];return o};
+const toRow=o=>{const r={};for(const k in o)if(o[k]!==undefined)r[snake(k)]=o[k];return r};
+async function fetchAll(table,order){
+  const out=[];let from=0;const size=1000;
+  for(;;){let q=db.from(table).select('*').range(from,from+size-1);if(order)q=q.order(order);const {data,error}=await q;if(error)throw error;out.push(...data);if(data.length<size)break;from+=size}
+  return out.map(fromRow);
+}
+const TABLE_KEY={entries:'entries',customers:'customers',materials:'materials',requests:'requests',enquiries:'enquiries',profiles:'profiles',settings:'settings'};
+const DB={
+  async insert(t,v){const rows=(Array.isArray(v)?v:[v]).map(toRow);const {error}=await db.from(t).insert(rows);if(error)throw error;await reload(t)},
+  async update(t,id,v){const {error}=await db.from(t).update(toRow(v)).eq('id',id);if(error)throw error;await reload(t)},
+  async updateWhere(t,where,v){let q=db.from(t).update(toRow(v));for(const k in where)q=q.eq(k,where[k]);const {error}=await q;if(error)throw error;await reload(t)},
+  async upsert(t,v){const {error}=await db.from(t).upsert(toRow(v));if(error)throw error;await reload(t)},
+  async del(t,id){const {error}=await db.from(t).delete().eq('id',id);if(error)throw error;await reload(t)},
+};
+async function reload(t){
+  try{
+    if(t==='entries')S.entries=await fetchAll(isStaff()?'entries':'portal_entries','date');
+    else if(t==='settings'){const rows=await fetchAll('settings');const f=rows.find(r=>r.id==='factors');S.factors=f?f.data:null}
+    else if(t==='profiles')S.profiles=isAdmin()?await fetchAll('profiles','created_at'):[];
+    else if(t==='enquiries')S.enquiries=isStaff()?await fetchAll('enquiries','created_at'):[];
+    else S[TABLE_KEY[t]]=await fetchAll(t);
+  }catch(e){S.loadError=e.message||String(e)}
+  render(false);
+}
+async function loadAll(){
+  S.loading=true;S.loadError=null;render(true);
+  await Promise.all(['customers','materials','settings','requests','entries','enquiries','profiles'].map(reload));
+  S.loading=false;render(true);
+}
+function dbErr(e,extra){
+  const m=(e&&e.message)||String(e);
+  if(/row-level security|permission denied/i.test(m))toast('You don\'t have permission to do that.');
+  else toast('Could not save: '+m+(extra?' '+extra:''));
+}
+
+// ---------- Users (admin) ----------
+function vUsers(){
+  const ps=[...S.profiles].sort((a,b)=>(a.role==='pending'?0:1)-(b.role==='pending'?0:1)||(a.email||'').localeCompare(b.email||''));
+  return `<h1>Users &amp; access</h1><p class="lead">Everyone who can log in. New logins start as <b>Pending</b> with no access until you choose their role here.</p>
+  <div class="banner ok"><b>To add someone:</b> in Supabase go to Authentication → Users → <b>Invite user</b> and enter their email. They get an email to set a password, then appear here. Set staff to <b>Staff</b>; set a customer contact to <b>Customer</b> and pick their company.</div>
+  <div class="card"><div class="tbl-wrap"><table><thead><tr><th>Email</th><th>Name</th><th>Role</th><th>Customer (for customer logins)</th><th></th></tr></thead><tbody>
+  ${ps.map(p=>`<tr data-pid="${esc(p.id)}"><td>${esc(p.email)}${p.id===S.user.id?' <span class="pill">you</span>':''}</td><td><input data-k="fullName" value="${esc(p.fullName||'')}" style="width:160px"></td>
+    <td><select data-k="role" ${p.id===S.user.id?'disabled':''}>${[['pending','Pending (no access)'],['customer','Customer'],['staff','Staff'],['admin','Admin']].map(([v,l])=>`<option value="${v}" ${p.role===v?'selected':''}>${l}</option>`).join('')}</select></td>
+    <td><select data-k="customerId"><option value="">–</option>${S.customers.map(c=>`<option value="${esc(c.id)}" ${p.customerId===c.id?'selected':''}>${esc(c.name)}</option>`).join('')}</select></td>
+    <td><button class="btn sm p" data-save>Save</button></td></tr>`).join('')||'<tr><td colspan="5" class="muted">No users yet.</td></tr>'}
+  </tbody></table></div></div>
+  <p class="muted" style="font-size:12px">Staff can capture and edit collections, customers and requests. Admins can also change rates, report factors and user access. Customers only see their own company's portal.</p>`;
+}
+AFTER.users=()=>document.querySelectorAll('[data-pid] [data-save]').forEach(b=>b.onclick=async()=>{
+  const tr=b.closest('tr');const id=tr.dataset.pid;const d={fullName:tr.querySelector('[data-k=fullName]').value.trim(),customerId:tr.querySelector('[data-k=customerId]').value||null};
+  const rs=tr.querySelector('[data-k=role]');if(!rs.disabled)d.role=rs.value;
+  if(d.role==='customer'&&!d.customerId){toast('Pick the customer company for this login');return}
+  if(d.role&&d.role!=='customer')d.customerId=null;
+  try{await DB.update('profiles',id,d);toast('Access updated')}catch(e){dbErr(e)}});
+
+// ---------- Website enquiries ----------
+function vEnquiries(){
+  const rs=[...S.enquiries].sort((a,b)=>(a.status==='new'?0:1)-(b.status==='new'?0:1)||(b.createdAt||'').localeCompare(a.createdAt||''));
+  return `<h1>Website enquiries</h1><p class="lead">Messages sent from the contact form on hwssa.co.za.</p>
+  <div class="card">${rs.length?`<div class="tbl-wrap"><table><thead><tr><th>Received</th><th>Name</th><th>Company</th><th>Email</th><th>Phone</th><th>Message</th><th>Status</th></tr></thead><tbody>
+  ${rs.map(r=>`<tr><td style="white-space:nowrap">${esc((r.createdAt||'').slice(0,16).replace('T',' '))}</td><td>${esc(r.name)}</td><td>${esc(r.company)}</td><td>${r.email?`<a href="mailto:${esc(r.email)}">${esc(r.email)}</a>`:''}</td><td>${esc(r.phone)}</td><td style="max-width:360px">${esc(r.message)}</td>
+  <td><select data-es="${esc(r.id)}">${[['new','New'],['contacted','Contacted'],['closed','Closed']].map(([v,l])=>`<option value="${v}" ${r.status===v?'selected':''}>${l}</option>`).join('')}</select></td></tr>`).join('')}
+  </tbody></table></div>`:'<p class="muted">No enquiries yet.</p>'}</div>`;
+}
+AFTER.enquiries=()=>document.querySelectorAll('[data-es]').forEach(s=>s.onchange=async()=>{try{await DB.update('enquiries',s.dataset.es,{status:s.value});toast('Updated')}catch(e){dbErr(e)}});
+
+// ---------- auth ----------
+function showAuth(mode,msg){
+  $('#shell').hidden=true;$('#auth').hidden=false;
+  const f={login:`<h2>Sign in</h2><p class="muted">Staff and clients of Harambee Waste Management Solutions.</p>
+      <label class="f">Email<input id="a-email" type="email" autocomplete="username"></label>
+      <label class="f">Password<input id="a-pass" type="password" autocomplete="current-password"></label>
+      <button class="btn p" id="a-go" style="width:100%">Sign in</button>
+      <p style="text-align:center;margin:4px 0 0"><a href="#" id="a-forgot">Forgot your password?</a></p>`,
+    forgot:`<h2>Reset your password</h2><p class="muted">We'll email you a link to set a new password.</p>
+      <label class="f">Email<input id="a-email" type="email"></label><button class="btn p" id="a-go" style="width:100%">Send reset link</button>
+      <p style="text-align:center;margin:4px 0 0"><a href="#" id="a-back">Back to sign in</a></p>`,
+    setpw:`<h2>Set your password</h2><p class="muted">Choose a password for ${esc(S.user?.email||'your account')}. At least 8 characters.</p>
+      <label class="f">New password<input id="a-pass" type="password" autocomplete="new-password"></label>
+      <label class="f">Confirm password<input id="a-pass2" type="password" autocomplete="new-password"></label>
+      <button class="btn p" id="a-go" style="width:100%">Save password</button>`,
+    pending:`<h2>Almost there</h2><p>You're signed in as <b>${esc(S.user?.email||'')}</b>, but your access hasn't been switched on yet.</p><p class="muted">Harambee will set up your access shortly. Refresh this page once they confirm.</p><button class="btn" onclick="signOut()" style="width:100%">Sign out</button>`};
+  $('#auth-body').innerHTML=(msg?`<div class="banner ${msg[0]}">${esc(msg[1])}</div>`:'')+f[mode];
+  const go=$('#a-go');
+  if(mode==='login'){
+    const submit=async()=>{go.disabled=true;go.textContent='Signing in…';const {error}=await db.auth.signInWithPassword({email:$('#a-email').value.trim(),password:$('#a-pass').value});
+      if(error){showAuth('login',['e',error.message==='Invalid login credentials'?'That email and password don\'t match.':error.message])}};
+    go.onclick=submit;$('#a-pass').onkeydown=e=>{if(e.key==='Enter')submit()};
+    $('#a-forgot').onclick=e=>{e.preventDefault();showAuth('forgot')};
+  }else if(mode==='forgot'){
+    go.onclick=async()=>{go.disabled=true;const {error}=await db.auth.resetPasswordForEmail($('#a-email').value.trim(),{redirectTo:location.origin+location.pathname});
+      showAuth('login',error?['e',error.message]:['ok','If that email has an account, a reset link is on its way.'])};
+    $('#a-back').onclick=e=>{e.preventDefault();showAuth('login')};
+  }else if(mode==='setpw'){
+    go.onclick=async()=>{const p=$('#a-pass').value;if(p.length<8){toast('Use at least 8 characters');return}if(p!==$('#a-pass2').value){toast('The passwords don\'t match');return}
+      go.disabled=true;const {error}=await db.auth.updateUser({password:p});if(error){showAuth('setpw',['e',error.message]);return}
+      history.replaceState(null,'',location.pathname);toast('Password saved');enter()};
+  }
+}
+async function signOut(){await db.auth.signOut();location.hash='';location.reload()}
+async function enter(){
+  const {data:{user}}=await db.auth.getUser();if(!user){showAuth('login');return}
+  S.user=user;
+  const {data:p,error}=await db.from('profiles').select('*').eq('id',user.id).maybeSingle();
+  if(error){showAuth('login',['e',error.message]);return}
+  S.profile=p?fromRow(p):{role:'pending'};S.role=S.profile.role;
+  if(S.role==='pending'||(S.role==='customer'&&!S.profile.customerId)){showAuth('pending');return}
+  $('#auth').hidden=true;$('#shell').hidden=false;
+  $('#who').textContent=S.profile.fullName||user.email;
+  document.querySelectorAll('[data-admin]').forEach(a=>a.style.display=isAdmin()?'':'none');
+  await loadAll();
+}
+async function boot(){
+  if(!window.HWS_CONFIG||!HWS_CONFIG.supabaseUrl||HWS_CONFIG.supabaseUrl.includes('YOUR-')){$('#auth').hidden=false;$('#auth-body').innerHTML='<div class="banner e">The portal isn\'t connected to its database yet (config.js).</div>';return}
+  db=supabase.createClient(HWS_CONFIG.supabaseUrl,HWS_CONFIG.supabaseAnonKey);
+  const h=location.hash;const pwFlow=/type=(invite|recovery)/.test(h);
+  let entered=false;
+  db.auth.onAuthStateChange((ev,session)=>{
+    if(ev==='PASSWORD_RECOVERY'||(pwFlow&&session&&!entered&&ev==='SIGNED_IN')){entered=true;S.user=session.user;showAuth('setpw');return}
+    if(ev==='SIGNED_IN'&&!entered){entered=true;setTimeout(enter,0)}
+    if(ev==='SIGNED_OUT'){showAuth('login')}
+  });
+  const {data:{session}}=await db.auth.getSession();
+  if(!session&&!pwFlow)showAuth('login');
+  else if(session&&!entered&&!pwFlow){entered=true;enter()}
+}
+boot();
+
+</script>
+</body>
+</html>
