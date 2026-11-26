@@ -98,6 +98,11 @@ footer{border-top:4px solid var(--gold);background:var(--deep);color:#b9bbe0;pad
 footer a{color:#e3e4f7;text-decoration:none}footer .brand b{color:#fff}footer .brand span{color:#a5a7d8}
 .fl{display:flex;gap:22px;flex-wrap:wrap}
 .copy{border-top:1px solid #1a1c6e;margin-top:30px;padding-top:20px;font-size:12.5px;color:#8a8cc0;display:flex;justify-content:space-between;flex-wrap:wrap;gap:10px}
+@media (max-width:1180px){.links{gap:16px}.links a{font-size:13.5px}.bar{gap:18px}}
+@media (max-width:1040px){
+  .links{display:none;position:absolute;top:70px;left:0;right:0;background:#fff;flex-direction:column;gap:0;padding:8px 24px 16px;border-bottom:1px solid var(--line)}
+  .links.open{display:flex}.links a{padding:10px 0;font-size:14.5px}.menu-t{display:block}.bar .btn.g{display:none}
+}
 @media (max-width:960px){
   .va{grid-template-columns:1fr}
   h1{font-size:38px}h2{font-size:29px}.hero{padding:56px 0}
@@ -158,7 +163,7 @@ footer a{color:#e3e4f7;text-decoration:none}footer .brand b{color:#fff}footer .b
       <ul><li>Cardboard, paper, plastics and metals</li><li>Rebates paid per kilogram recycled</li><li>Weighed and recorded every collection</li><li>Less waste sent to landfill</li></ul></div>
     <div class="card"><div class="ic"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#000184" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 3v18h18"/><path d="M7 15v2M11 11v6M15 8v9M19 5v12"/></svg></div>
       <h3>Reporting &amp; sustainability</h3><p>Know exactly what your business generates, recycles and sends to landfill.</p>
-      <ul><li>Monthly waste and rebate statements</li><li>Recycling rate and landfill diversion</li><li>CO₂e, water and energy savings</li><li>24/7 access in your client portal</li></ul></div>
+      <ul><li>Monthly waste and rebate statements</li><li>Recycling rate and landfill diversion</li><li>CO₂e avoided and energy saved</li><li>24/7 access in your client portal</li></ul></div>
   </div>
   <div class="va">
     <div><h3>Value-added services</h3><p>Ask us about any of these alongside your main waste contract.</p>
@@ -205,14 +210,14 @@ footer a{color:#e3e4f7;text-decoration:none}footer .brand b{color:#fff}footer .b
     <div class="feat">
       <div><div class="ic"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#000184" stroke-width="2"><path d="M3 3v18h18"/><path d="m7 14 4-4 4 4 5-6"/></svg></div><div><b>Recycling rate and trends</b><span>Recycled vs landfill, month by month, for any period.</span></div></div>
       <div><div class="ic"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#000184" stroke-width="2"><path d="M14 3H6a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V9z"/><path d="M14 3v6h6M8 13h8M8 17h5"/></svg></div><div><b>Monthly statements</b><span>Weights per material and the rebate earned, excl. and incl. VAT.</span></div></div>
-      <div><div class="ic"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#000184" stroke-width="2"><path d="M11 20A7 7 0 0 1 9.8 6.1C15.5 5 17 4.5 19 2c1 2 2 4.2 2 8 0 5.5-4.8 10-10 10Z"/><path d="M2 21c0-3 1.9-5.4 5.1-6"/></svg></div><div><b>Environmental impact</b><span>CO₂e avoided, landfill space, trees, water and energy saved.</span></div></div>
+      <div><div class="ic"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#000184" stroke-width="2"><path d="M11 20A7 7 0 0 1 9.8 6.1C15.5 5 17 4.5 19 2c1 2 2 4.2 2 8 0 5.5-4.8 10-10 10Z"/><path d="M2 21c0-3 1.9-5.4 5.1-6"/></svg></div><div><b>Environmental impact</b><span>CO₂e avoided, landfill space and energy saved, using US EPA factors.</span></div></div>
       <div><div class="ic"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#000184" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2"/><path d="M16 2v4M8 2v4M3 10h18"/></svg></div><div><b>Request a collection</b><span>Book an extra collection and track its status online.</span></div></div>
     </div>
   </div>
   <div class="env-g" aria-label="Example environmental impact figures">
-    <div><small>CO₂e avoided</small><b>120 t</b></div><div><small>Landfill space saved</small><b>150 m³</b></div><div><small>Carbon tax equivalent</small><b>R 35k</b></div>
-    <div><small>Trees saved</small><b>280</b></div><div><small>Water saved</small><b>420 kL</b></div><div><small>Energy saved</small><b>780 MWh</b></div>
-    <div style="grid-column:1/-1;background:none;border:0;padding:0"><small>Illustrative figures. Calculated from recycled weights using US EPA WARM and National Treasury carbon tax rates.</small></div>
+    <div><small>CO₂e avoided</small><b>120 t</b></div><div><small>Landfill space saved</small><b>150 m³</b></div><div><small>Carbon tax value</small><b>R 35k</b></div>
+    <div><small>Energy saved</small><b>1 300 MWh</b></div><div><small>Diversion rate</small><b>85%</b></div><div><small>Diverted</small><b>140 t</b></div>
+    <div style="grid-column:1/-1;background:none;border:0;padding:0"><small>Illustrative figures. Real reports use your recycled weights with US EPA WARM v16 factors (compared with landfill) and South Africa&#39;s carbon tax rate for the year.</small></div>
   </div>
 </div></section>
 
