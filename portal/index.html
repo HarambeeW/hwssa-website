@@ -144,6 +144,28 @@ label.tick{display:inline-flex;gap:8px;align-items:center;font-weight:600;cursor
 .feed-day{font-weight:600;color:var(--ink2);margin:16px 0 8px;font-size:13px;text-transform:uppercase;letter-spacing:.04em}.feed-day:first-of-type{margin-top:0}
 .strip{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:10px}.strip img{width:100%;aspect-ratio:4/3;object-fit:cover;border-radius:10px;cursor:zoom-in;background:#eef0ec;display:block}
 @media (max-width:820px){.jc{grid-template-columns:1fr}.strip{grid-template-columns:repeat(2,minmax(0,1fr))}}
+
+/* inspections */
+body.focus .app{grid-template-columns:minmax(0,1fr)}body.focus nav{display:none}body.focus main{max-width:820px;width:100%;margin:0 auto}
+.score{font-weight:700}.score.good{color:#2d8a4e}.score.ok{color:#b07400}.score.poor{color:var(--danger)}
+.ins-top{position:sticky;top:0;z-index:4;background:var(--bg);padding:10px 0 8px;border-bottom:1px solid var(--line);display:flex;flex-direction:column;gap:6px}
+.ins-prog{height:8px;background:#e3e5e0;border-radius:99px;overflow:hidden}.ins-prog div{height:100%;background:var(--brand)}
+.isec{padding:0;overflow:hidden}.isec-h{width:100%;display:flex;justify-content:space-between;gap:10px;align-items:center;padding:14px 16px;border:0;background:#fafbf8;cursor:pointer;font-size:15px;text-align:left}
+.iit{padding:12px 16px;border-top:1px solid #eef0ec}.iit.r-a{background:#fffaf0}.iit.r-b{background:#fff4f3}
+.iit-l{font-size:15px;margin-bottom:8px}.iit-b{display:flex;gap:6px;flex-wrap:wrap}
+.rb{min-width:52px;height:44px;border-radius:10px;border:2px solid #cfd3cc;background:#fff;font-size:17px;font-weight:700;cursor:pointer;padding:0 10px}
+.rb-n{font-size:13px}.rb-more{font-size:16px;min-width:44px}
+.rb-g.on{background:#2d8a4e;border-color:#2d8a4e;color:#fff}.rb-a.on{background:#e0a21b;border-color:#e0a21b;color:#fff}.rb-b.on{background:var(--danger);border-color:var(--danger);color:#fff}.rb-n.on{background:#6b7275;border-color:#6b7275;color:#fff}
+.iit-x{margin-top:8px;display:flex;flex-direction:column;gap:8px}.iit-x input{width:100%;font-size:15px;padding:10px}
+.ishots{display:flex;gap:8px;flex-wrap:wrap;align-items:center}.ishot{position:relative;display:inline-block}.ishot button{position:absolute;top:-6px;right:-6px;width:22px;height:22px;border-radius:50%;border:0;background:#14181a;color:#fff;font-size:11px;cursor:pointer}
+.isec-ph{padding:12px 16px 16px;border-top:1px dashed #d8dcd4;display:flex;flex-direction:column;gap:8px;background:#fafbf8}
+.crit{font-size:10px;text-transform:uppercase;letter-spacing:.05em;background:#fde8e8;color:#9b2020;border-radius:4px;padding:1px 5px;vertical-align:1px}
+.sig{border:1px dashed #9fb7a8;border-radius:10px;width:100%;max-width:600px;height:160px;background:#fff;touch-action:none}
+.ins-hero{color:#fff;border-radius:12px;padding:22px 24px;margin-bottom:18px;display:flex;gap:30px;flex-wrap:wrap;align-items:center;background:linear-gradient(135deg,#1f6b45,#2a8a5a)}
+.ins-hero.ok{background:linear-gradient(135deg,#9a6a00,#c68d10)}.ins-hero.poor{background:linear-gradient(135deg,#8f2424,#c23b3a)}
+.ins-hero .big{font-size:44px;font-weight:700;line-height:1}.ins-hero .l{opacity:.85;font-size:13px}.ins-hero .mid{font-size:24px;font-weight:700}
+.find{display:flex;gap:16px;justify-content:space-between;flex-wrap:wrap;padding:12px 0;border-bottom:1px solid #eef0ec}
+.rt{font-size:12px;font-weight:600}.rt-g{color:#2d8a4e}.rt-a{color:#b07400}.rt-b{color:var(--danger)}.rt-n{color:var(--muted)}
 </style>
 </head>
 <body>
@@ -159,6 +181,7 @@ label.tick{display:inline-flex;gap:8px;align-items:center;font-weight:600;cursor
     <a href="#collections" data-v="collections">Collections log</a>
     <a href="#reports" data-v="reports">Customer reports</a>
     <a href="#inbox" data-v="inbox">Site uploads <span id="job-n"></span></a>
+    <a href="#inspect" data-v="inspect">Site inspections</a>
     <a href="#requests" data-v="requests">Collection requests <span id="req-n"></span></a>
     <a href="#enquiries" data-v="enquiries">Website enquiries <span id="enq-n"></span></a>
     <a href="#documents" data-v="documents">Certificates &amp; documents</a>
@@ -178,7 +201,7 @@ label.tick{display:inline-flex;gap:8px;align-items:center;font-weight:600;cursor
 <script>
 const SITE=(window.HWS_CONFIG&&HWS_CONFIG.site)||{};
 
-const S={jobCards:[],sitePhotos:[],binWashes:[],documents:[],requests:[],customers:[],materials:[],entries:[],factors:null,enquiries:[],profiles:[],role:null,profile:null,user:null,readOnly:false,loading:true};
+const S={inspections:[],jobCards:[],sitePhotos:[],ashBins:[],documents:[],requests:[],customers:[],materials:[],entries:[],factors:null,enquiries:[],profiles:[],role:null,profile:null,user:null,readOnly:false,loading:true};
 let db=null;const isStaff=()=>S.role==='staff'||S.role==='admin';const isAdmin=()=>S.role==='admin';
 const DEF_F={paperCO2:3.66,plasticCO2:0.86,metalCO2:0.6173,landfillDensity:940.22,treesPerTonnePaper:17,waterPerKgPaper:26.5,energyPaper:4100,energyPlastic:5774,energyMetal:1400,carbonTax:{"2025":236,"2026":308},vatRate:15};
 const CATS={paper:'Paper & cardboard',plastic:'Plastics',metal:'Metals',other:'Other recyclables',organic:'Organic / food',landfill:'Landfill'};
@@ -233,7 +256,7 @@ function envMetrics(list){
 }
 
 // ---------- routing ----------
-const VIEWS={site:vSite,inbox:vInbox,documents:vDocuments,users:vUsers,enquiries:vEnquiries,portal:vPortal,requests:vRequests,dashboard:vDashboard,capture:vCapture,collections:vCollections,reports:vReports,customers:vCustomers,materials:vMaterials,settings:vSettings};
+const VIEWS={inspect:vInspect,site:vSite,inbox:vInbox,documents:vDocuments,users:vUsers,enquiries:vEnquiries,portal:vPortal,requests:vRequests,dashboard:vDashboard,capture:vCapture,collections:vCollections,reports:vReports,customers:vCustomers,materials:vMaterials,settings:vSettings};
 const STAFF_VIEWS=['documents','dashboard','capture','collections','reports','customers','materials','settings','requests','enquiries','users','portal'];
 function view(){if(S.role==='sorter')return 'site';if(!isStaff())return 'portal';const h=location.hash.replace('#','');if(!VIEWS[h])return 'dashboard';if((h==='users'||h==='settings')&&!isAdmin())return 'dashboard';return h}
 let lastView=null;
@@ -241,15 +264,15 @@ function render(force){
   const v=view();
   document.querySelectorAll('nav a').forEach(a=>a.classList.toggle('on',a.dataset.v===v));
   // don't wipe a form the user is typing in when live data arrives
-  if(!force&&lastView===v&&((v==='capture'&&document.querySelector('#cap'))||(v==='site'&&SA.step!=='home')||document.querySelector('.modal'))){return}
-  lastView=v;document.body.classList.toggle('portal',v==='portal');document.body.classList.toggle('siteapp',v==='site');const jn=S.jobCards.filter(j=>j.status==='submitted').length;const jq=document.getElementById('job-n');if(jq)jq.innerHTML=jn?`<span class="pill landfill">${jn}</span>`:'';document.body.classList.toggle('cust',!isStaff());const en=S.enquiries.filter(r=>r.status==='new').length;const eq=document.getElementById('enq-n');if(eq)eq.innerHTML=en?`<span class="pill landfill">${en}</span>`:'';const rn=S.requests.filter(r=>r.status==='new').length;const rq=document.getElementById('req-n');if(rq)rq.innerHTML=rn?`<span class="pill landfill">${rn}</span>`:'';
+  if(!force&&lastView===v&&((v==='capture'&&document.querySelector('#cap'))||(v==='site'&&SA.step!=='home')||(v==='inspect'&&IV.mode==='edit')||document.querySelector('.modal'))){return}
+  lastView=v;document.body.classList.toggle('portal',v==='portal');document.body.classList.toggle('siteapp',v==='site');document.body.classList.toggle('focus',v==='inspect'&&IV.mode==='edit');const jn=S.jobCards.filter(j=>j.status==='submitted').length;const jq=document.getElementById('job-n');if(jq)jq.innerHTML=jn?`<span class="pill landfill">${jn}</span>`:'';document.body.classList.toggle('cust',!isStaff());const en=S.enquiries.filter(r=>r.status==='new').length;const eq=document.getElementById('enq-n');if(eq)eq.innerHTML=en?`<span class="pill landfill">${en}</span>`:'';const rn=S.requests.filter(r=>r.status==='new').length;const rq=document.getElementById('req-n');if(rq)rq.innerHTML=rn?`<span class="pill landfill">${rn}</span>`:'';
   const m=$('#main');let pre='';
   if(S.loadError)pre='<div class="banner e">Could not load data: '+esc(S.loadError)+'. Check your connection and refresh.</div>';
   else if(S.loading)pre='<div class="banner w">Loading…</div>';
   m.innerHTML=pre+VIEWS[v]();
   (AFTER[v]||(()=>{}))();
 }
-window.addEventListener('hashchange',()=>render(true));
+window.addEventListener('hashchange',()=>{if(location.hash==='#inspect'&&IV.mode!=='edit')IV={mode:'list',open:{}};render(true)});
 const AFTER={};
 
 // ---------- Dashboard ----------
@@ -607,9 +630,9 @@ function vPortal(){
     <a class="btn sm right" href="#dashboard">← Back to back office</a></div>`;
   const head=`<div class="pv-head"><div class="pv-logo">H</div><div><div style="font-weight:700;font-size:17px">Harambee Waste Management Solutions</div><div class="muted">Client portal · ${esc(c.name)}</div></div>
     <label class="f right">Period<select id="pv-r">${[['3','Last 3 months'],['6','Last 6 months'],['12','Last 12 months'],['ytd','This year'],['all','All time']].map(([v,l])=>`<option value="${v}" ${PV.range===v?'selected':''}>${l}</option>`).join('')}</select></label></div>`;
-  const tabs=`<div class="pv-tabs">${[['overview','Overview'],['site','Site updates'],['impact','Environmental impact'],['statements','Monthly statements'],['history','Collection history'],['certs','Certificates'],['request','Request a collection']].map(([k,l])=>`<button data-pt="${k}" class="${PV.tab===k?'on':''}">${l}</button>`).join('')}</div>`;
+  const tabs=`<div class="pv-tabs">${[['overview','Overview'],['site','Site updates'],['impact','Environmental impact'],['statements','Monthly statements'],['history','Collection history'],['insp','Site inspections'],['certs','Certificates'],['request','Request a collection']].map(([k,l])=>`<button data-pt="${k}" class="${PV.tab===k?'on':''}">${l}</button>`).join('')}</div>`;
   let body='';
-  if(!list.length&&PV.tab!=='request'&&PV.tab!=='certs'&&PV.tab!=='site')body='<div class="card"><p class="muted">No collections recorded for this period yet.</p></div>';
+  if(!list.length&&PV.tab!=='request'&&PV.tab!=='certs'&&PV.tab!=='site'&&PV.tab!=='insp')body='<div class="card"><p class="muted">No collections recorded for this period yet.</p></div>';
   else if(PV.tab==='overview'){
     const byMat={};list.filter(isRecycled).forEach(e=>{byMat[e.materialName]=(byMat[e.materialName]||0)+num(e.kg)});
     const top=Object.entries(byMat).sort((a,b)=>b[1]-a[1]);const mx=top.length?top[0][1]:1;
@@ -621,7 +644,7 @@ function vPortal(){
       <div class="kpi"><div class="l">Total waste collected</div><div class="v">${kg(s.gen)}</div></div>
       <div class="kpi"><div class="l">Recycled</div><div class="v">${kg(s.rec)}</div></div>
       <div class="kpi"><div class="l">Sent to landfill</div><div class="v">${kg(s.land)}</div><div class="s">${nf0.format(s.skips)} skips</div></div>
-      <div class="kpi"><div class="l">Recycling rebates earned</div><div class="v">${R(s.rebate)}</div><div class="s">excl. VAT</div></div>${(()=>{const b=S.binWashes.filter(w=>w.customerId===PV.cust&&String(w.date).slice(0,7)>=from&&String(w.date).slice(0,7)<=to).reduce((a,w)=>a+(w.bins||0),0);return b?`<div class="kpi"><div class="l">Bins washed</div><div class="v">${nf0.format(b)}</div><div class="s">this period</div></div>`:''})()}</div>
+      <div class="kpi"><div class="l">Recycling rebates earned</div><div class="v">${R(s.rebate)}</div><div class="s">excl. VAT</div></div>${(()=>{const b=S.ashBins.filter(w=>w.customerId===PV.cust&&String(w.date).slice(0,7)>=from&&String(w.date).slice(0,7)<=to).reduce((a,w)=>a+(w.bins||0),0);return b?`<div class="kpi"><div class="l">Ash bins removed</div><div class="v">${nf0.format(b)}</div><div class="s">this period</div></div>`:''})()}</div>
     ${(()=>{const ps=S.sitePhotos.filter(p=>p.customerId===PV.cust&&p.visible).sort((a,b)=>String(b.takenOn).localeCompare(String(a.takenOn))||String(b.createdAt).localeCompare(String(a.createdAt))).slice(0,4);return ps.length?`<div class="card"><div class="row" style="margin-bottom:10px"><h2 style="margin:0">Latest from your site</h2><button class="btn sm right" data-pt="site">See all site updates →</button></div><div class="strip">${ps.map(p=>thumb(p.filePath,(p.tag||'')+(p.caption?' · '+p.caption:'')+' · '+fmtD(p.takenOn),'')).join('')}</div></div>`:''})()}
     <div class="card"><h2>Recycled vs landfill by month</h2><div class="legend"><span><i style="background:var(--rec)"></i>Recycled</span><span><i style="background:var(--land)"></i>Landfill</span></div><div class="chart" id="pv-chart"></div></div>
     <div class="card"><h2>What we recycled for you</h2>${shown.map(([n,v])=>`<div class="hbar"><span>${esc(n)}</span><span class="t"><i style="width:${(v/mx*100).toFixed(1)}%;background:var(--rec)"></i></span><span style="text-align:right">${kg(v)}</span></div>`).join('')}</div>`;
@@ -645,6 +668,9 @@ function vPortal(){
     ${rows.map(e=>`<tr><td>${esc(e.date)}</td><td>${esc(e.site)}</td><td>${esc(e.materialName)}</td><td>${esc(e.method)}</td><td class="n">${kg(e.kg)}</td><td class="n">${e.category==='landfill'&&e.units?nf0.format(e.units):''}</td><td class="n">${e.rebate?R(e.rebate):''}</td></tr>`).join('')}</tbody></table></div></div>`;
   }else if(PV.tab==='site'){
     body=siteUpdatesCard(PV.cust,from,to);
+  }else if(PV.tab==='insp'){
+    const xs=S.inspections.filter(i=>i.customerId===PV.cust&&i.status==='completed'&&(i.visible||!isStaff())).sort((a,b)=>String(b.date).localeCompare(String(a.date)));const cur=xs.find(i=>i.id===PV.insp);
+    body=cur?`<div class="row" style="margin-bottom:12px"><button class="btn" id="pi-back">← All inspections</button><button class="btn p right" id="pi-pdf">Download PDF</button></div>`+inspReport(cur):`<div class="card"><h2>Site inspections</h2><p class="muted" style="margin-top:-6px">Regular inspections of your site by Harambee management.</p>${xs.length?`<table><thead><tr><th>Date</th><th>Inspector</th><th class="n">Score</th><th>Findings</th><th></th></tr></thead><tbody>${xs.map(i=>{const sc=inspScore(i.answers||{});return `<tr><td>${fmtD(i.date)}</td><td>${esc(i.inspectorName)}</td><td class="n"><span class="score ${gradeCls(sc)}">${pct(sc.pct)}</span></td><td>${sc.attn+sc.bad?sc.attn+sc.bad+' to action':'None'}</td><td><button class="btn sm p" data-pi="${esc(i.id)}">Open report</button></td></tr>`}).join('')}</tbody></table>`:'<p class="muted">Inspection reports will appear here.</p>'}</div>`;
   }else if(PV.tab==='certs'){
     body=docsListCard(docsFor(PV.cust),false);
   }else if(PV.tab==='request'){
@@ -676,6 +702,9 @@ AFTER.portal=()=>{
     <p class="muted" style="font-size:12px">Rebate incl. VAT: ${R(x.rebate*(1+F().vatRate/100))} · CO₂e avoided: ${nf0.format(ev.co2)} kg · Landfill space saved: ${nf1.format(ev.space)} m³</p></div>`;$('#stm').querySelector('[data-pdf]').onclick=()=>statementPDF(PV.cust,m,l);$('#stm').scrollIntoView({behavior:'smooth'})});
   document.querySelectorAll('[data-pdf]').forEach(b=>b.onclick=()=>statementPDF(PV.cust,b.dataset.pdf,list.filter(e=>e.month===b.dataset.pdf)));
   bindDocButtons();fillThumbs();
+  document.querySelectorAll('[data-pi]').forEach(b=>b.onclick=()=>{PV.insp=b.dataset.pi;render(true);scrollTo(0,0)});
+  if($('#pi-back'))$('#pi-back').onclick=()=>{PV.insp=null;render(true)};
+  if($('#pi-pdf'))$('#pi-pdf').onclick=()=>inspPDF(S.inspections.find(i=>i.id===PV.insp));
   if($('#rq-send'))$('#rq-send').onclick=async()=>{const d={customerId:PV.cust,customerName:custById(PV.cust).name,date:$('#rq-date').value,site:$('#rq-site').value.trim(),what:$('#rq-what').value.trim(),contact:$('#rq-name').value.trim(),phone:$('#rq-tel').value.trim(),notes:$('#rq-notes').value.trim(),status:'new'};if(!d.date)d.date=null;
     if(!d.what){toast('Say what needs collecting');return}
     try{await DB.insert('requests',d);toast('Request sent. Harambee will confirm the date.');render(true)}catch(e){dbErr(e)}};
@@ -789,7 +818,7 @@ async function statementPDF(custId,month,list){
   doc.setFontSize(10);doc.setFont('helvetica','bold');doc.text('Rebate summary',M,y);doc.text('Environmental impact (estimated)',M+95,y);doc.setFont('helvetica','normal');doc.setFontSize(9.5);
   const rb=[['Rebate excl. VAT',pR(x.rebate)],[`VAT (${vat}%)`,pR(x.rebate*vat/100)],['Rebate incl. VAT',pR(x.rebate*(1+vat/100))]];
   const en=[['CO2e emissions avoided',pn(nf1.format(ev.co2/1000))+' t'],['Landfill space saved',pn(nf1.format(ev.space))+' m³'],['Carbon tax equivalent',pR(ev.tax)],['Trees saved',pn(nf0.format(ev.trees))],['Water saved',pn(nf0.format(ev.water))+' L'],['Energy saved',pn(nf0.format(ev.energy))+' kWh']];
-  const bwN=S.binWashes.filter(w=>w.customerId===custId&&String(w.date).slice(0,7)===month).reduce((a,w)=>a+(w.bins||0),0);if(bwN)rb.push(['',''],['Bins washed this month',pn(nf0.format(bwN))]);
+  const bwN=S.ashBins.filter(w=>w.customerId===custId&&String(w.date).slice(0,7)===month).reduce((a,w)=>a+(w.bins||0),0);if(bwN)rb.push(['',''],['Ash bins removed this month',pn(nf0.format(bwN))]);
   rb.forEach(([l,v],i)=>{const yy=y+6+i*5.5;doc.text(l,M,yy);doc.text(v,M+80,yy,{align:'right'})});
   en.forEach(([l,v],i)=>{const yy=y+6+i*5.5;doc.text(l,M+95,yy);doc.text(v,W-M,yy,{align:'right'})});
   y+=6+6*5.5+6;
@@ -813,7 +842,7 @@ async function fetchAll(table,order){
   for(;;){let q=db.from(table).select('*').range(from,from+size-1);if(order)q=q.order(order);const {data,error}=await q;if(error)throw error;out.push(...data);if(data.length<size)break;from+=size}
   return out.map(fromRow);
 }
-const TABLE_KEY={job_cards:'jobCards',site_photos:'sitePhotos',bin_washes:'binWashes',documents:'documents',entries:'entries',customers:'customers',materials:'materials',requests:'requests',enquiries:'enquiries',profiles:'profiles',settings:'settings'};
+const TABLE_KEY={inspections:'inspections',job_cards:'jobCards',site_photos:'sitePhotos',ash_bins:'ashBins',documents:'documents',entries:'entries',customers:'customers',materials:'materials',requests:'requests',enquiries:'enquiries',profiles:'profiles',settings:'settings'};
 const DB={
   async insert(t,v){const rows=(Array.isArray(v)?v:[v]).map(toRow);const {error}=await db.from(t).insert(rows);if(error)throw error;await reload(t)},
   async update(t,id,v){const {error}=await db.from(t).update(toRow(v)).eq('id',id);if(error)throw error;await reload(t)},
@@ -833,7 +862,7 @@ async function reload(t){
 }
 async function loadAll(){
   S.loading=true;S.loadError=null;render(true);
-  await Promise.all((S.role==='sorter'?['customers','requests','job_cards','site_photos','bin_washes']:['customers','materials','settings','requests','entries','enquiries','profiles','documents','job_cards','site_photos','bin_washes']).map(reload));
+  await Promise.all((S.role==='sorter'?['customers','requests','job_cards','site_photos','ash_bins']:['customers','materials','settings','requests','entries','enquiries','profiles','documents','job_cards','site_photos','ash_bins','inspections']).map(reload));
   S.loading=false;render(true);
 }
 function dbErr(e,extra){
@@ -853,7 +882,7 @@ function vUsers(){
     <td><select data-k="customerId"><option value="">–</option>${S.customers.map(c=>`<option value="${esc(c.id)}" ${p.customerId===c.id?'selected':''}>${esc(c.name)}</option>`).join('')}</select></td>
     <td><button class="btn sm p" data-save>Save</button></td></tr>`).join('')||'<tr><td colspan="5" class="muted">No users yet.</td></tr>'}
   </tbody></table></div></div>
-  <div class="card"><h2>What each role can do</h2><table><tbody><tr><td><b>Site sorter</b></td><td>Only the simple phone app for their one site: send job card and load photos, book collections, log bins washed, send site photos. Sees no weights, rates or other clients.</td></tr><tr><td><b>Management (staff)</b></td><td>Captures weights, checks and ticks off job cards, publishes site photos, manages clients, requests, enquiries and certificates. Cannot change rates, report factors or user access.</td></tr><tr><td><b>Admin</b></td><td>Everything, including rates, report factors, users and deleting records.</td></tr><tr><td><b>Client</b></td><td>Their own company's portal only.</td></tr></tbody></table></div>`;
+  <div class="card"><h2>What each role can do</h2><table><tbody><tr><td><b>Site sorter</b></td><td>Only the simple phone app for their one site: send job card and load photos, book collections, log ash bins, send site photos. Sees no weights, rates or other clients.</td></tr><tr><td><b>Management (staff)</b></td><td>Captures weights, does site inspections, checks and ticks off job cards, publishes site photos, manages clients, requests, enquiries and certificates. Cannot change rates, report factors or user access.</td></tr><tr><td><b>Admin</b></td><td>Everything, including rates, report factors, users and deleting records.</td></tr><tr><td><b>Client</b></td><td>Their own company's portal only.</td></tr></tbody></table></div>`;
 }
 AFTER.users=()=>document.querySelectorAll('[data-pid] [data-save]').forEach(b=>b.onclick=async()=>{
   const tr=b.closest('tr');const id=tr.dataset.pid;const d={fullName:tr.querySelector('[data-k=fullName]').value.trim(),customerId:tr.querySelector('[data-k=customerId]').value||null};
@@ -878,6 +907,7 @@ AFTER.enquiries=()=>document.querySelectorAll('[data-es]').forEach(s=>s.onchange
 const MEDIA='site-media';
 const isSorter=()=>S.role==='sorter';
 const LOAD_TYPES=['General waste','Cardboard','Plastic','Mixed recycling','Food / organic','Scrap metal','Glass','Other'];
+const ASH_SIZES=['240 L wheelie bin','770 L bin','1 100 L bin','Skip','Other'];
 const PHOTO_TAGS=['Site overview','Sorting area','Bins & skips','Before','After','Problem'];
 const URLS={};
 async function compressImage(file,max=1600,q=0.72){
@@ -925,7 +955,7 @@ function vSite(){
     const t=today();
     const mine=[...S.jobCards.filter(j=>j.customerId===cid&&String(j.createdAt||'').slice(0,10)>=addDays(t,-6)).map(j=>({t:j.createdAt,l:'Load: '+(j.what||'')+(j.loads?' ×'+nf0.format(j.loads):''),s:j.status})),
       ...S.requests.filter(r=>r.customerId===cid&&r.source==='site'&&String(r.createdAt||'').slice(0,10)>=addDays(t,-6)).map(r=>({t:r.createdAt,l:'Booking: '+r.what,s:'b-'+r.status})),
-      ...S.binWashes.filter(w=>w.customerId===cid&&w.date>=addDays(t,-6)).map(w=>({t:w.createdAt,l:'Bins washed: '+w.bins,s:'ok'})),
+      ...S.ashBins.filter(w=>w.customerId===cid&&w.date>=addDays(t,-6)).map(w=>({t:w.createdAt,l:'Ash bins: '+w.bins+(w.binSize?' × '+w.binSize:''),s:'ok'})),
       ...S.sitePhotos.filter(p=>p.customerId===cid&&p.takenOn>=addDays(t,-6)).map(p=>({t:p.createdAt,l:'Photo: '+(p.tag||''),s:'ok'}))].sort((a,b)=>String(b.t).localeCompare(String(a.t)));
     const lab={submitted:'⏳ With office',captured:'✅ Done',query:'❓ Office has a question',ok:'✅ Sent','b-new':'⏳ Sent','b-scheduled':'🚛 Booked','b-done':'✅ Collected','b-cancelled':'✖ Cancelled'};
     const q=S.jobCards.filter(j=>j.customerId===cid&&j.status==='query');
@@ -933,7 +963,7 @@ function vSite(){
       ${q.map(j=>`<div class="sa-alert">❓ <b>Office question</b> about ${esc(j.what)} (${esc(j.date)}): ${esc(j.queryNote||'please call the office')}</div>`).join('')}
       <button class="sa-big" data-go="load"><span class="ic">📷</span><span><b>Load leaving site</b><small>Photo of the job card and the load</small></span></button>
       <button class="sa-big" data-go="book"><span class="ic">🚛</span><span><b>Book a collection</b><small>Skip full? Ask for a truck</small></span></button>
-      <button class="sa-big" data-go="wash"><span class="ic">🧽</span><span><b>Bins washed</b><small>How many bins you washed today</small></span></button>
+      <button class="sa-big" data-go="wash"><span class="ic">🔥</span><span><b>Ash bins</b><small>Ash bins from the powder plant</small></span></button>
       <button class="sa-big" data-go="photo"><span class="ic">🖼️</span><span><b>Site photo</b><small>Daily picture of the site</small></span></button>
       <div class="sa-card"><h2>Sent this week</h2>${mine.length?mine.slice(0,15).map(x=>`<div class="sa-li"><span>${esc(x.l)}<small>${fmtDT(x.t)}</small></span><span class="sa-st">${lab[x.s]||''}</span></div>`).join(''):'<p class="muted">Nothing sent yet this week.</p>'}</div></div>`;
   }
@@ -951,7 +981,7 @@ function vSite(){
   else if(st==='book')body=`<h2>Book a collection</h2><div class="sa-q">1. What must we collect?</div>${chips('what',['Skip full',...LOAD_TYPES],true)}
     <div class="sa-q">2. When?</div>${chips('when',['Today','Tomorrow','Other day'],false)}${f.when==='Other day'?`<input class="sa-in" type="date" id="sa-date" min="${today()}" value="${esc(f.date||'')}">`:''}
     <div class="sa-q">Notes <span class="muted">(optional)</span></div><textarea class="sa-in" id="sa-notes" rows="2">${esc(f.notes||'')}</textarea>${send('Book it')}`;
-  else if(st==='wash')body=`<h2>Bins washed</h2>${stepper('bins','1. How many bins did you wash?')}${shots('pics','2. Photo of the clean bins (optional)',4)}
+  else if(st==='wash')body=`<h2>Ash bins</h2>${stepper('bins','1. How many ash bins went out?')}<div class="sa-q">2. What size bins?</div>${chips('size',ASH_SIZES,false)}${shots('pics','3. Photo of the ash bins',4)}
     <div class="sa-q">Notes <span class="muted">(optional)</span></div><textarea class="sa-in" id="sa-notes" rows="2">${esc(f.notes||'')}</textarea>${send('Send')}`;
   else if(st==='photo')body=`<h2>Site photo</h2>${shots('pics','1. Take the photo',6)}<div class="sa-q">2. What is it?</div>${chips('tag',PHOTO_TAGS,false)}
     <div class="sa-q">Short note <span class="muted">(optional)</span></div><input class="sa-in" id="sa-cap" value="${esc(f.caption||'')}" placeholder="e.g. Sorting area clean after shift">${send('Send photo')}`;
@@ -964,7 +994,7 @@ function saKeep(){const g=id=>{const e=document.getElementById(id);return e?e.va
 AFTER.site=()=>{
   const sc=$('#sa-c');if(sc)sc.onchange=()=>{SA.cust=sc.value;render(true)};
   document.querySelectorAll('[data-go]').forEach(b=>b.onclick=()=>{const g=b.dataset.go;SA.step=g;
-    SA.f=g==='load'?{loads:1,what:[]}:g==='book'?{what:[],when:'Today'}:g==='wash'?{bins:0}:g==='photo'?{tag:'Site overview'}:{};render(true);scrollTo(0,0)});
+    SA.f=g==='load'?{loads:1,what:[]}:g==='book'?{what:[],when:'Today'}:g==='wash'?{bins:1,size:ASH_SIZES[0]}:g==='photo'?{tag:'Site overview'}:{};render(true);scrollTo(0,0)});
   document.querySelectorAll('[data-shot]').forEach(inp=>inp.onchange=()=>{saKeep();const k=inp.dataset.shot;SA.f[k]=SA.f[k]||[];for(const file of inp.files)SA.f[k].push({file,url:URL.createObjectURL(file)});render(true)});
   document.querySelectorAll('[data-rm]').forEach(b=>b.onclick=()=>{saKeep();const[k,i]=b.dataset.rm.split(':');SA.f[k].splice(+i,1);render(true)});
   document.querySelectorAll('[data-chip]').forEach(b=>b.onclick=()=>{saKeep();const k=b.dataset.chip,v=b.dataset.val;
@@ -976,7 +1006,7 @@ AFTER.site=()=>{
     if(st==='load'){if(!(f.card||[]).length){toast('Take a photo of the job card first');return}if(!f.what.length){toast('Choose what is on the truck');return}}
     if(st==='book'&&!f.what.length){toast('Choose what must be collected');return}
     if(st==='book'&&f.when==='Other day'&&!f.date){toast('Pick the day');return}
-    if(st==='wash'&&!f.bins){toast('How many bins? Tap +');return}
+    if(st==='wash'&&!f.bins){toast('How many ash bins? Tap +');return}
     if(st==='photo'&&!(f.pics||[]).length){toast('Take the photo first');return}
     go.disabled=true;go.textContent='Sending…';
     try{
@@ -991,9 +1021,9 @@ AFTER.site=()=>{
         await DB.insert('requests',{customerId:cid,customerName:c.name,date:d,site,what:f.what.join(', '),contact:myName(),notes:(f.notes||'').trim(),status:'new',source:'site'});
         SA.doneMsg='The office will arrange the truck.';
       }else if(st==='wash'){
-        const pics=await up(f.pics,'wash');prog('Saving…');
-        await DB.insert('bin_washes',{customerId:cid,site,date:today(),bins:f.bins,notes:(f.notes||'').trim(),photos:pics.map(p=>({path:p})),createdByName:myName()});
-        SA.doneMsg=`${f.bins} bins recorded.`;
+        const pics=await up(f.pics,'ash');prog('Saving…');
+        await DB.insert('ash_bins',{customerId:cid,site,date:today(),bins:f.bins,binSize:f.size||'',notes:(f.notes||'').trim(),photos:pics.map(p=>({path:p})),createdByName:myName()});
+        SA.doneMsg=`${f.bins} ash bin${f.bins>1?'s':''} recorded.`;
       }else if(st==='photo'){
         const pics=await up(f.pics,'site');prog('Saving…');
         await DB.insert('site_photos',pics.map(p=>({customerId:cid,takenOn:today(),tag:f.tag||'',caption:(f.caption||'').trim(),filePath:p,visible:false,createdByName:myName()})));
@@ -1009,7 +1039,7 @@ let IB={tab:'jobs',show:'open'};
 let CAPJOB=null;
 function vInbox(){
   const open=S.jobCards.filter(j=>j.status!=='captured').length;const hidden=S.sitePhotos.filter(p=>!p.visible).length;
-  const tabs=`<div class="pv-tabs">${[['jobs',`Job cards${open?` <span class="pill landfill">${open}</span>`:''}`],['photos',`Site photos${hidden?` <span class="pill">${hidden} to check</span>`:''}`],['washes','Bin washing']].map(([k,l])=>`<button data-ib="${k}" class="${IB.tab===k?'on':''}">${l}</button>`).join('')}</div>`;
+  const tabs=`<div class="pv-tabs">${[['jobs',`Job cards${open?` <span class="pill landfill">${open}</span>`:''}`],['photos',`Site photos${hidden?` <span class="pill">${hidden} to check</span>`:''}`],['washes','Ash bins']].map(([k,l])=>`<button data-ib="${k}" class="${IB.tab===k?'on':''}">${l}</button>`).join('')}</div>`;
   let body='';
   if(IB.tab==='jobs'){
     const js=S.jobCards.filter(j=>IB.show==='all'||j.status!=='captured').sort((a,b)=>(a.status==='captured'?1:0)-(b.status==='captured'?1:0)||String(b.createdAt).localeCompare(String(a.createdAt)));
@@ -1035,12 +1065,12 @@ function vInbox(){
         <div class="ph-m"><b>${esc(custById(p.customerId)?.name||'')}</b> · ${esc(p.tag)}${p.caption?`<br>${esc(p.caption)}`:''}<br><span class="muted">${esc(p.createdByName)}</span></div>
         <div class="row" style="padding:0 10px 10px;align-items:center"><label class="tick"><input type="checkbox" data-pvis="${esc(p.id)}" ${p.visible?'checked':''}> Show to client</label><button class="btn sm d right" data-pdel="${esc(p.id)}">Delete</button></div></div>`).join('')}</div>`).join(''):'<div class="card"><p class="muted">No site photos yet.</p></div>'}`;
   }else{
-    const ws=[...S.binWashes].sort((a,b)=>String(b.date).localeCompare(String(a.date)));
+    const ws=[...S.ashBins].sort((a,b)=>String(b.date).localeCompare(String(a.date)));
     const m=today().slice(0,7);const tot=ws.filter(w=>String(w.date).slice(0,7)===m).reduce((a,w)=>a+(w.bins||0),0);
-    body=`<div class="grid kpis" style="margin-bottom:16px"><div class="kpi"><div class="l">Bins washed this month</div><div class="v">${nf0.format(tot)}</div></div></div>
-    <div class="card">${ws.length?`<div class="tbl-wrap"><table><thead><tr><th>Date</th><th>Client</th><th class="n">Bins</th><th>Photos</th><th>Notes</th><th>By</th><th></th></tr></thead><tbody>${ws.map(w=>`<tr><td>${esc(w.date)}</td><td>${esc(custById(w.customerId)?.name||'')}</td><td class="n">${nf0.format(w.bins)}</td><td>${(w.photos||[]).map(p=>thumb(p.path,'Bins washed '+w.date,'th sm')).join('')}</td><td>${esc(w.notes)}</td><td>${esc(w.createdByName)}</td><td>${isAdmin()?`<button class="btn sm d" data-wdel="${esc(w.id)}">Delete</button>`:''}</td></tr>`).join('')}</tbody></table></div>`:'<p class="muted">No bin washes logged yet. Sorters log them in the site app.</p>'}</div>`;
+    body=`<div class="grid kpis" style="margin-bottom:16px"><div class="kpi"><div class="l">Ash bins removed this month</div><div class="v">${nf0.format(tot)}</div></div></div>
+    <div class="card">${ws.length?`<div class="tbl-wrap"><table><thead><tr><th>Date</th><th>Client</th><th class="n">Ash bins</th><th>Bin size</th><th>Photos</th><th>Notes</th><th>By</th><th></th></tr></thead><tbody>${ws.map(w=>`<tr><td>${esc(w.date)}</td><td>${esc(custById(w.customerId)?.name||'')}</td><td class="n">${nf0.format(w.bins)}</td><td>${esc(w.binSize)}</td><td>${(w.photos||[]).map(p=>thumb(p.path,'Ash bins '+w.date,'th sm')).join('')}</td><td>${esc(w.notes)}</td><td>${esc(w.createdByName)}</td><td>${isAdmin()?`<button class="btn sm d" data-wdel="${esc(w.id)}">Delete</button>`:''}</td></tr>`).join('')}</tbody></table></div>`:'<p class="muted">No ash bins logged yet. Sorters log them in the site app.</p>'}</div>`;
   }
-  return `<h1>Site uploads</h1><p class="lead">Job cards, photos and bin washing sent from client sites by the sorters.</p>${tabs}${body}`;
+  return `<h1>Site uploads</h1><p class="lead">Job cards, photos and ash bins sent from client sites by the sorters.</p>${tabs}${body}`;
 }
 AFTER.inbox=()=>{
   document.querySelectorAll('[data-ib]').forEach(b=>b.onclick=()=>{IB.tab=b.dataset.ib;render(true)});
@@ -1053,7 +1083,7 @@ AFTER.inbox=()=>{
   document.querySelectorAll('[data-pvis]').forEach(cb=>cb.onchange=async()=>{try{await DB.update('site_photos',cb.dataset.pvis,{visible:cb.checked});toast(cb.checked?'Client can see this photo':'Hidden from client')}catch(e){dbErr(e);cb.checked=!cb.checked}});
   const pa=$('#ph-all');if(pa)pa.onclick=async()=>{try{await DB.updateWhere('site_photos',{visible:false},{visible:true});toast('Photos published to clients')}catch(e){dbErr(e)}};
   document.querySelectorAll('[data-pdel]').forEach(b=>b.onclick=()=>confirmBox('Delete this photo?',async()=>{const p=S.sitePhotos.find(x=>x.id===b.dataset.pdel);try{await db.storage.from(MEDIA).remove([p.filePath]);await DB.del('site_photos',p.id);toast('Deleted')}catch(e){dbErr(e)}}));
-  document.querySelectorAll('[data-wdel]').forEach(b=>b.onclick=()=>confirmBox('Delete this bin wash entry?',async()=>{const w=S.binWashes.find(x=>x.id===b.dataset.wdel);try{if((w.photos||[]).length)await db.storage.from(MEDIA).remove(w.photos.map(p=>p.path));await DB.del('bin_washes',w.id);toast('Deleted')}catch(e){dbErr(e)}}));
+  document.querySelectorAll('[data-wdel]').forEach(b=>b.onclick=()=>confirmBox('Delete this ash bin entry?',async()=>{const w=S.ashBins.find(x=>x.id===b.dataset.wdel);try{if((w.photos||[]).length)await db.storage.from(MEDIA).remove(w.photos.map(p=>p.path));await DB.del('ash_bins',w.id);toast('Deleted')}catch(e){dbErr(e)}}));
   fillThumbs();
 };
 
@@ -1061,15 +1091,250 @@ AFTER.inbox=()=>{
 function siteUpdatesCard(cid,from,to){
   const tm=today().slice(0,7);if(to<tm)to=tm;
   const ps=S.sitePhotos.filter(p=>p.customerId===cid&&p.visible&&String(p.takenOn).slice(0,7)>=from&&String(p.takenOn).slice(0,7)<=to).sort((a,b)=>String(b.takenOn).localeCompare(String(a.takenOn))||String(b.createdAt).localeCompare(String(a.createdAt)));
-  const ws=S.binWashes.filter(w=>w.customerId===cid&&String(w.date).slice(0,7)>=from&&String(w.date).slice(0,7)<=to).sort((a,b)=>String(b.date).localeCompare(String(a.date)));
+  const ws=S.ashBins.filter(w=>w.customerId===cid&&String(w.date).slice(0,7)>=from&&String(w.date).slice(0,7)<=to).sort((a,b)=>String(b.date).localeCompare(String(a.date)));
   const bins=ws.reduce((a,w)=>a+(w.bins||0),0);
   const byDay={};ps.forEach(p=>{(byDay[p.takenOn]=byDay[p.takenOn]||[]).push(p)});
   return `<div class="grid kpis" style="margin-bottom:18px">
       <div class="kpi"><div class="l">Site photos</div><div class="v">${nf0.format(ps.length)}</div><div class="s">${Object.keys(byDay).length} day(s) documented</div></div>
-      <div class="kpi"><div class="l">Bins washed</div><div class="v">${nf0.format(bins)}</div><div class="s">${ws.length} wash day(s)</div></div>
+      <div class="kpi"><div class="l">Ash bins removed</div><div class="v">${nf0.format(bins)}</div><div class="s">${ws.length} collection day(s)</div></div>
       <div class="kpi"><div class="l">Latest update</div><div class="v" style="font-size:18px">${ps[0]?fmtD(ps[0].takenOn):'–'}</div></div></div>
     <div class="card"><h2>Photos from your site</h2>${Object.keys(byDay).length?Object.entries(byDay).map(([d,l])=>`<div class="feed-day">${fmtD(d)}</div><div class="ph-grid">${l.map(p=>`<div class="ph"><div class="ph-img">${thumb(p.filePath,(p.tag||'')+(p.caption?' · '+p.caption:'')+' · '+fmtD(d),'')}</div><div class="ph-m"><b>${esc(p.tag)}</b>${p.caption?` · ${esc(p.caption)}`:''}</div></div>`).join('')}</div>`).join(''):'<p class="muted">Photos of your site will appear here as our team shares them.</p>'}</div>
-    ${ws.length?`<div class="card"><h2>Bin washing</h2><div class="tbl-wrap"><table><thead><tr><th>Date</th><th class="n">Bins washed</th><th>Photos</th></tr></thead><tbody>${ws.map(w=>`<tr><td>${fmtD(w.date)}</td><td class="n">${nf0.format(w.bins)}</td><td>${(w.photos||[]).map(p=>thumb(p.path,'Bins washed · '+fmtD(w.date),'th sm')).join('')}</td></tr>`).join('')}<tr class="tot"><td>Total</td><td class="n">${nf0.format(bins)}</td><td></td></tr></tbody></table></div></div>`:''}`;
+    ${ws.length?`<div class="card"><h2>Ash bins removed (powder plant)</h2><div class="tbl-wrap"><table><thead><tr><th>Date</th><th class="n">Ash bins</th><th>Bin size</th><th>Photos</th></tr></thead><tbody>${ws.map(w=>`<tr><td>${fmtD(w.date)}</td><td class="n">${nf0.format(w.bins)}</td><td>${esc(w.binSize)}</td><td>${(w.photos||[]).map(p=>thumb(p.path,'Ash bins · '+fmtD(w.date),'th sm')).join('')}</td></tr>`).join('')}<tr class="tot"><td>Total</td><td class="n">${nf0.format(bins)}</td><td></td><td></td></tr></tbody></table></div></div>`:''}`;
+}
+
+
+// ---------- Site inspections ----------
+// [key, label, critical]  critical = an "Unacceptable" here is flagged as a critical issue
+const CHECKLIST=[
+ {k:'arr',t:'Arrival & general housekeeping',items:[
+  ['arr1','Site access and entrance clear of waste'],['arr2','Waste area signage in place and readable'],['arr3','General cleanliness of the waste area'],
+  ['arr4','No litter or windblown waste around bins, skips and fences'],['arr5','No bad odours'],['arr6','No signs of pests or vermin (rats, flies, birds)',1],
+  ['arr7','No standing water or leachate'],['arr8','Area well lit and secure (fenced, lockable)']]},
+ {k:'sto',t:'Waste storage area, bins & skips',items:[
+  ['sto1','Enough bins and skips for the volumes produced'],['sto2','Bins and skips in good condition (no holes, wheels and lids working)'],
+  ['sto3','Lids closed and bins not overfilled'],['sto4','Bins labelled and colour-coded per waste stream'],['sto5','Skips not overfilled (safe to transport)'],
+  ['sto6','Storage on hard, sealed surface with drainage'],['sto7','Recyclables kept dry and under cover'],['sto8','Bins and skips placed for safe truck access']]},
+ {k:'sep',t:'Separation at source & sorting',items:[
+  ['sep1','Cardboard and paper clean and separated'],['sep2','Plastics separated by type (LD, HD, PET, PP)'],['sep3','Metals and cans separated'],
+  ['sep4','Glass separated'],['sep5','Organic / food waste separated'],['sep6','General waste free of recyclables'],
+  ['sep7','Recycling streams free of contamination'],['sep8','Sorting area clean and organised'],['sep9','Sorted material stacked safely and labelled']]},
+ {k:'equ',t:'Equipment',items:[
+  ['equ1','Baler working, guards and emergency stop functional',1],['equ2','Bales correctly sized, strapped and stacked safely'],['equ3','Compactor working and clean'],
+  ['equ4','Scale working and recently calibrated'],['equ5','Trolleys, cages and handling equipment in good order'],['equ6','Equipment cleaned at end of shift']]},
+ {k:'ash',t:'Ash bins (powder plant)',items:[
+  ['ash1','Ash fully cooled before it goes into the bins (no hot ash or embers)',1],['ash2','Ash bins in good condition and not overfilled'],
+  ['ash3','Lids or covers used to stop dust blowing'],['ash4','No ash spills around the boiler house or along the route'],
+  ['ash5','Ash bins kept away from combustible waste (cardboard, plastics)',1],['ash6','Dust control in place (damping down)'],
+  ['ash7','Staff handling ash wear dust masks, gloves and eye protection'],['ash8','Ash collection frequency keeps up with production']]},
+ {k:'org',t:'Organic & dairy waste',items:[
+  ['org1','Organic waste containers sealed and not leaking'],['org2','Spoilt product, milk and sludge stored correctly'],
+  ['org3','Organic containers cleaned after emptying'],['org4','Organic waste removed often enough (no rotting or odours)']]},
+ {k:'haz',t:'Hazardous & special waste',items:[
+  ['haz1','Oils, chemicals and contaminated packaging kept separate and labelled',1],['haz2','Hazardous storage bunded or on drip trays',1],
+  ['haz3','Fluorescent tubes, batteries and e-waste stored separately'],['haz4','Spill kit on site and stocked'],
+  ['haz5','Safety data sheets available for chemicals'],['haz6','No hazardous waste in general or recycling bins',1]]},
+ {k:'hs',t:'Health & safety',items:[
+  ['hs1','Staff wearing full PPE (gloves, safety boots, reflective vests)',1],['hs2','First aid kit available and stocked'],
+  ['hs3','Fire extinguisher present, serviced and accessible',1],['hs4','Emergency exits and walkways clear'],
+  ['hs5','Vehicles and pedestrians kept apart'],['hs6','Safe lifting and manual handling practices followed'],
+  ['hs7','Sharp objects and broken glass handled safely'],['hs8','No smoking or open flames in the waste area',1]]},
+ {k:'stf',t:'Staff (sorters)',items:[
+  ['stf1','All scheduled sorters on site'],['stf2','Attendance register up to date'],['stf3','Sorters in Harambee uniform with ID'],
+  ['stf4','Toolbox talk / safety talk done this week'],['stf5','Staff trained on the waste streams and procedures'],['stf6','Staff using the site app correctly (job cards, photos)']]},
+ {k:'env',t:'Environmental',items:[
+  ['env1','No burning of waste',1],['env2','No illegal dumping on or around the site',1],['env3','Stormwater drains clear of waste'],
+  ['env4','No spills on soil or surfaces'],['env5','Dust under control'],['env6','Noise kept to acceptable levels']]},
+ {k:'doc',t:'Documents & compliance',items:[
+  ['doc1','Job cards complete and filed'],['doc2','Weighbridge slips available for collections'],['doc3','Safe disposal certificates up to date'],
+  ['doc4','Waste manifests for hazardous waste (where applicable)'],['doc5','Waste register / records up to date'],
+  ['doc6','Destination facilities licensed and licences current'],['doc7','Site waste management plan available']]},
+ {k:'col',t:'Collections & logistics',items:[
+  ['col1','Collections done on schedule'],['col2','Skip fill levels acceptable (no overflow before collection)'],
+  ['col3','Truck access route clear'],['col4','Vehicle and driver conduct on site acceptable']]},
+ {k:'cli',t:'Client relationship',items:[
+  ['cli1','Met with the client contact'],['cli2','Client satisfied with the service'],['cli3','Complaints or concerns resolved'],
+  ['cli4','Opportunities identified (new streams, extra services)']]},
+];
+const RATE={g:['Good','✓'],a:['Needs attention','!'],b:['Unacceptable','✗'],n:['N/A','N/A']};
+const ACT_WHO=['Harambee','Client','Both'];
+function inspScore(ans){let tot=0,pts=0,crit=0,attn=0,bad=0,done=0,all=0;
+  CHECKLIST.forEach(s=>s.items.forEach(([k,,c])=>{all++;const r=(ans[k]||{}).r;if(!r)return;done++;if(r==='n')return;tot++;if(r==='g')pts+=1;else if(r==='a'){pts+=.5;attn++}else if(r==='b'){bad++;if(c)crit++}}));
+  return{pct:tot?pts/tot:NaN,crit,attn,bad,done,all};}
+function secScore(sec,ans){let tot=0,pts=0;sec.items.forEach(([k])=>{const r=(ans[k]||{}).r;if(!r||r==='n')return;tot++;pts+=r==='g'?1:r==='a'?.5:0});return tot?pts/tot:NaN}
+const scoreCls=p=>!isFinite(p)?'':p>=.85?'good':p>=.65?'ok':'poor';
+const gradeCls=sc=>sc.crit?'poor':scoreCls(sc.pct);const gradeWord=sc=>sc.crit?`Critical issue${sc.crit>1?'s':''} – action required`:scoreWord(sc.pct);
+const scoreWord=p=>!isFinite(p)?'Not scored':p>=.85?'Good':p>=.65?'Fair':'Poor';
+function inspPaths(x){const out=[];Object.values(x.answers||{}).forEach(a=>(a.photos||[]).forEach(p=>out.push(p)));Object.values(x.sectionPhotos||{}).forEach(l=>l.forEach(p=>out.push(p)));return out}
+let IV={mode:'list',id:null,open:{}};let INS=null;let insTimer=null;
+
+function vInspect(){
+  if(IV.mode==='edit'&&INS)return inspEditor();
+  if(IV.mode==='report'){const x=S.inspections.find(i=>i.id===IV.id);if(x)return `<div class="row" style="margin-bottom:12px"><button class="btn" id="in-back">← All inspections</button>${x.status==='draft'?'':`<label class="tick right"><input type="checkbox" id="in-vis" ${x.visible?'checked':''}> Show to client in their portal</label>`}<button class="btn" id="in-edit">Edit</button><button class="btn p" id="in-pdf">Download PDF</button></div>`+inspReport(x)}
+  const cs=S.customers.filter(c=>c.active!==false);
+  const xs=[...S.inspections].sort((a,b)=>String(b.date).localeCompare(String(a.date))||String(b.createdAt).localeCompare(String(a.createdAt)));
+  return `<h1>Site inspections</h1><p class="lead">Full site checks by management. Open this on your phone at the site, tick each item, take photos of key areas, and get the client to sign off.</p>
+  <div class="card"><h2>Start a new inspection</h2><div class="row"><label class="f">Client / site<select id="in-c">${cs.map(c=>`<option value="${esc(c.id)}">${esc(c.name)}</option>`).join('')}</select></label>
+  <label class="f">Date<input type="date" id="in-d" value="${today()}"></label><button class="btn p" id="in-new">Start inspection</button></div></div>
+  <div class="card"><h2>Inspections</h2>${xs.length?`<div class="tbl-wrap"><table><thead><tr><th>Date</th><th>Client</th><th>Inspector</th><th>Status</th><th class="n">Score</th><th>Critical</th><th>Client sees it</th><th></th></tr></thead><tbody>${xs.map(x=>{const sc=inspScore(x.answers||{});return `<tr><td>${esc(x.date)}</td><td>${esc(custById(x.customerId)?.name||'')}</td><td>${esc(x.inspectorName)}</td>
+  <td>${x.status==='completed'?'<span class="pill organic">Completed</span>':`<span class="pill" style="background:#fff3d6;color:#8a5a00">Draft · ${sc.done}/${sc.all}</span>`}</td><td class="n"><span class="score ${gradeCls(sc)}">${pct(sc.pct)}</span></td><td>${sc.crit?`<span class="pill landfill">${sc.crit}</span>`:'–'}</td><td>${x.visible&&x.status==='completed'?'Yes':'No'}</td>
+  <td style="white-space:nowrap">${x.status==='draft'?`<button class="btn sm p" data-ied="${esc(x.id)}">Continue</button>`:`<button class="btn sm" data-irp="${esc(x.id)}">Report</button>`} ${isAdmin()?`<button class="btn sm d" data-idel="${esc(x.id)}">Delete</button>`:''}</td></tr>`}).join('')}</tbody></table></div>`:'<p class="muted">No inspections yet.</p>'}</div>`;
+}
+function inspEditor(){
+  const x=INS,a=x.answers,sc=inspScore(a),c=custById(x.customerId);
+  const secs=CHECKLIST.map(s=>{const done=s.items.filter(([k])=>(a[k]||{}).r).length;const open=IV.open[s.k]!==false;const sp=secScore(s,a);
+    return `<div class="card isec"><button class="isec-h" data-sec="${s.k}"><span>${open?'▾':'▸'} <b>${esc(s.t)}</b></span><span class="muted">${done}/${s.items.length}${isFinite(sp)?` · <span class="score ${scoreCls(sp)}">${pct(sp)}</span>`:''}</span></button>
+    ${open?`<div>${s.items.map(([k,l,crit])=>{const v=a[k]||{};const show=v.r==='a'||v.r==='b'||v.note||(v.photos||[]).length||v.open;
+      return `<div class="iit ${v.r?'r-'+v.r:''}"><div class="iit-l">${esc(l)}${crit?' <span class="crit" title="Critical item">critical</span>':''}</div>
+      <div class="iit-b">${Object.entries(RATE).map(([r,[t,s]])=>`<button class="rb rb-${r} ${v.r===r?'on':''}" data-rate="${k}" data-r="${r}" title="${t}">${s}</button>`).join('')}<button class="rb rb-more" data-more="${k}" title="Add note or photo">📷</button></div>
+      ${show?`<div class="iit-x"><input placeholder="${v.r==='a'||v.r==='b'?'What is wrong? What must be done?':'Note (optional)'}" data-note="${k}" value="${esc(v.note||'')}">
+        <div class="ishots">${(v.photos||[]).map((p,i)=>`<span class="ishot">${thumb(p,l,'th sm')}<button data-iprm="${k}:${i}">✕</button></span>`).join('')}<label class="btn sm">📷 Photo<input type="file" accept="image/*" capture="environment" data-iph="${k}" hidden></label></div></div>`:''}</div>`}).join('')}
+      <div class="isec-ph"><b>Photos of this area</b><div class="ishots">${((x.sectionPhotos||{})[s.k]||[]).map((p,i)=>`<span class="ishot">${thumb(p,s.t,'th')}<button data-isrm="${s.k}:${i}">✕</button></span>`).join('')}<label class="sa-cam" style="width:92px;height:92px"><input type="file" accept="image/*" capture="environment" multiple data-isph="${s.k}" hidden><span>📷</span><b>Add</b></label></div></div></div>`:''}</div>`}).join('');
+  const acts=(x.actions||[]).map((t,i)=>`<tr><td><input data-act="${i}" data-f="text" value="${esc(t.text)}" style="width:100%"></td><td><select data-act="${i}" data-f="who">${ACT_WHO.map(w=>`<option ${t.who===w?'selected':''}>${w}</option>`).join('')}</select></td>
+    <td><input type="date" data-act="${i}" data-f="due" value="${esc(t.due||'')}"></td><td><select data-act="${i}" data-f="priority">${['High','Medium','Low'].map(w=>`<option ${t.priority===w?'selected':''}>${w}</option>`).join('')}</select></td><td><button class="btn sm d" data-actrm="${i}">✕</button></td></tr>`).join('');
+  return `<div class="ins-top"><div><b>${esc(c?.name||'')}</b> · ${fmtD(x.date)}<div class="muted" style="font-size:12px">Inspector: ${esc(x.inspectorName)} · <span id="in-saved">${x._saved||'Saved'}</span></div></div>
+    <div class="ins-prog"><div style="width:${(sc.done/sc.all*100).toFixed(0)}%"></div></div><div class="muted" style="font-size:12px">${sc.done} of ${sc.all} checked · Score <span class="score ${gradeCls(sc)}">${pct(sc.pct)}</span>${sc.crit?` · <b style="color:var(--danger)">${sc.crit} critical</b>`:''}</div></div>
+  <div class="banner ok" style="margin-top:12px">Tap <b>✓</b> Good, <b>!</b> Needs attention, <b>✗</b> Unacceptable or <b>N/A</b>. Anything not good asks for a note and a photo. Your work saves automatically.</div>
+  <div class="row" style="margin-bottom:12px"><button class="btn sm" id="in-allg">Mark unanswered items in open sections as Good</button><button class="btn sm" id="in-col">Collapse all</button></div>
+  ${secs}
+  <div class="card"><h2>Actions to fix</h2><p class="muted" style="margin-top:-6px">What must be done, who does it and by when. These go in the report.</p>
+    ${acts?`<div class="tbl-wrap"><table><thead><tr><th>Action</th><th>Who</th><th>Due</th><th>Priority</th><th></th></tr></thead><tbody>${acts}</tbody></table></div>`:''}
+    <button class="btn" id="act-add">+ Add action</button> ${sc.attn+sc.bad?`<button class="btn" id="act-auto">Add an action for each problem found (${sc.attn+sc.bad})</button>`:''}</div>
+  <div class="card"><h2>Summary & sign-off</h2><label class="f">Overall comments<textarea id="in-sum" rows="3">${esc(x.summary||'')}</textarea></label>
+    <label class="f" style="margin-top:10px">Client representative (name & position)<input id="in-rep" value="${esc(x.clientRep||'')}"></label>
+    <div class="f" style="margin-top:10px">Client signature<canvas id="sig" width="600" height="160" class="sig"></canvas><div class="row"><button class="btn sm" id="sig-clr">Clear signature</button></div></div></div>
+  <div class="row" style="margin:8px 0 40px"><button class="btn" id="in-close">Save and close</button><button class="btn p right" id="in-done">Complete inspection</button></div>`;
+}
+function inspRow(x){return{customerId:x.customerId,site:x.site,date:x.date,clientRep:x.clientRep||'',answers:x.answers,sectionPhotos:x.sectionPhotos||{},actions:x.actions||[],summary:x.summary||'',
+  score:isFinite(inspScore(x.answers).pct)?Math.round(inspScore(x.answers).pct*1000)/10:null,signature:x.signature||'',photoPaths:inspPaths(x),updatedAt:new Date().toISOString()}}
+async function inspSave(extra){
+  if(!INS)return;clearTimeout(insTimer);const row=Object.assign(inspRow(INS),extra||{});
+  const el=$('#in-saved');if(el)el.textContent='Saving…';
+  const {error}=await db.from('inspections').update(toRow(row)).eq('id',INS.id);
+  try{lsSet('hb-ins-'+INS.id,JSON.stringify(INS))}catch(e){}
+  const i=S.inspections.findIndex(z=>z.id===INS.id);if(i>=0)Object.assign(S.inspections[i],JSON.parse(JSON.stringify(row)));
+  INS._saved=error?'Not saved – check signal':'Saved '+new Date().toLocaleTimeString('en-ZA',{hour:'2-digit',minute:'2-digit'});const e2=$('#in-saved');if(e2)e2.textContent=INS._saved;
+  if(error)throw error;
+}
+const inspSoon=()=>{clearTimeout(insTimer);const el=$('#in-saved');if(el)el.textContent='Unsaved changes…';insTimer=setTimeout(()=>inspSave().catch(()=>{}),1500)};
+function inspRerender(){const y=scrollY;render(true);scrollTo(0,y)}
+AFTER.inspect=()=>{
+  const on=(sel,fn)=>document.querySelectorAll(sel).forEach(fn);
+  if(IV.mode==='list'){
+    const nb=$('#in-new');if(nb)nb.onclick=async()=>{const cid=$('#in-c').value,c=custById(cid);const x={id:crypto.randomUUID(),customerId:cid,site:String(c.sites||'').split(',')[0].trim(),date:$('#in-d').value||today(),
+      inspectorId:S.user.id,inspectorName:myName(),status:'draft',answers:{},sectionPhotos:{},actions:[],summary:'',clientRep:'',signature:'',photoPaths:[],visible:false};
+      try{await DB.insert('inspections',x);INS=JSON.parse(JSON.stringify(S.inspections.find(i=>i.id===x.id)||x));IV={mode:'edit',id:x.id,open:{}};render(true);scrollTo(0,0)}catch(e){dbErr(e)}};
+    on('[data-ied]',b=>b.onclick=()=>{const x=S.inspections.find(i=>i.id===b.dataset.ied);INS=JSON.parse(JSON.stringify(x));INS.answers=INS.answers||{};INS.sectionPhotos=INS.sectionPhotos||{};INS.actions=INS.actions||[];IV={mode:'edit',id:x.id,open:{}};render(true);scrollTo(0,0)});
+    on('[data-irp]',b=>b.onclick=()=>{IV={mode:'report',id:b.dataset.irp,open:{}};render(true);scrollTo(0,0)});
+    on('[data-idel]',b=>b.onclick=()=>confirmBox('Delete this inspection and its photos?',async()=>{const x=S.inspections.find(i=>i.id===b.dataset.idel);try{const ps=inspPaths(x);if(ps.length)await db.storage.from(MEDIA).remove(ps);await DB.del('inspections',x.id);toast('Deleted')}catch(e){dbErr(e)}}));
+    return;
+  }
+  if(IV.mode==='report'){
+    const x=S.inspections.find(i=>i.id===IV.id);$('#in-back').onclick=()=>{IV={mode:'list',open:{}};render(true)};
+    $('#in-pdf').onclick=()=>inspPDF(x);
+    $('#in-edit').onclick=()=>{INS=JSON.parse(JSON.stringify(x));INS.answers=INS.answers||{};INS.sectionPhotos=INS.sectionPhotos||{};INS.actions=INS.actions||[];IV={mode:'edit',id:x.id,open:{}};render(true);scrollTo(0,0)};
+    const vis=$('#in-vis');if(vis)vis.onchange=async()=>{try{await DB.update('inspections',x.id,{visible:vis.checked});toast(vis.checked?'The client can now see this report':'Hidden from the client')}catch(e){dbErr(e);vis.checked=!vis.checked}};
+    fillThumbs();return;
+  }
+  const a=INS.answers;
+  on('[data-sec]',b=>b.onclick=()=>{IV.open[b.dataset.sec]=IV.open[b.dataset.sec]===false;inspRerender()});
+  on('[data-rate]',b=>b.onclick=()=>{const k=b.dataset.rate,r=b.dataset.r;a[k]=a[k]||{};a[k].r=a[k].r===r?undefined:r;inspSoon();inspRerender();
+    if(r==='a'||r==='b'){const n=document.querySelector(`[data-note="${k}"]`);if(n&&!n.value)n.focus()}});
+  on('[data-more]',b=>b.onclick=()=>{const k=b.dataset.more;a[k]=a[k]||{};a[k].open=true;inspRerender()});
+  on('[data-note]',i=>i.oninput=()=>{const k=i.dataset.note;a[k]=a[k]||{};a[k].note=i.value;inspSoon()});
+  const addPhotos=async(files,kind,push)=>{for(const f of files){toast('Uploading photo…');try{push(await uploadMedia(INS.customerId,'inspection',f))}catch(e){toast('Photo not uploaded – check signal');return}}await inspSave().catch(()=>{});inspRerender();fillThumbs()};
+  on('[data-iph]',i=>i.onchange=()=>{const k=i.dataset.iph;a[k]=a[k]||{};a[k].photos=a[k].photos||[];addPhotos([...i.files],'item',p=>a[k].photos.push(p))});
+  on('[data-isph]',i=>i.onchange=()=>{const k=i.dataset.isph;INS.sectionPhotos[k]=INS.sectionPhotos[k]||[];addPhotos([...i.files],'sec',p=>INS.sectionPhotos[k].push(p))});
+  on('[data-iprm]',b=>b.onclick=()=>{const[k,i]=b.dataset.iprm.split(':');a[k].photos.splice(+i,1);inspSoon();inspRerender();fillThumbs()});
+  on('[data-isrm]',b=>b.onclick=()=>{const[k,i]=b.dataset.isrm.split(':');INS.sectionPhotos[k].splice(+i,1);inspSoon();inspRerender();fillThumbs()});
+  $('#in-allg').onclick=()=>{CHECKLIST.forEach(s=>{if(IV.open[s.k]===false)return;s.items.forEach(([k])=>{a[k]=a[k]||{};if(!a[k].r)a[k].r='g'})});inspSoon();inspRerender()};
+  $('#in-col').onclick=()=>{CHECKLIST.forEach(s=>IV.open[s.k]=false);inspRerender()};
+  on('[data-act]',i=>i.oninput=i.onchange=()=>{INS.actions[+i.dataset.act][i.dataset.f]=i.value;inspSoon()});
+  on('[data-actrm]',b=>b.onclick=()=>{INS.actions.splice(+b.dataset.actrm,1);inspSoon();inspRerender()});
+  $('#act-add').onclick=()=>{INS.actions.push({text:'',who:'Harambee',due:'',priority:'Medium',done:false});inspSoon();inspRerender()};
+  const aa=$('#act-auto');if(aa)aa.onclick=()=>{CHECKLIST.forEach(s=>s.items.forEach(([k,l])=>{const v=a[k];if(v&&(v.r==='a'||v.r==='b')&&!INS.actions.some(t=>t.ref===k))INS.actions.push({ref:k,text:l+(v.note?': '+v.note:''),who:'Harambee',due:addDays(today(),v.r==='b'?2:7),priority:v.r==='b'?'High':'Medium',done:false})}));inspSoon();inspRerender()};
+  $('#in-sum').oninput=e=>{INS.summary=e.target.value;inspSoon()};$('#in-rep').oninput=e=>{INS.clientRep=e.target.value;inspSoon()};
+  // signature pad
+  const cv=$('#sig'),cx=cv.getContext('2d');cx.lineWidth=2.5;cx.lineCap='round';cx.strokeStyle='#14181a';
+  if(INS.signature){const im=new Image();im.onload=()=>cx.drawImage(im,0,0);im.src=INS.signature}
+  let dn=false;const pt=e=>{const r=cv.getBoundingClientRect();const t=e.touches?e.touches[0]:e;return[(t.clientX-r.left)*cv.width/r.width,(t.clientY-r.top)*cv.height/r.height]};
+  const st=e=>{dn=true;const[x,y]=pt(e);cx.beginPath();cx.moveTo(x,y);e.preventDefault()},mv=e=>{if(!dn)return;const[x,y]=pt(e);cx.lineTo(x,y);cx.stroke();e.preventDefault()},en=()=>{if(!dn)return;dn=false;INS.signature=cv.toDataURL('image/png');inspSoon()};
+  cv.addEventListener('mousedown',st);cv.addEventListener('mousemove',mv);window.addEventListener('mouseup',en);cv.addEventListener('touchstart',st,{passive:false});cv.addEventListener('touchmove',mv,{passive:false});cv.addEventListener('touchend',en);
+  $('#sig-clr').onclick=()=>{cx.clearRect(0,0,cv.width,cv.height);INS.signature='';inspSoon()};
+  $('#in-close').onclick=async()=>{try{await inspSave();toast('Saved')}catch(e){dbErr(e);return}INS=null;IV={mode:'list',open:{}};await reload('inspections');render(true)};
+  $('#in-done').onclick=async()=>{const sc=inspScore(a);
+    if(sc.done<sc.all){const miss=CHECKLIST.find(s=>s.items.some(([k])=>!(a[k]||{}).r));toast(`${sc.all-sc.done} item(s) not checked yet${miss?' – see '+miss.t:''}`);if(miss){IV.open[miss.k]=true;inspRerender()}return}
+    const noNote=CHECKLIST.flatMap(s=>s.items).filter(([k])=>{const v=a[k];return (v.r==='a'||v.r==='b')&&!(v.note||'').trim()});
+    if(noNote.length){toast(`Add a note for ${noNote.length} item(s) that need attention`);return}
+    try{await inspSave({status:'completed',completedAt:new Date().toISOString()});const id=INS.id;INS=null;await reload('inspections');IV={mode:'report',id,open:{}};render(true);scrollTo(0,0);toast('Inspection completed')}catch(e){dbErr(e)}};
+  fillThumbs();
+};
+
+function inspReport(x){
+  const a=x.answers||{},sc=inspScore(a),c=custById(x.customerId);
+  const issues=CHECKLIST.flatMap(s=>s.items.map(it=>[s,it])).filter(([,[k]])=>{const r=(a[k]||{}).r;return r==='a'||r==='b'});
+  const secRows=CHECKLIST.map(s=>{const p=secScore(s,a);const cnt=s.items.filter(([k])=>['a','b'].includes((a[k]||{}).r)).length;return `<div class="hbar"><span>${esc(s.t)}</span><span class="t"><i style="width:${isFinite(p)?(p*100).toFixed(0):0}%;background:${p>=.85?'#2d8a4e':p>=.65?'#d89b1c':'#c23b3a'}"></i></span><span style="text-align:right">${isFinite(p)?pct(p):'N/A'}${cnt?` · ${cnt}⚠`:''}</span></div>`}).join('');
+  const photos=CHECKLIST.filter(s=>((x.sectionPhotos||{})[s.k]||[]).length);
+  return `<div class="ins-hero ${gradeCls(sc)}"><div><div class="l">Site inspection · ${esc(c?.name||'')}</div><div class="big">${pct(sc.pct)}</div><div class="l">${gradeWord(sc)} · ${fmtD(x.date)}</div></div>
+    <div><div class="l">Checked</div><div class="mid">${sc.done-(CHECKLIST.flatMap(s=>s.items).filter(([k])=>(a[k]||{}).r==='n').length)} items</div></div>
+    <div><div class="l">Need attention</div><div class="mid">${sc.attn}</div></div><div><div class="l">Unacceptable</div><div class="mid">${sc.bad}</div></div><div><div class="l">Critical issues</div><div class="mid">${sc.crit}</div></div></div>
+  <div class="card"><h2>Score by area</h2>${secRows}</div>
+  ${issues.length?`<div class="card"><h2>Findings that need action</h2>${issues.map(([s,[k,l,crit]])=>{const v=a[k];return `<div class="find ${v.r}"><div><span class="pill ${v.r==='b'?'landfill':''}" ${v.r==='a'?'style="background:#fff3d6;color:#8a5a00"':''}>${RATE[v.r][0]}</span>${crit?' <span class="crit">critical</span>':''} <span class="muted">${esc(s.t)}</span><div style="margin-top:4px"><b>${esc(l)}</b></div>${v.note?`<div>${esc(v.note)}</div>`:''}</div><div>${(v.photos||[]).map(p=>thumb(p,l,'th')).join('')}</div></div>`}).join('')}</div>`:'<div class="card"><h2>Findings</h2><p>No problems found. Everything checked was in good order.</p></div>'}
+  ${(x.actions||[]).length?`<div class="card"><h2>Actions</h2><div class="tbl-wrap"><table><thead><tr><th>Action</th><th>Who</th><th>Due</th><th>Priority</th></tr></thead><tbody>${x.actions.map(t=>`<tr><td>${esc(t.text)}</td><td>${esc(t.who)}</td><td>${esc(t.due)}</td><td>${esc(t.priority)}</td></tr>`).join('')}</tbody></table></div></div>`:''}
+  ${photos.length?`<div class="card"><h2>Photos of key areas</h2>${photos.map(s=>`<div class="feed-day">${esc(s.t)}</div><div class="ph-grid">${x.sectionPhotos[s.k].map(p=>`<div class="ph"><div class="ph-img">${thumb(p,s.t,'')}</div></div>`).join('')}</div>`).join('')}</div>`:''}
+  <div class="card"><h2>Full checklist</h2>${CHECKLIST.map(s=>`<div class="feed-day">${esc(s.t)}</div><table><tbody>${s.items.map(([k,l])=>{const v=a[k]||{};return `<tr><td>${esc(l)}</td><td style="width:150px">${v.r?`<span class="rt rt-${v.r}">${RATE[v.r][1]} ${RATE[v.r][0]}</span>`:'<span class="muted">–</span>'}</td></tr>`}).join('')}</tbody></table>`).join('')}</div>
+  <div class="card"><h2>Summary & sign-off</h2>${x.summary?`<p>${esc(x.summary)}</p>`:''}<div class="grid" style="grid-template-columns:repeat(auto-fit,minmax(220px,1fr))">
+    <div><div class="muted" style="font-size:12px">Inspected by (Harambee)</div><b>${esc(x.inspectorName)}</b><div class="muted" style="font-size:12px">${x.completedAt?'Completed '+fmtDT(x.completedAt):'Draft'}</div></div>
+    <div><div class="muted" style="font-size:12px">Client representative</div><b>${esc(x.clientRep||'–')}</b>${x.signature?`<div><img src="${x.signature}" style="max-width:240px;border-bottom:1px solid var(--line)"></div>`:''}</div></div></div>`;
+}
+
+async function toDataURL(path){
+  await fillThumbsFor([path]);const u=URLS[path];if(!u)return null;
+  const b=await fetch(u.url).then(r=>r.ok?r.blob():null).catch(()=>null);if(!b)return null;
+  return await new Promise(r=>{const fr=new FileReader();fr.onload=()=>r(fr.result);fr.readAsDataURL(b)});
+}
+async function fillThumbsFor(paths){const now=Date.now();const need=paths.filter(p=>!URLS[p]||URLS[p].exp<now);if(!need.length)return;
+  const {data}=await db.storage.from(MEDIA).createSignedUrls(need,3600);(data||[]).forEach(d=>{if(d.signedUrl)URLS[d.path]={url:d.signedUrl,exp:now+50*60e3}})}
+const imgSize=src=>new Promise(r=>{const i=new Image();i.onload=()=>r([i.naturalWidth,i.naturalHeight]);i.onerror=()=>r([4,3]);i.src=src});
+async function inspPDF(x){
+  toast('Building the PDF…');
+  const jsPDF=await getPDF();const doc=new jsPDF({unit:'mm',format:'a4'});const W=210,M=15;const a=x.answers||{},sc=inspScore(a),c=custById(x.customerId);
+  const pn=s=>String(s??'').replace(/[  ]/g,' ').replace(/[✓]/g,'OK').replace(/[^\x00-\xff]/g,'');
+  const head=()=>{doc.setFillColor(31,107,69);doc.rect(0,0,W,24,'F');doc.setTextColor(255);doc.setFont('helvetica','bold');doc.setFontSize(15);doc.text('Harambee',M,11);doc.setFontSize(8);doc.setFont('helvetica','normal');doc.text('WASTE MANAGEMENT SOLUTIONS',M,16);
+    doc.setFont('helvetica','bold');doc.setFontSize(12);doc.text('Site Inspection Report',W-M,11,{align:'right'});doc.setFont('helvetica','normal');doc.setFontSize(9);doc.text(pn(c?.name||'')+' · '+x.date,W-M,16,{align:'right'});doc.setTextColor(20)};
+  head();let y=34;
+  const col=p=>p>=.85?[45,138,78]:p>=.65?[216,155,28]:[194,59,58];
+  doc.setFontSize(9);doc.setTextColor(90);doc.text('Overall score',M,y);doc.setTextColor(...(sc.crit?[194,59,58]:isFinite(sc.pct)?col(sc.pct):[90,90,90]));doc.setFont('helvetica','bold');doc.setFontSize(28);doc.text(pn(pct(sc.pct)),M,y+11);
+  doc.setFontSize(sc.crit?9:11);doc.text(pn(gradeWord(sc)),M,y+17);doc.setTextColor(20);doc.setFont('helvetica','normal');doc.setFontSize(9);
+  [['Client',c?.name||''],['Site',x.site||''],['Date',x.date],['Inspected by',x.inspectorName],['Client representative',x.clientRep||'-'],['Needs attention / unacceptable',sc.attn+' / '+sc.bad],['Critical issues',String(sc.crit)]].forEach(([l,v],i)=>{doc.setTextColor(110);doc.text(l,80,y+i*5.2);doc.setTextColor(20);doc.text(pn(v),135,y+i*5.2)});
+  y+=42;
+  doc.autoTable({startY:y,margin:{left:M,right:M},head:[['Area','Score','Issues']],body:CHECKLIST.map(s=>{const p=secScore(s,a);return[s.t,isFinite(p)?pn(pct(p)):'N/A',String(s.items.filter(([k])=>['a','b'].includes((a[k]||{}).r)).length||'')]}),
+    styles:{fontSize:8.5,cellPadding:1.6},headStyles:{fillColor:[31,107,69]},columnStyles:{1:{halign:'right'},2:{halign:'right'}}});
+  y=doc.lastAutoTable.finalY+8;
+  const issues=CHECKLIST.flatMap(s=>s.items.map(it=>[s,it])).filter(([,[k]])=>['a','b'].includes((a[k]||{}).r));
+  const need=(h)=>{if(y+h>282){doc.addPage();head();y=32}};
+  need(14);doc.setFont('helvetica','bold');doc.setFontSize(11);doc.text(issues.length?'Findings that need action':'Findings',M,y);doc.setFont('helvetica','normal');y+=6;
+  if(!issues.length){doc.setFontSize(9);doc.text('No problems found. Everything checked was in good order.',M,y);y+=8}
+  for(const [s,[k,l,crit]] of issues){const v=a[k];doc.setFontSize(9);
+    const lines=doc.splitTextToSize(pn(l+(v.note?' - '+v.note:'')),W-2*M-30);need(lines.length*4.4+6);
+    doc.setFont('helvetica','bold');doc.setTextColor(...(v.r==='b'?[194,59,58]:[176,116,0]));doc.text(pn(RATE[v.r][0]+(crit?' (critical)':'')),M,y);doc.setTextColor(110);doc.setFont('helvetica','normal');doc.text(pn(s.t),M,y+4);
+    doc.setTextColor(20);doc.text(lines,M+32,y);y+=Math.max(lines.length*4.4,8)+2;
+    const ps=(v.photos||[]).slice(0,3);if(ps.length){need(42);let xx=M+32;for(const p of ps){const d=await toDataURL(p);if(!d)continue;const[w,h]=await imgSize(d);const hh=38,ww=Math.min(55,hh*w/h);doc.addImage(d,'JPEG',xx,y,ww,hh);xx+=ww+3}y+=42}}
+  if((x.actions||[]).length){need(20);doc.setFont('helvetica','bold');doc.setFontSize(11);doc.text('Actions',M,y);doc.setFont('helvetica','normal');
+    doc.autoTable({startY:y+3,margin:{left:M,right:M},head:[['Action','Who','Due','Priority']],body:x.actions.map(t=>[pn(t.text),t.who,t.due||'',t.priority]),styles:{fontSize:8.5,cellPadding:1.6},headStyles:{fillColor:[31,107,69]},columnStyles:{0:{cellWidth:110}}});y=doc.lastAutoTable.finalY+8}
+  const secPh=CHECKLIST.filter(s=>((x.sectionPhotos||{})[s.k]||[]).length);
+  if(secPh.length){need(20);doc.setFont('helvetica','bold');doc.setFontSize(11);doc.text('Photos of key areas',M,y);y+=5;doc.setFont('helvetica','normal');
+    for(const s of secPh){need(52);doc.setFontSize(8.5);doc.setTextColor(110);doc.text(pn(s.t),M,y+3);doc.setTextColor(20);y+=5;let xx=M;
+      for(const p of x.sectionPhotos[s.k].slice(0,6)){const d=await toDataURL(p);if(!d)continue;const[w,h]=await imgSize(d);const hh=42,ww=Math.min(58,hh*w/h);if(xx+ww>W-M){xx=M;y+=hh+3;need(hh+3)}doc.addImage(d,'JPEG',xx,y,ww,hh);xx+=ww+3}y+=46}}
+  doc.addPage();head();y=34;doc.setFont('helvetica','bold');doc.setFontSize(11);doc.text('Full checklist',M,y);doc.setFont('helvetica','normal');
+  doc.autoTable({startY:y+3,margin:{left:M,right:M},head:[['Area','Item','Result','Note']],body:CHECKLIST.flatMap(s=>s.items.map(([k,l])=>{const v=a[k]||{};return[s.t,pn(l),v.r?RATE[v.r][0]:'-',pn(v.note||'')]})),
+    styles:{fontSize:7.5,cellPadding:1.3},headStyles:{fillColor:[31,107,69]},columnStyles:{0:{cellWidth:34},1:{cellWidth:72},2:{cellWidth:24}},
+    didParseCell:d=>{if(d.section==='body'&&d.column.index===2){const t=d.cell.raw;if(t==='Unacceptable')d.cell.styles.textColor=[194,59,58];else if(t==='Needs attention')d.cell.styles.textColor=[176,116,0];else if(t==='Good')d.cell.styles.textColor=[45,138,78]}}});
+  y=doc.lastAutoTable.finalY+10;need(50);doc.setFont('helvetica','bold');doc.setFontSize(11);doc.text('Summary & sign-off',M,y);doc.setFont('helvetica','normal');doc.setFontSize(9);y+=6;
+  if(x.summary){const l=doc.splitTextToSize(pn(x.summary),W-2*M);need(l.length*4.4+30);doc.text(l,M,y);y+=l.length*4.4+4}
+  doc.setTextColor(110);doc.text('Inspected by (Harambee)',M,y);doc.text('Client representative',110,y);doc.setTextColor(20);doc.text(pn(x.inspectorName),M,y+5);doc.text(pn(x.clientRep||'-'),110,y+5);
+  if(x.signature){try{doc.addImage(x.signature,'PNG',110,y+7,60,16)}catch(e){}}
+  const n=doc.getNumberOfPages();for(let i=1;i<=n;i++){doc.setPage(i);doc.setFontSize(7.5);doc.setTextColor(130);doc.text('Harambee Waste Management Solutions'+(SITE.phone?' · '+SITE.phone:'')+(SITE.email?' · '+SITE.email:''),M,290);doc.text('Page '+i+' of '+n,W-M,290,{align:'right'})}
+  doc.save(`Harambee-Site-Inspection-${slug(c?.name||'site')}-${x.date}.pdf`);
 }
 
 // ---------- auth ----------
