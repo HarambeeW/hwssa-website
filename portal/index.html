@@ -147,7 +147,7 @@ label.tick{display:inline-flex;gap:8px;align-items:center;font-weight:600;cursor
 @media (max-width:820px){.jc{grid-template-columns:1fr}.strip{grid-template-columns:repeat(2,minmax(0,1fr))}}
 
 /* client rates */
-.cap-rate.cr{background:#e4effb;border-color:#2a78d6;font-weight:600}.cr-key{display:inline-block;width:10px;height:10px;background:#e4effb;border:1px solid #2a78d6;border-radius:2px;vertical-align:-1px}
+.cap-rate.cr{background:#e4effb;border-color:#2a78d6;font-weight:600}.cr-val{background:#e4effb;border:1px solid #2a78d6;border-radius:4px;padding:1px 6px;font-weight:600}.sched{font-size:11px;white-space:nowrap;color:#8a6a0b;font-weight:600;margin-top:2px}.sched-row td{background:#fff8e1}.cr-key{display:inline-block;width:10px;height:10px;background:#e4effb;border:1px solid #2a78d6;border-radius:2px;vertical-align:-1px}
 /* inspections */
 body.focus .app{grid-template-columns:minmax(0,1fr)}body.focus nav{display:none}body.focus main{max-width:820px;width:100%;margin:0 auto}
 .score{font-weight:700}.score.good{color:#2d8a4e}.score.ok{color:#b07400}.score.poor{color:var(--danger)}
@@ -190,6 +190,7 @@ body.focus .app{grid-template-columns:minmax(0,1fr)}body.focus nav{display:none}
     <a href="#documents" data-v="documents">Certificates &amp; documents</a>
     <a href="#customers" data-v="customers">Customers</a>
     <a href="#materials" data-v="materials">Materials &amp; rates</a>
+    <a href="#prices" data-v="prices">Price history</a>
     <a href="#settings" data-v="settings" data-admin>Report factors</a>
     <a href="#users" data-v="users" data-admin>Users &amp; access</a>
     <a href="#portal" data-v="portal" style="margin-top:14px;border:1px dashed var(--gold)">Customer portal preview ↗</a>
@@ -204,7 +205,7 @@ body.focus .app{grid-template-columns:minmax(0,1fr)}body.focus nav{display:none}
 <script>
 const SITE=(window.HWS_CONFIG&&HWS_CONFIG.site)||{};
 
-const S={custRates:[],inspections:[],jobCards:[],sitePhotos:[],ashBins:[],documents:[],requests:[],customers:[],materials:[],entries:[],factors:null,enquiries:[],profiles:[],role:null,profile:null,user:null,readOnly:false,loading:true};
+const S={rateChanges:[],custRates:[],inspections:[],jobCards:[],sitePhotos:[],ashBins:[],documents:[],requests:[],customers:[],materials:[],entries:[],factors:null,enquiries:[],profiles:[],role:null,profile:null,user:null,readOnly:false,loading:true};
 let db=null;const isStaff=()=>S.role==='staff'||S.role==='admin';const isAdmin=()=>S.role==='admin';
 // Environmental factors (v2, Nov 2026). Avoided = landfilling factor minus recycling/composting factor, US EPA WARM v16 (Dec 2023),
 // converted from per short ton (907.18 kg) to per metric tonne. Energy: WARM v16 Exhibit 7-7/7-11/7-12, 1 million Btu = 293.07 kWh.
@@ -263,8 +264,8 @@ function envMetrics(list){
 }
 
 // ---------- routing ----------
-const VIEWS={inspect:vInspect,site:vSite,inbox:vInbox,documents:vDocuments,users:vUsers,enquiries:vEnquiries,portal:vPortal,requests:vRequests,dashboard:vDashboard,capture:vCapture,collections:vCollections,reports:vReports,customers:vCustomers,materials:vMaterials,settings:vSettings};
-const STAFF_VIEWS=['documents','dashboard','capture','collections','reports','customers','materials','settings','requests','enquiries','users','portal'];
+const VIEWS={inspect:vInspect,site:vSite,inbox:vInbox,documents:vDocuments,users:vUsers,enquiries:vEnquiries,portal:vPortal,requests:vRequests,dashboard:vDashboard,capture:vCapture,collections:vCollections,reports:vReports,customers:vCustomers,materials:vMaterials,prices:vPrices,settings:vSettings};
+const STAFF_VIEWS=['documents','dashboard','capture','collections','reports','customers','materials','prices','settings','requests','enquiries','users','portal'];
 function view(){if(S.role==='sorter')return 'site';if(!isStaff())return 'portal';const h=location.hash.replace('#','');if(!VIEWS[h])return 'dashboard';if((h==='users'||h==='settings')&&!isAdmin())return 'dashboard';return h}
 let lastView=null;
 function render(force){
@@ -390,8 +391,9 @@ AFTER.capture=()=>{
     document.querySelectorAll('#cap tbody tr[data-m]').forEach(tr_=>{const k=num(tr_.querySelector('[data-k=kg]').value),r=num(tr_.querySelector('[data-k=rate]').value),u=num(tr_.querySelector('[data-k=units]').value);
       const reb=k*r;tr_.querySelector('[data-reb]').textContent=k?R(reb):'–';tk+=k;tr+=reb;if(k||u)n++;const m=matById(tr_.dataset.m);if(m&&m.category!=='landfill')rec+=k;});
     $('#t-kg').textContent=kg(tk);$('#t-reb').textContent=R(tr);$('#cap-sum').textContent=n?`${n} line(s) · ${pct(tk?rec/tk:NaN)} recycled`:'';};
-  const applyRates=()=>{document.querySelectorAll('#cap tbody tr[data-m]').forEach(t=>{const i=t.querySelector('[data-k=rate]');const cr=S.custRates.find(x=>x.customerId===sel.value&&x.materialId===t.dataset.m);i.value=cr?cr.rate:(matById(t.dataset.m)?.rate??0);i.classList.toggle('cr',!!cr);i.title=cr?'Rate agreed for this client':'Default rate'});const n=S.custRates.filter(x=>x.customerId===sel.value).length;const el=$('#cap-cr');if(el)el.innerHTML=n?`<span class="cr-key"></span> ${n} rate${n>1?'s':''} agreed for this client (shaded blue)`:'Default rates (no client-specific rates set)'};
+  const applyRates=()=>{const d=$('#c-date').value||today();let n=0;document.querySelectorAll('#cap tbody tr[data-m]').forEach(t=>{const i=t.querySelector('[data-k=rate]');const p=priceOn(sel.value,t.dataset.m,d);i.value=p.rate;i.classList.toggle('cr',p.client);if(p.client)n++;i.title=(p.client?'Price agreed for this client':'Default price')+' on '+fmtD(d)});const el=$('#cap-cr');if(el)el.innerHTML=(n?`<span class="cr-key"></span> ${n} price${n>1?'s':''} agreed for this client (shaded blue)`:'Default prices')+` · as at ${fmtD(d)}`};
   applyRates();{const oc=sel.onchange;sel.onchange=()=>{oc();applyRates();recalc()}}
+  $('#c-date').addEventListener('change',()=>{applyRates();recalc()});
   $('#cap').addEventListener('input',recalc);
   $('#c-clear').onclick=()=>{document.querySelectorAll('#cap [data-k=kg],#cap [data-k=units]').forEach(i=>i.value='');recalc()};
   $('#c-save').onclick=async()=>{
@@ -574,11 +576,11 @@ function editCustomer(id){
 // ---------- Materials ----------
 function vMaterials(){
   const ms=[...S.materials].sort((a,b)=>CAT_ORDER.indexOf(a.category)-CAT_ORDER.indexOf(b.category)||(a.sort??99)-(b.sort??99));
-  return `<h1>Materials &amp; rebate rates</h1><p class="lead">One list of materials, so the same stream isn't logged under two names (the spreadsheet had "LDPE" in one tab and "LD Mix" in another, for example). Rates are the default rebate per kg excl. VAT that comes up when capturing. Changing a rate doesn't change lines already captured.</p>
+  return `<h1>Materials &amp; rebate rates</h1><p class="lead">One list of materials, so the same stream isn't logged under two names (the spreadsheet had "LDPE" in one tab and "LD Mix" in another, for example). Prices are the default rebate per kg excl. VAT that comes up when capturing. Use <b>Change price</b> to set a new price from today or a future date: collections dated before that keep the old price, and nothing already captured is changed. Every change is kept under <a href="#prices">Price history</a>.</p>
   <div class="banner w">These rates are the last ones used in the spreadsheet. Several haven't been used since early 2025, so check them against current buyer prices.</div>
   <div class="row" style="margin-bottom:14px"><button class="btn p" id="ma-add" ${isAdmin()?'':'disabled'}>+ Add material</button></div>
-  <div class="card"><div class="tbl-wrap"><table><thead><tr><th>Material</th><th>Type</th><th>Disposal</th><th>Counted in</th><th class="n">Rate R/kg (excl.)</th><th class="n">Status</th><th></th></tr></thead><tbody>
-  ${ms.map(m=>`<tr><td>${esc(m.name)}</td><td><span class="pill ${esc(m.category)}">${CATS[m.category]||m.category}</span></td><td>${esc(m.method)}</td><td>${m.unit==='skip'?'kg + skips':'kg (+ bales)'}</td><td class="n">${m.category==='landfill'?'–':nf2.format(m.rate||0)}</td><td class="n">${m.active===false?'<span class="pill">Hidden</span>':''}</td><td><button class="btn sm" data-ma="${esc(m.id)}" ${isAdmin()?'':'disabled'}>Edit</button></td></tr>`).join('')}
+  <div class="card"><div class="tbl-wrap"><table><thead><tr><th>Material</th><th>Type</th><th>Disposal</th><th>Counted in</th><th class="n">Price R/kg (excl.)</th><th class="n">Status</th><th></th></tr></thead><tbody>
+  ${ms.map(m=>`<tr><td>${esc(m.name)}</td><td><span class="pill ${esc(m.category)}">${CATS[m.category]||m.category}</span></td><td>${esc(m.method)}</td><td>${m.unit==='skip'?'kg + skips':'kg (+ bales)'}</td><td class="n">${m.category==='landfill'?'–':nf2.format(m.rate||0)+upcomingTag(null,m.id)}</td><td class="n">${m.active===false?'<span class="pill">Hidden</span>':''}</td><td style="white-space:nowrap">${m.category!=='landfill'?`<button class="btn sm" data-chp="${esc(m.id)}" ${isAdmin()?'':'disabled title="Only admins can change prices"'}>Change price</button> `:''}<button class="btn sm" data-ma="${esc(m.id)}" ${isAdmin()?'':'disabled'}>Edit</button></td></tr>`).join('')}
   </tbody></table></div></div>${clientRatesCard()}`;
 }
 let CRC=null;
@@ -586,19 +588,55 @@ function clientRatesCard(){
   const cs=S.customers.filter(c=>c.active!==false).sort((a,b)=>a.name.localeCompare(b.name));if(!cs.length)return '';if(!CRC||!custById(CRC))CRC=cs[0].id;
   const ms=S.materials.filter(m=>m.active!==false&&m.category!=='landfill').sort((a,b)=>CAT_ORDER.indexOf(a.category)-CAT_ORDER.indexOf(b.category)||(a.sort??99)-(b.sort??99));
   const n=S.custRates.filter(x=>x.customerId===CRC).length;
-  return `<div class="card" id="crc"><h2>Client-specific rates</h2><p class="muted" style="margin-top:-6px">Set a different rebate rate for a client where you've agreed one. Leave it blank to use the default. When you capture weights for that client, these rates fill in automatically. Clients never see rates.</p>
-  <div class="row" style="margin-bottom:12px"><label class="f">Client<select id="crc-c">${cs.map(c=>`<option value="${esc(c.id)}" ${c.id===CRC?'selected':''}>${esc(c.name)}</option>`).join('')}</select></label><span class="muted">${n} agreed rate${n===1?'':'s'}</span>
-  <button class="btn p right" id="crc-save" ${isAdmin()?'':'disabled title="Only admins can change rates"'}>Save client rates</button></div>
-  <div class="tbl-wrap"><table><thead><tr><th>Material</th><th class="n">Default R/kg (excl.)</th><th class="n">This client R/kg (excl.)</th></tr></thead><tbody>
-  ${ms.map(m=>{const cr=S.custRates.find(x=>x.customerId===CRC&&x.materialId===m.id);return `<tr><td>${esc(m.name)}</td><td class="n">${nf2.format(m.rate||0)}</td><td class="n"><input class="cap-rate ${cr?'cr':''}" type="number" min="0" step="any" data-crm="${esc(m.id)}" value="${cr?cr.rate:''}" placeholder="${nf2.format(m.rate||0)}" ${isAdmin()?'':'disabled'}></td></tr>`}).join('')}
+  return `<div class="card" id="crc"><h2>Client-specific prices</h2><p class="muted" style="margin-top:-6px">Where you've agreed a different price with a client, set it here. When you capture weights for that client, their price fills in automatically for the collection date. Clients never see prices.</p>
+  <div class="row" style="margin-bottom:12px"><label class="f">Client<select id="crc-c">${cs.map(c=>`<option value="${esc(c.id)}" ${c.id===CRC?'selected':''}>${esc(c.name)}</option>`).join('')}</select></label><span class="muted">${n} agreed price${n===1?'':'s'}</span></div>
+  <div class="tbl-wrap"><table><thead><tr><th>Material</th><th class="n">Default R/kg (excl.)</th><th class="n">This client R/kg (excl.)</th><th></th></tr></thead><tbody>
+  ${ms.map(m=>{const cr=S.custRates.find(x=>x.customerId===CRC&&x.materialId===m.id);return `<tr><td>${esc(m.name)}</td><td class="n">${nf2.format(m.rate||0)}</td><td class="n">${cr?`<span class="cr-val">${nf2.format(cr.rate)}</span>`:'<span class="muted">default</span>'}${upcomingTag(CRC,m.id)}</td><td><button class="btn sm" data-chpc="${esc(m.id)}" ${isAdmin()?'':'disabled title="Only admins can change prices"'}>Change</button></td></tr>`}).join('')}
   </tbody></table></div></div>`;
 }
+// price that applies to a client + material on a date (client price first, then default)
+function latestChange(cust,mid,d){let best=null;for(const r of S.rateChanges){if(r.materialId!==mid||(r.customerId||null)!==(cust||null)||r.effectiveFrom>d)continue;
+  if(!best||r.effectiveFrom>best.effectiveFrom||(r.effectiveFrom===best.effectiveFrom&&r.id>best.id))best=r}return best}
+function priceOn(cust,mid,d){const m=matById(mid);if(m&&m.category==='landfill')return{rate:0,client:false};
+  const c=cust?latestChange(cust,mid,d):null;if(c&&c.newRate!=null)return{rate:num(c.newRate),client:true};
+  if(!S.rateChanges.length&&cust){const cr=S.custRates.find(x=>x.customerId===cust&&x.materialId===mid);if(cr)return{rate:num(cr.rate),client:true}}
+  const dflt=latestChange(null,mid,d);return{rate:dflt&&dflt.newRate!=null?num(dflt.newRate):num(m?.rate),client:false}}
+function upcoming(cust,mid){const t0=today();return S.rateChanges.filter(r=>r.materialId===mid&&(r.customerId||null)===(cust||null)&&r.effectiveFrom>t0).sort((a,b)=>a.effectiveFrom.localeCompare(b.effectiveFrom)||a.id-b.id)}
+function upcomingTag(cust,mid){const u=upcoming(cust,mid);if(!u.length)return '';const r=u[u.length-1];return `<div class="sched" title="Scheduled: ${esc(r.reason||'')}">→ ${r.newRate==null?'default':nf2.format(r.newRate)} from ${new Date(r.effectiveFrom+'T12:00:00').toLocaleDateString('en-ZA',{day:'numeric',month:'short'})}</div>`}
+function changePrice(mid,cust){
+  const m=matById(mid);if(!m)return;const c=cust?custById(cust):null;const t0=today();
+  const cur=cust?S.custRates.find(x=>x.customerId===cust&&x.materialId===mid):null;
+  const curTxt=cust?(cur?`${R(cur.rate)} per kg (agreed for ${esc(c.name)})`:`${R(m.rate)} per kg (default price)`):`${R(m.rate)} per kg`;
+  const up=upcoming(cust,mid);
+  modal(`<h2>Change price: ${esc(m.name)}</h2><p class="muted" style="margin-top:-6px">${cust?`For <b>${esc(c.name)}</b> only`:'Default price for all clients without their own agreed price'} · excl. VAT</p>
+    <div class="banner" style="margin:10px 0">Price now: <b>${curTxt}</b>${up.length?`<br>Already scheduled: ${up.map(r=>`${r.newRate==null?'back to default':R(r.newRate)} from ${fmtD(r.effectiveFrom)}`).join(', ')}`:''}</div>
+    <div class="fgrid">
+      ${cust?`<label class="f full"><span><input type="checkbox" id="cp-def"> Put this client back on the default price</span></label>`:''}
+      <label class="f">New price R/kg (excl. VAT)<input type="number" min="0" step="any" id="cp-rate" value=""></label>
+      <label class="f">Applies from<input type="date" id="cp-from" value="${t0}" min="${t0}"></label>
+      <label class="f full">Reason<input id="cp-why" placeholder="e.g. New buyer price from Mpact, agreed with client on 20 Nov"></label>
+    </div>
+    <p class="muted" style="font-size:12px" id="cp-note"></p>
+    <div class="row" style="margin-top:12px"><button class="btn right" id="cp-x">Cancel</button><button class="btn p" id="cp-s">Save price change</button></div>`,()=>{
+    const note=()=>{const f=$('#cp-from').value||t0;const def=$('#cp-def')&&$('#cp-def').checked;$('#cp-rate').disabled=!!def;
+      const v=$('#cp-rate').value.trim();const nv=def?'the default price':(v===''?'the new price':R(num(v))+' per kg');
+      $('#cp-note').innerHTML=`Collections dated <b>${fmtD(f)}</b> or later will use ${nv}. Collections dated before ${fmtD(f)} keep their current price, and nothing already captured is changed. This change is recorded in Price history with your name.`};
+    note();['#cp-rate','#cp-from','#cp-def'].forEach(s=>{const e=$(s);if(e){e.addEventListener('input',note);e.addEventListener('change',note)}});
+    $('#cp-x').onclick=closeModal;
+    $('#cp-s').onclick=async()=>{const def=$('#cp-def')&&$('#cp-def').checked;const v=$('#cp-rate').value.trim();const f=$('#cp-from').value;const why=$('#cp-why').value.trim();
+      if(!def&&(v===''||num(v)<0)){toast('Enter the new price');$('#cp-rate').focus();return}
+      if(!f||f<t0){toast('The start date must be today or later');return}
+      if(!why){toast('Add a reason so the history makes sense later');$('#cp-why').focus();return}
+      const b=$('#cp-s');b.disabled=true;b.textContent='Saving…';
+      const {error}=await db.rpc('change_rate',{p_customer:cust||null,p_material:mid,p_rate:def?null:num(v),p_from:f,p_reason:why});
+      if(error){b.disabled=false;b.textContent='Save price change';dbErr(error);return}
+      closeModal();toast(f===t0?'Price changed from today':'Price change scheduled for '+fmtD(f));
+      await Promise.all(['rate_changes','materials','customer_rates'].map(reload));render(true)};
+  });
+}
 AFTER.materials=()=>{const cc=$('#crc-c');if(cc)cc.onchange=()=>{CRC=cc.value;render(true);$('#crc').scrollIntoView()};
-  const sv=$('#crc-save');if(sv)sv.onclick=async()=>{sv.disabled=true;sv.textContent='Saving…';
-    try{for(const i of document.querySelectorAll('[data-crm]')){const mid=i.dataset.crm,v=i.value.trim(),cr=S.custRates.find(x=>x.customerId===CRC&&x.materialId===mid);
-      if(v===''){if(cr){const {error}=await db.from('customer_rates').delete().eq('customer_id',CRC).eq('material_id',mid);if(error)throw error}}
-      else if(!cr||num(cr.rate)!==num(v)){const {error}=await db.from('customer_rates').upsert({customer_id:CRC,material_id:mid,rate:num(v),updated_at:new Date().toISOString()});if(error)throw error}}
-      await reload('customer_rates');toast('Client rates saved')}catch(e){dbErr(e)}sv.disabled=false;sv.textContent='Save client rates'};
+  document.querySelectorAll('[data-chp]').forEach(b=>b.onclick=()=>changePrice(b.dataset.chp,null));
+  document.querySelectorAll('[data-chpc]').forEach(b=>b.onclick=()=>changePrice(b.dataset.chpc,CRC));
 $('#ma-add').onclick=()=>editMaterial(null);document.querySelectorAll('[data-ma]').forEach(b=>b.onclick=()=>editMaterial(b.dataset.ma))};
 function editMaterial(id){
   const m=id?matById(id):{name:'',category:'plastic',method:'Recycling',unit:'kg',rate:0,active:true,sort:99};
@@ -607,17 +645,40 @@ function editMaterial(id){
     <label class="f">Type<select id="ma-cat">${CAT_ORDER.map(c=>`<option value="${c}" ${m.category===c?'selected':''}>${CATS[c]}</option>`).join('')}</select></label>
     <label class="f">Disposal method<select id="ma-meth">${['Recycling','Composting','Landfill','Treatment / incineration','Reuse'].map(x=>`<option ${m.method===x?'selected':''}>${x}</option>`).join('')}</select></label>
     <label class="f">Counted in<select id="ma-unit"><option value="kg" ${m.unit!=='skip'?'selected':''}>kg (+ bales)</option><option value="skip" ${m.unit==='skip'?'selected':''}>kg + skips</option></select></label>
-    <label class="f">Rebate rate R/kg (excl. VAT)<input type="number" step="any" id="ma-rate" value="${m.rate??0}"></label>
+    ${id?`<div class="f"><span>Price R/kg (excl. VAT)</span><b style="padding:8px 0">${nf2.format(m.rate||0)}</b><span class="muted" style="font-size:12px">Use <b>Change price</b> on the materials list, so the change is dated and recorded.</span></div>`:`<label class="f">Starting price R/kg (excl. VAT)<input type="number" min="0" step="any" id="ma-rate" value="0"></label>`}
     <label class="f">Sort order<input type="number" id="ma-sort" value="${m.sort??99}"></label>
     <label class="f"><span><input type="checkbox" id="ma-active" ${m.active!==false?'checked':''}> Show on capture screen</span></label></div>
     <p class="muted" style="font-size:12px">Only admins can change materials and rates.</p>
     <div class="row" style="margin-top:12px"><button class="btn right" id="ma-x">Cancel</button><button class="btn p" id="ma-s">Save</button></div>`,()=>{
     $('#ma-x').onclick=closeModal;
-    $('#ma-s').onclick=async()=>{const d={name:$('#ma-name').value.trim(),category:$('#ma-cat').value,method:$('#ma-meth').value,unit:$('#ma-unit').value,rate:num($('#ma-rate').value),sort:num($('#ma-sort').value),active:$('#ma-active').checked};
+    $('#ma-s').onclick=async()=>{const d={name:$('#ma-name').value.trim(),category:$('#ma-cat').value,method:$('#ma-meth').value,unit:$('#ma-unit').value,sort:num($('#ma-sort').value),active:$('#ma-active').checked};if(!id)d.rate=num($('#ma-rate').value);
       if(!d.name){toast('Name is needed');return}
-      try{if(id)await DB.update('materials',id,d);else{let nid=slug(d.name);if(matById(nid))nid+='-'+Date.now().toString(36);await DB.insert('materials',{id:nid,...d})}closeModal();toast('Material saved')}catch(e){dbErr(e)}};
+      try{if(id)await DB.update('materials',id,d);else{let nid=slug(d.name);if(matById(nid))nid+='-'+Date.now().toString(36);await DB.insert('materials',{id:nid,...d});await reload('rate_changes')}closeModal();toast('Material saved')}catch(e){dbErr(e)}};
   });
 }
+
+// ---------- Price history ----------
+let PH={mat:'',cust:''};
+function vPrices(){
+  const t0=today();
+  let rows=[...S.rateChanges].filter(r=>matById(r.materialId)?.category!=='landfill').sort((a,b)=>b.id-a.id);
+  if(PH.mat)rows=rows.filter(r=>r.materialId===PH.mat);
+  if(PH.cust)rows=rows.filter(r=>PH.cust==='_d'?!r.customerId:r.customerId===PH.cust);
+  const mats=[...S.materials].sort((a,b)=>a.name.localeCompare(b.name));const cs=[...S.customers].sort((a,b)=>a.name.localeCompare(b.name));
+  const pc=(o,n)=>o==null||n==null||!num(o)?'':((n-o)/o*100);
+  return `<h1>Price history</h1><p class="lead">Every price change, newest first: who made it, when, and from which date it applies. This list can only be added to. Nobody can edit or delete it, admins included. Collections keep the price they were captured at.</p>
+  <div class="card"><div class="row" style="margin-bottom:12px;flex-wrap:wrap">
+    <label class="f">Material<select id="ph-m"><option value="">All materials</option>${mats.map(m=>`<option value="${esc(m.id)}" ${PH.mat===m.id?'selected':''}>${esc(m.name)}</option>`).join('')}</select></label>
+    <label class="f">Price list<select id="ph-c"><option value="">Default and client prices</option><option value="_d" ${PH.cust==='_d'?'selected':''}>Default prices only</option>${cs.map(c=>`<option value="${esc(c.id)}" ${PH.cust===c.id?'selected':''}>${esc(c.name)}</option>`).join('')}</select></label>
+    <button class="btn right" id="ph-csv">Copy for Excel</button></div>
+  ${rows.length?`<div class="tbl-wrap"><table><thead><tr><th>Changed</th><th>By</th><th>Material</th><th>Price list</th><th class="n">Old R/kg</th><th class="n">New R/kg</th><th class="n">Change</th><th>Applies from</th><th>Reason</th></tr></thead><tbody>
+  ${rows.map(r=>{const p=pc(r.oldRate,r.newRate);const sys=r.effectiveFrom<'2001-01-01';return `<tr${r.effectiveFrom>t0?' class="sched-row"':''}><td style="white-space:nowrap">${sys?'<span class="muted">Start of history</span>':esc(new Date(r.changedAt).toLocaleString('en-ZA',{dateStyle:'medium',timeStyle:'short'}))}</td><td>${esc(r.changedByName||'')}</td><td>${esc(matById(r.materialId)?.name||r.materialId)}</td><td>${r.customerId?esc(custById(r.customerId)?.name||r.customerId):'<span class="muted">Default</span>'}</td>
+    <td class="n">${r.oldRate==null?(r.customerId?'<span class="muted">default</span>':'–'):nf2.format(r.oldRate)}</td><td class="n"><b>${r.newRate==null?'<span class="muted">default</span>':nf2.format(r.newRate)}</b></td><td class="n">${p===''?'':`<span style="color:${p>=0?'var(--ok,#1a7f37)':'var(--danger)'}">${p>=0?'+':''}${nf1.format(p)}%</span>`}</td>
+    <td style="white-space:nowrap">${sys?'<span class="muted">Before 26 Nov 2026</span>':fmtD(r.effectiveFrom)+(r.effectiveFrom>t0?' <span class="pill">Scheduled</span>':'')}</td><td>${esc(r.reason||'')}</td></tr>`}).join('')}
+  </tbody></table></div>`:'<p class="muted">No price changes match.</p>'}</div>`;
+}
+AFTER.prices=()=>{$('#ph-m').onchange=e=>{PH.mat=e.target.value;render(true)};$('#ph-c').onchange=e=>{PH.cust=e.target.value;render(true)};
+  $('#ph-csv').onclick=()=>copyCSV([['Changed','By','Material','Price list','Old R/kg excl VAT','New R/kg excl VAT','Applies from','Reason'],...[...S.rateChanges].sort((a,b)=>b.id-a.id).filter(r=>(!PH.mat||r.materialId===PH.mat)&&(!PH.cust||(PH.cust==='_d'?!r.customerId:r.customerId===PH.cust))).map(r=>[r.changedAt,r.changedByName,matById(r.materialId)?.name||r.materialId,r.customerId?(custById(r.customerId)?.name||r.customerId):'Default',r.oldRate??'',r.newRate??'default',r.effectiveFrom<'2001-01-01'?'start of history':r.effectiveFrom,r.reason])])};
 
 // ---------- Settings ----------
 const FACTORS=[['co2Paper','CO₂e avoided: paper & cardboard (kg per kg)','WARM v16 corrugated containers: landfill 0.18 − recycling (3.14) = 3.32 t/short ton'],['co2Plastic','CO₂e avoided: plastics (kg per kg)','WARM v16 HDPE: 0.02 − (0.76) = 0.78 t/short ton. WARM has no LDPE recycling factor'],['co2Metal','CO₂e avoided: metals (kg per kg)','WARM v16 steel cans: 0.02 − (1.83) = 1.85 t/short ton'],['co2Organic','CO₂e avoided: food waste composted (kg per kg)','WARM v16 food waste: landfill 0.50 − composting (0.15) = 0.65 t/short ton'],['co2Wood','CO₂e avoided: pallets & other (kg per kg)','WARM v16 dimensional lumber: landfill (0.92) − reuse (1.66) = 0.74 t/short ton'],['enPaper','Energy saved: paper (kWh per tonne)','WARM v16: 15.10 − 0.21 = 14.89 million Btu/short ton'],['enPlastic','Energy saved: plastics (kWh per tonne)','WARM v16 HDPE: 44.78 + 0.27 = 45.05 million Btu/short ton'],['enMetal','Energy saved: metals (kWh per tonne)','WARM v16 steel cans: 19.97 + 0.27 = 20.24 million Btu/short ton'],['enOrganic','Energy saved: food waste composted (kWh per tonne)','WARM v16: composting uses 0.73, landfill saves 0.02, so composting costs 0.75 million Btu/short ton'],['enWood','Energy saved: pallets & other (kWh per tonne)','WARM v16 dimensional lumber: 5.21 + 0.27 = 5.48 million Btu/short ton'],['landfillDensity','Compacted landfill density (kg per m³)','= 1 585 lb/yd³, inside the US EPA range for compacted landfill waste (1 200–1 700 lb/yd³)'],['vatRate','VAT rate (%)','Used only to show incl.-VAT rebate figures']];
@@ -866,7 +927,7 @@ async function fetchAll(table,order){
   for(;;){let q=db.from(table).select('*').range(from,from+size-1);if(order)q=q.order(order);const {data,error}=await q;if(error)throw error;out.push(...data);if(data.length<size)break;from+=size}
   return out.map(fromRow);
 }
-const TABLE_KEY={customer_rates:'custRates',inspections:'inspections',job_cards:'jobCards',site_photos:'sitePhotos',ash_bins:'ashBins',documents:'documents',entries:'entries',customers:'customers',materials:'materials',requests:'requests',enquiries:'enquiries',profiles:'profiles',settings:'settings'};
+const TABLE_KEY={rate_changes:'rateChanges',customer_rates:'custRates',inspections:'inspections',job_cards:'jobCards',site_photos:'sitePhotos',ash_bins:'ashBins',documents:'documents',entries:'entries',customers:'customers',materials:'materials',requests:'requests',enquiries:'enquiries',profiles:'profiles',settings:'settings'};
 const DB={
   async insert(t,v){const rows=(Array.isArray(v)?v:[v]).map(toRow);const {error}=await db.from(t).insert(rows);if(error)throw error;await reload(t)},
   async update(t,id,v){const {error}=await db.from(t).update(toRow(v)).eq('id',id);if(error)throw error;await reload(t)},
@@ -880,13 +941,14 @@ async function reload(t){
     else if(t==='settings'){const rows=await fetchAll('settings');const f=rows.find(r=>r.id==='factors');S.factors=f?f.data:null}
     else if(t==='profiles')S.profiles=isAdmin()?await fetchAll('profiles','created_at'):[];
     else if(t==='enquiries')S.enquiries=isStaff()?await fetchAll('enquiries','created_at'):[];
+    else if(t==='rate_changes')S.rateChanges=isStaff()?await fetchAll('rate_changes','id'):[];
     else S[TABLE_KEY[t]]=await fetchAll(t);
   }catch(e){S.loadError=e.message||String(e)}
   render(false);
 }
 async function loadAll(){
   S.loading=true;S.loadError=null;render(true);
-  await Promise.all((S.role==='sorter'?['customers','requests','job_cards','site_photos','ash_bins']:['customers','materials','settings','requests','entries','enquiries','profiles','documents','job_cards','site_photos','ash_bins','inspections','customer_rates']).map(reload));
+  await Promise.all((S.role==='sorter'?['customers','requests','job_cards','site_photos','ash_bins']:['customers','materials','settings','requests','entries','enquiries','profiles','documents','job_cards','site_photos','ash_bins','inspections','customer_rates','rate_changes']).map(reload));
   S.loading=false;render(true);
 }
 function dbErr(e,extra){
