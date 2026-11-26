@@ -101,6 +101,49 @@ body.portal .app{grid-template-columns:minmax(0,1fr)}body.portal nav{display:non
 nav .who{font-size:12px;color:#93ab9c;padding:0 10px 14px;word-break:break-all}
 nav .so{background:none;border:1px solid #3d5c4a;color:#cfdcd3;border-radius:8px;padding:5px 10px;cursor:pointer;font-size:12px;margin:0 10px 14px}
 body.cust .pv-bar{display:flex}
+
+/* site app (sorters) */
+body.siteapp .app{grid-template-columns:minmax(0,1fr)}body.siteapp nav{display:none}body.siteapp main{max-width:560px;width:100%;margin:0 auto;padding:0 0 40px}
+.sa{display:flex;flex-direction:column;gap:12px;padding:12px}
+.sa-top{display:flex;gap:12px;align-items:center;background:#12281c;color:#fff;margin:-12px -12px 0;padding:14px 16px}
+.sa-top .btn{background:transparent;color:#fff;border-color:#4d7a60}
+.sa-site{font-weight:700;font-size:18px}.sa-hi{font-size:13px;opacity:.8}
+.sa-big{display:flex;gap:16px;align-items:center;text-align:left;width:100%;background:#fff;border:2px solid var(--line);border-radius:16px;padding:18px;cursor:pointer;font-size:18px}
+.sa-big:active{background:var(--brand-soft);border-color:var(--brand)}
+.sa-big .ic{font-size:40px;line-height:1;width:56px;text-align:center}.sa-big b{display:block;font-size:20px}.sa-big small{display:block;color:var(--ink2);font-size:14px;margin-top:2px}
+.sa-card{background:#fff;border:1px solid var(--line);border-radius:16px;padding:16px}
+.sa-card h2{font-size:20px;margin:4px 0 8px}
+.sa-q{font-weight:600;font-size:16px;margin:18px 0 8px}
+.sa-back{border:0;background:none;color:var(--brand);font-size:16px;font-weight:600;padding:4px 0;cursor:pointer}
+.sa-shots{display:flex;gap:10px;flex-wrap:wrap}
+.sa-shot{position:relative;width:104px;height:104px}.sa-shot img{width:100%;height:100%;object-fit:cover;border-radius:12px;display:block}
+.sa-shot button{position:absolute;top:-8px;right:-8px;width:30px;height:30px;border-radius:50%;border:0;background:#14181a;color:#fff;font-size:14px;cursor:pointer}
+.sa-cam{width:104px;height:104px;border:2px dashed #9fb7a8;border-radius:12px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4px;cursor:pointer;background:#f6faf7;color:var(--brand);font-size:13px}
+.sa-cam span{font-size:32px}
+.sa-chips{display:flex;flex-wrap:wrap;gap:8px}
+.sa-chip{border:2px solid #cfd3cc;background:#fff;border-radius:99px;padding:10px 16px;font-size:16px;cursor:pointer}
+.sa-chip.on{background:var(--brand);border-color:var(--brand);color:#fff;font-weight:600}
+.sa-step{display:flex;align-items:center;gap:10px}.sa-step button{width:58px;height:58px;border-radius:14px;border:2px solid #cfd3cc;background:#fff;font-size:28px;cursor:pointer}
+.sa-step input{width:100px;height:58px;font-size:26px;text-align:center;border-radius:14px}
+.sa-in{width:100%;font-size:16px;padding:12px;border-radius:12px}
+.sa-btn{width:100%;margin-top:22px;background:var(--brand);color:#fff;border:0;border-radius:14px;padding:18px;font-size:20px;font-weight:700;cursor:pointer}
+.sa-btn:disabled{opacity:.6}
+.sa-prog{text-align:center;color:var(--ink2);margin-top:10px;min-height:20px}
+.sa-done{text-align:center}.sa-tick{width:84px;height:84px;border-radius:50%;background:var(--brand);color:#fff;font-size:48px;display:flex;align-items:center;justify-content:center;margin:10px auto}
+.sa-li{display:flex;justify-content:space-between;gap:10px;padding:10px 0;border-bottom:1px solid #eef0ec;font-size:15px}.sa-li small{display:block;color:var(--muted);font-size:12px}.sa-st{white-space:nowrap;font-size:13px}
+.sa-alert{background:#fff3d6;border:2px solid #f0c46a;border-radius:14px;padding:14px;font-size:15px}
+/* office: job cards & photos */
+.jc{display:grid;grid-template-columns:auto 1fr;gap:16px}.jc.captured{opacity:.75}.jc.query{border-color:#f0c46a}
+.jc-ph{display:flex;gap:8px;flex-wrap:wrap;max-width:300px}
+img.th{width:92px;height:92px;object-fit:cover;border-radius:8px;cursor:zoom-in;background:#eef0ec;display:inline-block}img.th.sm{width:48px;height:48px;margin-right:4px}
+label.tick{display:inline-flex;gap:8px;align-items:center;font-weight:600;cursor:pointer}label.tick input{width:20px;height:20px;accent-color:var(--brand)}
+.ph-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(210px,1fr));gap:12px}
+.ph{background:#fff;border:1px solid var(--line);border-radius:12px;overflow:hidden}
+.ph-img img{width:100%;aspect-ratio:4/3;object-fit:cover;display:block;cursor:zoom-in;background:#eef0ec}
+.ph-m{padding:8px 10px;font-size:13px}
+.feed-day{font-weight:600;color:var(--ink2);margin:16px 0 8px;font-size:13px;text-transform:uppercase;letter-spacing:.04em}.feed-day:first-of-type{margin-top:0}
+.strip{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:10px}.strip img{width:100%;aspect-ratio:4/3;object-fit:cover;border-radius:10px;cursor:zoom-in;background:#eef0ec;display:block}
+@media (max-width:820px){.jc{grid-template-columns:1fr}.strip{grid-template-columns:repeat(2,minmax(0,1fr))}}
 </style>
 </head>
 <body>
@@ -115,6 +158,7 @@ body.cust .pv-bar{display:flex}
     <a href="#capture" data-v="capture">Capture collection</a>
     <a href="#collections" data-v="collections">Collections log</a>
     <a href="#reports" data-v="reports">Customer reports</a>
+    <a href="#inbox" data-v="inbox">Site uploads <span id="job-n"></span></a>
     <a href="#requests" data-v="requests">Collection requests <span id="req-n"></span></a>
     <a href="#enquiries" data-v="enquiries">Website enquiries <span id="enq-n"></span></a>
     <a href="#documents" data-v="documents">Certificates &amp; documents</a>
@@ -134,7 +178,7 @@ body.cust .pv-bar{display:flex}
 <script>
 const SITE=(window.HWS_CONFIG&&HWS_CONFIG.site)||{};
 
-const S={documents:[],requests:[],customers:[],materials:[],entries:[],factors:null,enquiries:[],profiles:[],role:null,profile:null,user:null,readOnly:false,loading:true};
+const S={jobCards:[],sitePhotos:[],binWashes:[],documents:[],requests:[],customers:[],materials:[],entries:[],factors:null,enquiries:[],profiles:[],role:null,profile:null,user:null,readOnly:false,loading:true};
 let db=null;const isStaff=()=>S.role==='staff'||S.role==='admin';const isAdmin=()=>S.role==='admin';
 const DEF_F={paperCO2:3.66,plasticCO2:0.86,metalCO2:0.6173,landfillDensity:940.22,treesPerTonnePaper:17,waterPerKgPaper:26.5,energyPaper:4100,energyPlastic:5774,energyMetal:1400,carbonTax:{"2025":236,"2026":308},vatRate:15};
 const CATS={paper:'Paper & cardboard',plastic:'Plastics',metal:'Metals',other:'Other recyclables',organic:'Organic / food',landfill:'Landfill'};
@@ -153,7 +197,7 @@ const num=v=>{const n=parseFloat(String(v).replace(',','.'));return isFinite(n)?
 const MONTHS=['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
 const mLabel=m=>{const[y,mm]=m.split('-');return MONTHS[+mm-1]+' '+y.slice(2)};
 const mLong=m=>{const[y,mm]=m.split('-');return ['January','February','March','April','May','June','July','August','September','October','November','December'][+mm-1]+' '+y};
-const today=()=>new Date().toISOString().slice(0,10);
+const today=()=>{const d=new Date();d.setMinutes(d.getMinutes()-d.getTimezoneOffset());return d.toISOString().slice(0,10)};
 function addMonths(m,n){let[y,mm]=m.split('-').map(Number);mm+=n;while(mm>12){mm-=12;y++}while(mm<1){mm+=12;y--}return y+'-'+String(mm).padStart(2,'0')}
 function monthRange(a,b){const out=[];let m=a;while(m<=b&&out.length<120){out.push(m);m=addMonths(m,1)}return out}
 function toast(t){const d=document.createElement('div');d.className='toast';d.textContent=t;document.body.appendChild(d);setTimeout(()=>d.remove(),2600)}
@@ -189,16 +233,16 @@ function envMetrics(list){
 }
 
 // ---------- routing ----------
-const VIEWS={documents:vDocuments,users:vUsers,enquiries:vEnquiries,portal:vPortal,requests:vRequests,dashboard:vDashboard,capture:vCapture,collections:vCollections,reports:vReports,customers:vCustomers,materials:vMaterials,settings:vSettings};
+const VIEWS={site:vSite,inbox:vInbox,documents:vDocuments,users:vUsers,enquiries:vEnquiries,portal:vPortal,requests:vRequests,dashboard:vDashboard,capture:vCapture,collections:vCollections,reports:vReports,customers:vCustomers,materials:vMaterials,settings:vSettings};
 const STAFF_VIEWS=['documents','dashboard','capture','collections','reports','customers','materials','settings','requests','enquiries','users','portal'];
-function view(){if(!isStaff())return 'portal';const h=location.hash.replace('#','');if(!VIEWS[h])return 'dashboard';if((h==='users'||h==='settings')&&!isAdmin())return 'dashboard';return h}
+function view(){if(S.role==='sorter')return 'site';if(!isStaff())return 'portal';const h=location.hash.replace('#','');if(!VIEWS[h])return 'dashboard';if((h==='users'||h==='settings')&&!isAdmin())return 'dashboard';return h}
 let lastView=null;
 function render(force){
   const v=view();
   document.querySelectorAll('nav a').forEach(a=>a.classList.toggle('on',a.dataset.v===v));
   // don't wipe a form the user is typing in when live data arrives
-  if(!force&&lastView===v&&((v==='capture'&&document.querySelector('#cap'))||document.querySelector('.modal'))){return}
-  lastView=v;document.body.classList.toggle('portal',v==='portal');document.body.classList.toggle('cust',!isStaff());const en=S.enquiries.filter(r=>r.status==='new').length;const eq=document.getElementById('enq-n');if(eq)eq.innerHTML=en?`<span class="pill landfill">${en}</span>`:'';const rn=S.requests.filter(r=>r.status==='new').length;const rq=document.getElementById('req-n');if(rq)rq.innerHTML=rn?`<span class="pill landfill">${rn}</span>`:'';
+  if(!force&&lastView===v&&((v==='capture'&&document.querySelector('#cap'))||(v==='site'&&SA.step!=='home')||document.querySelector('.modal'))){return}
+  lastView=v;document.body.classList.toggle('portal',v==='portal');document.body.classList.toggle('siteapp',v==='site');const jn=S.jobCards.filter(j=>j.status==='submitted').length;const jq=document.getElementById('job-n');if(jq)jq.innerHTML=jn?`<span class="pill landfill">${jn}</span>`:'';document.body.classList.toggle('cust',!isStaff());const en=S.enquiries.filter(r=>r.status==='new').length;const eq=document.getElementById('enq-n');if(eq)eq.innerHTML=en?`<span class="pill landfill">${en}</span>`:'';const rn=S.requests.filter(r=>r.status==='new').length;const rq=document.getElementById('req-n');if(rq)rq.innerHTML=rn?`<span class="pill landfill">${rn}</span>`:'';
   const m=$('#main');let pre='';
   if(S.loadError)pre='<div class="banner e">Could not load data: '+esc(S.loadError)+'. Check your connection and refresh.</div>';
   else if(S.loading)pre='<div class="banner w">Loading…</div>';
@@ -225,7 +269,7 @@ function vDashboard(){
   <h1>Dashboard</h1><p class="lead">All customers, one month at a time.</p>
   <div class="row" style="margin-bottom:16px"><label class="f">Month<select id="dm">${opts}</select></label>
   <a class="btn p right" href="#capture">+ Capture collection</a></div>
-  ${S.entries.length?'':'<div class="banner w">No collections captured yet. Start with <a href="#capture">Capture collection</a>.</div>'}
+  ${(()=>{const n=S.jobCards.filter(j=>j.status==='submitted').length;return n?`<div class="banner w"><b>${n} job card${n>1?'s':''} from site</b> waiting to be captured. <a href="#inbox">Open site uploads →</a></div>`:''})()}${S.entries.length?'':'<div class="banner w">No collections captured yet. Start with <a href="#capture">Capture collection</a>.</div>'}
   <div class="grid kpis" style="margin-bottom:18px">
     <div class="kpi"><div class="l">Total waste handled</div><div class="v">${kg(s.gen)}</div><div class="s">${delta(s.gen,prev.gen)}</div></div>
     <div class="kpi"><div class="l">Recycled / diverted</div><div class="v">${kg(s.rec)}</div><div class="s">${pct(s.pct)} diversion rate</div></div>
@@ -291,7 +335,8 @@ function vCapture(){
       <td class="n" data-reb>–</td></tr>`).join('');
   }
   const lastCust=lsGet('hb-cust',cs[0].id);
-  return `<h1>Capture collection</h1><p class="lead">Enter the weights for one collection, or a month's total, the same way you fill in the Weights tab now. Only rows with a weight or unit count are saved.</p>
+  const jb=CAPJOB&&S.jobCards.find(j=>j.id===CAPJOB);
+  return `${jb?`<div class="banner w" style="display:flex;gap:12px;align-items:center;flex-wrap:wrap"><div><b>Capturing job card from ${esc(custById(jb.customerId)?.name||'')}</b> · ${esc(jb.date)} · ${esc(jb.what)}${jb.loads?' ×'+nf0.format(jb.loads):''}${jb.ref?' · Job card '+esc(jb.ref):''}<br><span style="font-size:12px">It is ticked off automatically when you save. Click a photo to enlarge it.</span></div><div>${(jb.photos||[]).map(p=>thumb(p.path,p.kind==='jobcard'?'Job card':'Load','th sm')).join('')}</div><button class="btn sm right" id="c-nojob">Not this job card</button></div>`:''}<h1>Capture collection</h1><p class="lead">Enter the weights for one collection, or a month's total, the same way you fill in the Weights tab now. Only rows with a weight or unit count are saved.</p>
   <div class="card"><div class="fgrid" style="grid-template-columns:repeat(auto-fit,minmax(180px,1fr))">
     <label class="f">Customer<select id="c-cust">${cs.map(c=>`<option value="${esc(c.id)}" ${c.id===lastCust?'selected':''}>${esc(c.name)}</option>`).join('')}</select></label>
     <label class="f">Collection date<input type="date" id="c-date" value="${today()}"></label>
@@ -306,6 +351,8 @@ function vCapture(){
 }
 AFTER.capture=()=>{
   const sel=$('#c-cust');if(!sel)return;
+  const jb=CAPJOB&&S.jobCards.find(j=>j.id===CAPJOB);
+  if(jb){sel.value=jb.customerId;$('#c-date').value=jb.date;$('#c-site').value=jb.site||'';$('#c-slip').value=jb.ref||'';$('#c-notes').value=jb.notes||'';$('#c-nojob').onclick=()=>{CAPJOB=null;render(true)};fillThumbs()}
   const setSites=()=>{const c=custById(sel.value);const sites=String(c?.sites||'').split(',').map(s=>s.trim()).filter(Boolean);
     $('#sites').innerHTML=sites.map(s=>`<option value="${esc(s)}">`).join('');if(!$('#c-site').value&&sites.length)$('#c-site').value=sites[0];};
   sel.onchange=()=>{$('#c-site').value='';setSites();lsSet('hb-cust',sel.value)};setSites();
@@ -330,9 +377,10 @@ AFTER.capture=()=>{
       const rows=[];for(const l of lines){
         rows.push({date,month:date.slice(0,7),customerId:cust.id,customerName:cust.name,site:$('#c-site').value.trim(),
           materialId:l.m.id,materialName:l.m.name,category:l.m.category,method:l.m.method,kg:l.k,units:l.u,rate:l.m.category==='landfill'?0:l.r,rebate:l.m.category==='landfill'?0:Math.round(l.k*l.r*100)/100,
-          slip:$('#c-slip').value.trim(),notes:$('#c-notes').value.trim(),capturedBy:by,source:'manual'});
+          slip:$('#c-slip').value.trim(),notes:$('#c-notes').value.trim(),capturedBy:by,source:CAPJOB?'site':'manual',jobCardId:CAPJOB||undefined});
       }
       await DB.insert('entries',rows);ok=rows.length;
+      if(CAPJOB){const jid=CAPJOB;CAPJOB=null;await DB.update('job_cards',jid,{status:'captured',capturedBy:S.user.id,capturedByName:myName(),capturedAt:new Date().toISOString()});toast('Saved and job card ticked off');setTimeout(()=>{location.hash='inbox'},900);return}
       toast(`Saved ${ok} line(s) for ${cust.name}`);
       document.querySelectorAll('#cap [data-k=kg],#cap [data-k=units]').forEach(i=>i.value='');$('#c-slip').value='';$('#c-notes').value='';recalc();
     }catch(e){dbErr(e,`Saved ${ok} of ${lines.length} lines.`)}
@@ -559,21 +607,22 @@ function vPortal(){
     <a class="btn sm right" href="#dashboard">← Back to back office</a></div>`;
   const head=`<div class="pv-head"><div class="pv-logo">H</div><div><div style="font-weight:700;font-size:17px">Harambee Waste Management Solutions</div><div class="muted">Client portal · ${esc(c.name)}</div></div>
     <label class="f right">Period<select id="pv-r">${[['3','Last 3 months'],['6','Last 6 months'],['12','Last 12 months'],['ytd','This year'],['all','All time']].map(([v,l])=>`<option value="${v}" ${PV.range===v?'selected':''}>${l}</option>`).join('')}</select></label></div>`;
-  const tabs=`<div class="pv-tabs">${[['overview','Overview'],['impact','Environmental impact'],['statements','Monthly statements'],['history','Collection history'],['certs','Certificates'],['request','Request a collection']].map(([k,l])=>`<button data-pt="${k}" class="${PV.tab===k?'on':''}">${l}</button>`).join('')}</div>`;
+  const tabs=`<div class="pv-tabs">${[['overview','Overview'],['site','Site updates'],['impact','Environmental impact'],['statements','Monthly statements'],['history','Collection history'],['certs','Certificates'],['request','Request a collection']].map(([k,l])=>`<button data-pt="${k}" class="${PV.tab===k?'on':''}">${l}</button>`).join('')}</div>`;
   let body='';
-  if(!list.length&&PV.tab!=='request'&&PV.tab!=='certs')body='<div class="card"><p class="muted">No collections recorded for this period yet.</p></div>';
+  if(!list.length&&PV.tab!=='request'&&PV.tab!=='certs'&&PV.tab!=='site')body='<div class="card"><p class="muted">No collections recorded for this period yet.</p></div>';
   else if(PV.tab==='overview'){
     const byMat={};list.filter(isRecycled).forEach(e=>{byMat[e.materialName]=(byMat[e.materialName]||0)+num(e.kg)});
     const top=Object.entries(byMat).sort((a,b)=>b[1]-a[1]);const mx=top.length?top[0][1]:1;
     const shown=top.slice(0,7),rest=top.slice(7).reduce((a,[,v])=>a+v,0);if(rest)shown.push(['Other recyclables',rest]);
-    body=`<div class="hero"><div><div class="l">Recycling rate · ${mLong(from)} to ${mLong(to)}</div><div class="big">${pct(s.pct)}</div><div class="l" style="margin-top:6px">of your waste was kept out of landfill</div></div>
+    body=`<div class="hero"><div><div class="l">Landfill diversion rate · ${mLong(from)} to ${mLong(to)}</div><div class="big">${pct(s.pct)}</div><div class="l" style="margin-top:6px">of your waste was diverted from landfill</div></div>
       <div><div class="l">Diverted from landfill</div><div style="font-size:26px;font-weight:700">${nf1.format(s.rec/1000)} tonnes</div></div>
       <div><div class="l">CO₂e avoided</div><div style="font-size:26px;font-weight:700">${nf1.format(env.co2/1000)} tonnes</div></div></div>
     <div class="grid kpis" style="margin-bottom:18px">
       <div class="kpi"><div class="l">Total waste collected</div><div class="v">${kg(s.gen)}</div></div>
       <div class="kpi"><div class="l">Recycled</div><div class="v">${kg(s.rec)}</div></div>
       <div class="kpi"><div class="l">Sent to landfill</div><div class="v">${kg(s.land)}</div><div class="s">${nf0.format(s.skips)} skips</div></div>
-      <div class="kpi"><div class="l">Recycling rebates earned</div><div class="v">${R(s.rebate)}</div><div class="s">excl. VAT</div></div></div>
+      <div class="kpi"><div class="l">Recycling rebates earned</div><div class="v">${R(s.rebate)}</div><div class="s">excl. VAT</div></div>${(()=>{const b=S.binWashes.filter(w=>w.customerId===PV.cust&&String(w.date).slice(0,7)>=from&&String(w.date).slice(0,7)<=to).reduce((a,w)=>a+(w.bins||0),0);return b?`<div class="kpi"><div class="l">Bins washed</div><div class="v">${nf0.format(b)}</div><div class="s">this period</div></div>`:''})()}</div>
+    ${(()=>{const ps=S.sitePhotos.filter(p=>p.customerId===PV.cust&&p.visible).sort((a,b)=>String(b.takenOn).localeCompare(String(a.takenOn))||String(b.createdAt).localeCompare(String(a.createdAt))).slice(0,4);return ps.length?`<div class="card"><div class="row" style="margin-bottom:10px"><h2 style="margin:0">Latest from your site</h2><button class="btn sm right" data-pt="site">See all site updates →</button></div><div class="strip">${ps.map(p=>thumb(p.filePath,(p.tag||'')+(p.caption?' · '+p.caption:'')+' · '+fmtD(p.takenOn),'')).join('')}</div></div>`:''})()}
     <div class="card"><h2>Recycled vs landfill by month</h2><div class="legend"><span><i style="background:var(--rec)"></i>Recycled</span><span><i style="background:var(--land)"></i>Landfill</span></div><div class="chart" id="pv-chart"></div></div>
     <div class="card"><h2>What we recycled for you</h2>${shown.map(([n,v])=>`<div class="hbar"><span>${esc(n)}</span><span class="t"><i style="width:${(v/mx*100).toFixed(1)}%;background:var(--rec)"></i></span><span style="text-align:right">${kg(v)}</span></div>`).join('')}</div>`;
   }else if(PV.tab==='impact'){
@@ -594,6 +643,8 @@ function vPortal(){
     const rows=[...list].sort((a,b)=>(b.date||'').localeCompare(a.date||''));
     body=`<div class="card"><div class="row" style="margin-bottom:10px"><h2 style="margin:0">Collection history</h2><button class="btn sm right" id="pv-csv">Copy as CSV</button></div><div class="tbl-wrap"><table><thead><tr><th>Date</th><th>Site</th><th>Material</th><th>Destination</th><th class="n">Weight</th><th class="n">Skips</th><th class="n">Rebate (excl.)</th></tr></thead><tbody>
     ${rows.map(e=>`<tr><td>${esc(e.date)}</td><td>${esc(e.site)}</td><td>${esc(e.materialName)}</td><td>${esc(e.method)}</td><td class="n">${kg(e.kg)}</td><td class="n">${e.category==='landfill'&&e.units?nf0.format(e.units):''}</td><td class="n">${e.rebate?R(e.rebate):''}</td></tr>`).join('')}</tbody></table></div></div>`;
+  }else if(PV.tab==='site'){
+    body=siteUpdatesCard(PV.cust,from,to);
   }else if(PV.tab==='certs'){
     body=docsListCard(docsFor(PV.cust),false);
   }else if(PV.tab==='request'){
@@ -624,7 +675,7 @@ AFTER.portal=()=>{
     <tr class="tot"><td>Total</td><td>${pct(x.pct)} recycled</td><td class="n">${kg(x.gen)}</td><td class="n">${R(x.rebate)}</td></tr></tbody></table>
     <p class="muted" style="font-size:12px">Rebate incl. VAT: ${R(x.rebate*(1+F().vatRate/100))} · CO₂e avoided: ${nf0.format(ev.co2)} kg · Landfill space saved: ${nf1.format(ev.space)} m³</p></div>`;$('#stm').querySelector('[data-pdf]').onclick=()=>statementPDF(PV.cust,m,l);$('#stm').scrollIntoView({behavior:'smooth'})});
   document.querySelectorAll('[data-pdf]').forEach(b=>b.onclick=()=>statementPDF(PV.cust,b.dataset.pdf,list.filter(e=>e.month===b.dataset.pdf)));
-  bindDocButtons();
+  bindDocButtons();fillThumbs();
   if($('#rq-send'))$('#rq-send').onclick=async()=>{const d={customerId:PV.cust,customerName:custById(PV.cust).name,date:$('#rq-date').value,site:$('#rq-site').value.trim(),what:$('#rq-what').value.trim(),contact:$('#rq-name').value.trim(),phone:$('#rq-tel').value.trim(),notes:$('#rq-notes').value.trim(),status:'new'};if(!d.date)d.date=null;
     if(!d.what){toast('Say what needs collecting');return}
     try{await DB.insert('requests',d);toast('Request sent. Harambee will confirm the date.');render(true)}catch(e){dbErr(e)}};
@@ -738,6 +789,7 @@ async function statementPDF(custId,month,list){
   doc.setFontSize(10);doc.setFont('helvetica','bold');doc.text('Rebate summary',M,y);doc.text('Environmental impact (estimated)',M+95,y);doc.setFont('helvetica','normal');doc.setFontSize(9.5);
   const rb=[['Rebate excl. VAT',pR(x.rebate)],[`VAT (${vat}%)`,pR(x.rebate*vat/100)],['Rebate incl. VAT',pR(x.rebate*(1+vat/100))]];
   const en=[['CO2e emissions avoided',pn(nf1.format(ev.co2/1000))+' t'],['Landfill space saved',pn(nf1.format(ev.space))+' m³'],['Carbon tax equivalent',pR(ev.tax)],['Trees saved',pn(nf0.format(ev.trees))],['Water saved',pn(nf0.format(ev.water))+' L'],['Energy saved',pn(nf0.format(ev.energy))+' kWh']];
+  const bwN=S.binWashes.filter(w=>w.customerId===custId&&String(w.date).slice(0,7)===month).reduce((a,w)=>a+(w.bins||0),0);if(bwN)rb.push(['',''],['Bins washed this month',pn(nf0.format(bwN))]);
   rb.forEach(([l,v],i)=>{const yy=y+6+i*5.5;doc.text(l,M,yy);doc.text(v,M+80,yy,{align:'right'})});
   en.forEach(([l,v],i)=>{const yy=y+6+i*5.5;doc.text(l,M+95,yy);doc.text(v,W-M,yy,{align:'right'})});
   y+=6+6*5.5+6;
@@ -761,7 +813,7 @@ async function fetchAll(table,order){
   for(;;){let q=db.from(table).select('*').range(from,from+size-1);if(order)q=q.order(order);const {data,error}=await q;if(error)throw error;out.push(...data);if(data.length<size)break;from+=size}
   return out.map(fromRow);
 }
-const TABLE_KEY={documents:'documents',entries:'entries',customers:'customers',materials:'materials',requests:'requests',enquiries:'enquiries',profiles:'profiles',settings:'settings'};
+const TABLE_KEY={job_cards:'jobCards',site_photos:'sitePhotos',bin_washes:'binWashes',documents:'documents',entries:'entries',customers:'customers',materials:'materials',requests:'requests',enquiries:'enquiries',profiles:'profiles',settings:'settings'};
 const DB={
   async insert(t,v){const rows=(Array.isArray(v)?v:[v]).map(toRow);const {error}=await db.from(t).insert(rows);if(error)throw error;await reload(t)},
   async update(t,id,v){const {error}=await db.from(t).update(toRow(v)).eq('id',id);if(error)throw error;await reload(t)},
@@ -781,7 +833,7 @@ async function reload(t){
 }
 async function loadAll(){
   S.loading=true;S.loadError=null;render(true);
-  await Promise.all(['customers','materials','settings','requests','entries','enquiries','profiles','documents'].map(reload));
+  await Promise.all((S.role==='sorter'?['customers','requests','job_cards','site_photos','bin_washes']:['customers','materials','settings','requests','entries','enquiries','profiles','documents','job_cards','site_photos','bin_washes']).map(reload));
   S.loading=false;render(true);
 }
 function dbErr(e,extra){
@@ -795,19 +847,19 @@ function vUsers(){
   const ps=[...S.profiles].sort((a,b)=>(a.role==='pending'?0:1)-(b.role==='pending'?0:1)||(a.email||'').localeCompare(b.email||''));
   return `<h1>Users &amp; access</h1><p class="lead">Everyone who can log in. New logins start as <b>Pending</b> with no access until you choose their role here.</p>
   <div class="banner ok"><b>To add someone:</b> in Supabase go to Authentication → Users → <b>Invite user</b> and enter their email. They get an email to set a password, then appear here. Set staff to <b>Staff</b>; set a customer contact to <b>Customer</b> and pick their company.</div>
-  <div class="card"><div class="tbl-wrap"><table><thead><tr><th>Email</th><th>Name</th><th>Role</th><th>Customer (for customer logins)</th><th></th></tr></thead><tbody>
+  <div class="card"><div class="tbl-wrap"><table><thead><tr><th>Email</th><th>Name</th><th>Role</th><th>Client / site</th><th></th></tr></thead><tbody>
   ${ps.map(p=>`<tr data-pid="${esc(p.id)}"><td>${esc(p.email)}${p.id===S.user.id?' <span class="pill">you</span>':''}</td><td><input data-k="fullName" value="${esc(p.fullName||'')}" style="width:160px"></td>
-    <td><select data-k="role" ${p.id===S.user.id?'disabled':''}>${[['pending','Pending (no access)'],['customer','Customer'],['staff','Staff'],['admin','Admin']].map(([v,l])=>`<option value="${v}" ${p.role===v?'selected':''}>${l}</option>`).join('')}</select></td>
+    <td><select data-k="role" ${p.id===S.user.id?'disabled':''}>${[['pending','Pending (no access)'],['customer','Client'],['sorter','Site sorter'],['staff','Management (staff)'],['admin','Admin']].map(([v,l])=>`<option value="${v}" ${p.role===v?'selected':''}>${l}</option>`).join('')}</select></td>
     <td><select data-k="customerId"><option value="">–</option>${S.customers.map(c=>`<option value="${esc(c.id)}" ${p.customerId===c.id?'selected':''}>${esc(c.name)}</option>`).join('')}</select></td>
     <td><button class="btn sm p" data-save>Save</button></td></tr>`).join('')||'<tr><td colspan="5" class="muted">No users yet.</td></tr>'}
   </tbody></table></div></div>
-  <p class="muted" style="font-size:12px">Staff can capture and edit collections, customers and requests. Admins can also change rates, report factors and user access. Customers only see their own company's portal.</p>`;
+  <div class="card"><h2>What each role can do</h2><table><tbody><tr><td><b>Site sorter</b></td><td>Only the simple phone app for their one site: send job card and load photos, book collections, log bins washed, send site photos. Sees no weights, rates or other clients.</td></tr><tr><td><b>Management (staff)</b></td><td>Captures weights, checks and ticks off job cards, publishes site photos, manages clients, requests, enquiries and certificates. Cannot change rates, report factors or user access.</td></tr><tr><td><b>Admin</b></td><td>Everything, including rates, report factors, users and deleting records.</td></tr><tr><td><b>Client</b></td><td>Their own company's portal only.</td></tr></tbody></table></div>`;
 }
 AFTER.users=()=>document.querySelectorAll('[data-pid] [data-save]').forEach(b=>b.onclick=async()=>{
   const tr=b.closest('tr');const id=tr.dataset.pid;const d={fullName:tr.querySelector('[data-k=fullName]').value.trim(),customerId:tr.querySelector('[data-k=customerId]').value||null};
   const rs=tr.querySelector('[data-k=role]');if(!rs.disabled)d.role=rs.value;
-  if(d.role==='customer'&&!d.customerId){toast('Pick the customer company for this login');return}
-  if(d.role&&d.role!=='customer')d.customerId=null;
+  if((d.role==='customer'||d.role==='sorter')&&!d.customerId){toast(d.role==='sorter'?'Pick the site this sorter works at':'Pick the client company for this login');return}
+  if(d.role&&d.role!=='customer'&&d.role!=='sorter')d.customerId=null;
   try{await DB.update('profiles',id,d);toast('Access updated')}catch(e){dbErr(e)}});
 
 // ---------- Website enquiries ----------
@@ -820,6 +872,205 @@ function vEnquiries(){
   </tbody></table></div>`:'<p class="muted">No enquiries yet.</p>'}</div>`;
 }
 AFTER.enquiries=()=>document.querySelectorAll('[data-es]').forEach(s=>s.onchange=async()=>{try{await DB.update('enquiries',s.dataset.es,{status:s.value});toast('Updated')}catch(e){dbErr(e)}});
+
+
+// ---------- On-site: photos & storage ----------
+const MEDIA='site-media';
+const isSorter=()=>S.role==='sorter';
+const LOAD_TYPES=['General waste','Cardboard','Plastic','Mixed recycling','Food / organic','Scrap metal','Glass','Other'];
+const PHOTO_TAGS=['Site overview','Sorting area','Bins & skips','Before','After','Problem'];
+const URLS={};
+async function compressImage(file,max=1600,q=0.72){
+  try{
+    const bmp=await createImageBitmap(file,{imageOrientation:'from-image'});
+    const sc=Math.min(1,max/Math.max(bmp.width,bmp.height));const c=document.createElement('canvas');c.width=Math.round(bmp.width*sc);c.height=Math.round(bmp.height*sc);
+    c.getContext('2d').drawImage(bmp,0,0,c.width,c.height);
+    return await new Promise(r=>c.toBlob(b=>r(b||file),'image/jpeg',q));
+  }catch(e){return file}
+}
+async function uploadMedia(cust,kind,file){
+  const blob=await compressImage(file);
+  const path=`${cust}/${kind}/${today()}/${Date.now().toString(36)}${Math.random().toString(36).slice(2,7)}.jpg`;
+  const {error}=await db.storage.from(MEDIA).upload(path,blob,{contentType:'image/jpeg',upsert:false});
+  if(error)throw error;return path;
+}
+// fill <img data-path> with short-lived signed links
+async function fillThumbs(){
+  const imgs=[...document.querySelectorAll('img[data-path]')];if(!imgs.length)return;
+  const now=Date.now();const need=[...new Set(imgs.map(i=>i.dataset.path).filter(p=>!URLS[p]||URLS[p].exp<now))];
+  for(let i=0;i<need.length;i+=100){
+    const {data,error}=await db.storage.from(MEDIA).createSignedUrls(need.slice(i,i+100),3600);
+    if(!error&&data)data.forEach(d=>{if(d.signedUrl)URLS[d.path]={url:d.signedUrl,exp:now+50*60e3}});
+  }
+  imgs.forEach(i=>{const u=URLS[i.dataset.path];if(u&&i.src!==u.url)i.src=u.url;
+    i.onclick=()=>{const v=URLS[i.dataset.path];if(v)modal(`<img src="${v.url}" style="width:100%;border-radius:8px;display:block"><div class="row" style="margin-top:12px"><span class="muted">${esc(i.alt||'')}</span><button class="btn right" onclick="closeModal()">Close</button></div>`)}});
+}
+const thumb=(p,alt,cls='th')=>`<img class="${cls}" data-path="${esc(p)}" alt="${esc(alt||'')}" loading="lazy">`;
+const fmtDT=s=>s?new Date(s).toLocaleString('en-ZA',{day:'numeric',month:'short',hour:'2-digit',minute:'2-digit'}):'';
+const fmtD=s=>s?new Date(s+'T12:00:00').toLocaleDateString('en-ZA',{weekday:'short',day:'numeric',month:'short',year:'numeric'}):'';
+const myName=()=>S.profile?.fullName||S.user?.email||'';
+
+// ---------- Site app (sorters; staff can open it too) ----------
+const SA={step:'home',cust:null,f:{}};
+function saCust(){if(isSorter())return S.profile.customerId;const cs=S.customers.filter(c=>c.active!==false);if(!SA.cust||!custById(SA.cust))SA.cust=(cs[0]||{}).id;return SA.cust}
+function vSite(){
+  const cid=saCust();const c=custById(cid);
+  if(!c)return `<div class="sa"><div class="sa-card"><p>${S.loading?'Loading…':'Your login isn\'t linked to a site yet. Ask the office to set it up.'}</p><button class="sa-btn" onclick="signOut()">Sign out</button></div></div>`;
+  const top=`<div class="sa-top"><div class="pv-logo" style="width:40px;height:40px;font-size:18px">H</div><div style="min-width:0"><div class="sa-site">${esc(c.name)}</div><div class="sa-hi">${esc(myName().split(' ')[0]||'')} · ${fmtD(today())}</div></div>
+    ${isStaff()?`<a class="btn sm right" href="#inbox">← Office</a>`:`<button class="btn sm right" onclick="signOut()">Sign out</button>`}</div>
+    ${isStaff()?`<div class="sa-card" style="padding:10px 14px"><label class="f">Site<select id="sa-c">${S.customers.filter(x=>x.active!==false).map(x=>`<option value="${esc(x.id)}" ${x.id===cid?'selected':''}>${esc(x.name)}</option>`).join('')}</select></label></div>`:''}`;
+  const st=SA.step;
+  if(st==='done')return `<div class="sa">${top}<div class="sa-card sa-done"><div class="sa-tick">✓</div><h2>Sent</h2><p>${esc(SA.doneMsg||'The office has it.')}</p><button class="sa-btn" data-go="home">Done</button></div></div>`;
+  if(st==='home'){
+    const t=today();
+    const mine=[...S.jobCards.filter(j=>j.customerId===cid&&String(j.createdAt||'').slice(0,10)>=addDays(t,-6)).map(j=>({t:j.createdAt,l:'Load: '+(j.what||'')+(j.loads?' ×'+nf0.format(j.loads):''),s:j.status})),
+      ...S.requests.filter(r=>r.customerId===cid&&r.source==='site'&&String(r.createdAt||'').slice(0,10)>=addDays(t,-6)).map(r=>({t:r.createdAt,l:'Booking: '+r.what,s:'b-'+r.status})),
+      ...S.binWashes.filter(w=>w.customerId===cid&&w.date>=addDays(t,-6)).map(w=>({t:w.createdAt,l:'Bins washed: '+w.bins,s:'ok'})),
+      ...S.sitePhotos.filter(p=>p.customerId===cid&&p.takenOn>=addDays(t,-6)).map(p=>({t:p.createdAt,l:'Photo: '+(p.tag||''),s:'ok'}))].sort((a,b)=>String(b.t).localeCompare(String(a.t)));
+    const lab={submitted:'⏳ With office',captured:'✅ Done',query:'❓ Office has a question',ok:'✅ Sent','b-new':'⏳ Sent','b-scheduled':'🚛 Booked','b-done':'✅ Collected','b-cancelled':'✖ Cancelled'};
+    const q=S.jobCards.filter(j=>j.customerId===cid&&j.status==='query');
+    return `<div class="sa">${top}
+      ${q.map(j=>`<div class="sa-alert">❓ <b>Office question</b> about ${esc(j.what)} (${esc(j.date)}): ${esc(j.queryNote||'please call the office')}</div>`).join('')}
+      <button class="sa-big" data-go="load"><span class="ic">📷</span><span><b>Load leaving site</b><small>Photo of the job card and the load</small></span></button>
+      <button class="sa-big" data-go="book"><span class="ic">🚛</span><span><b>Book a collection</b><small>Skip full? Ask for a truck</small></span></button>
+      <button class="sa-big" data-go="wash"><span class="ic">🧽</span><span><b>Bins washed</b><small>How many bins you washed today</small></span></button>
+      <button class="sa-big" data-go="photo"><span class="ic">🖼️</span><span><b>Site photo</b><small>Daily picture of the site</small></span></button>
+      <div class="sa-card"><h2>Sent this week</h2>${mine.length?mine.slice(0,15).map(x=>`<div class="sa-li"><span>${esc(x.l)}<small>${fmtDT(x.t)}</small></span><span class="sa-st">${lab[x.s]||''}</span></div>`).join(''):'<p class="muted">Nothing sent yet this week.</p>'}</div></div>`;
+  }
+  const f=SA.f;const back=`<button class="sa-back" data-go="home">‹ Back</button>`;
+  const shots=(key,label,max)=>`<div class="sa-q">${label}</div><div class="sa-shots">${(f[key]||[]).map((x,i)=>`<div class="sa-shot"><img src="${x.url}"><button data-rm="${key}:${i}">✕</button></div>`).join('')}
+    ${(f[key]||[]).length<max?`<label class="sa-cam"><input type="file" accept="image/*" capture="environment" data-shot="${key}" hidden><span>📷</span><b>${(f[key]||[]).length?'Add another':'Take photo'}</b></label>`:''}</div>`;
+  const chips=(key,opts,multi)=>`<div class="sa-chips">${opts.map(o=>`<button class="sa-chip ${(multi?(f[key]||[]).includes(o):f[key]===o)?'on':''}" data-chip="${key}" data-multi="${multi?1:''}" data-val="${esc(o)}">${esc(o)}</button>`).join('')}</div>`;
+  const stepper=(key,label)=>`<div class="sa-q">${label}</div><div class="sa-step"><button data-dec="${key}">−</button><input type="number" inputmode="numeric" min="0" data-num="${key}" value="${f[key]??0}"><button data-inc="${key}">+</button></div>`;
+  const send=(t)=>`<button class="sa-btn" id="sa-send">${t}</button><div id="sa-prog" class="sa-prog"></div>`;
+  let body='';
+  if(st==='load')body=`<h2>Load leaving site</h2>${shots('card','1. Photo of the job card',2)}${shots('load','2. Photo of the load on the truck',4)}
+    <div class="sa-q">3. What is on the truck?</div>${chips('what',LOAD_TYPES,true)}${stepper('loads','4. How many skips or loads?')}
+    <div class="sa-q">Job card number <span class="muted">(if there is one)</span></div><input class="sa-in" id="sa-ref" inputmode="numeric" value="${esc(f.ref||'')}">
+    <div class="sa-q">Anything the office must know? <span class="muted">(optional)</span></div><textarea class="sa-in" id="sa-notes" rows="2">${esc(f.notes||'')}</textarea>${send('Send to office')}`;
+  else if(st==='book')body=`<h2>Book a collection</h2><div class="sa-q">1. What must we collect?</div>${chips('what',['Skip full',...LOAD_TYPES],true)}
+    <div class="sa-q">2. When?</div>${chips('when',['Today','Tomorrow','Other day'],false)}${f.when==='Other day'?`<input class="sa-in" type="date" id="sa-date" min="${today()}" value="${esc(f.date||'')}">`:''}
+    <div class="sa-q">Notes <span class="muted">(optional)</span></div><textarea class="sa-in" id="sa-notes" rows="2">${esc(f.notes||'')}</textarea>${send('Book it')}`;
+  else if(st==='wash')body=`<h2>Bins washed</h2>${stepper('bins','1. How many bins did you wash?')}${shots('pics','2. Photo of the clean bins (optional)',4)}
+    <div class="sa-q">Notes <span class="muted">(optional)</span></div><textarea class="sa-in" id="sa-notes" rows="2">${esc(f.notes||'')}</textarea>${send('Send')}`;
+  else if(st==='photo')body=`<h2>Site photo</h2>${shots('pics','1. Take the photo',6)}<div class="sa-q">2. What is it?</div>${chips('tag',PHOTO_TAGS,false)}
+    <div class="sa-q">Short note <span class="muted">(optional)</span></div><input class="sa-in" id="sa-cap" value="${esc(f.caption||'')}" placeholder="e.g. Sorting area clean after shift">${send('Send photo')}`;
+  return `<div class="sa">${top}<div class="sa-card">${back}${body}</div></div>`;
+}
+function addDays(d,n){const x=new Date(d+'T12:00:00');x.setDate(x.getDate()+n);return x.toISOString().slice(0,10)}
+function saKeep(){const g=id=>{const e=document.getElementById(id);return e?e.value:undefined};const f=SA.f;
+  if(g('sa-ref')!==undefined)f.ref=g('sa-ref');if(g('sa-notes')!==undefined)f.notes=g('sa-notes');if(g('sa-cap')!==undefined)f.caption=g('sa-cap');if(g('sa-date')!==undefined)f.date=g('sa-date');
+  document.querySelectorAll('[data-num]').forEach(i=>f[i.dataset.num]=Math.max(0,Math.round(num(i.value))))}
+AFTER.site=()=>{
+  const sc=$('#sa-c');if(sc)sc.onchange=()=>{SA.cust=sc.value;render(true)};
+  document.querySelectorAll('[data-go]').forEach(b=>b.onclick=()=>{const g=b.dataset.go;SA.step=g;
+    SA.f=g==='load'?{loads:1,what:[]}:g==='book'?{what:[],when:'Today'}:g==='wash'?{bins:0}:g==='photo'?{tag:'Site overview'}:{};render(true);scrollTo(0,0)});
+  document.querySelectorAll('[data-shot]').forEach(inp=>inp.onchange=()=>{saKeep();const k=inp.dataset.shot;SA.f[k]=SA.f[k]||[];for(const file of inp.files)SA.f[k].push({file,url:URL.createObjectURL(file)});render(true)});
+  document.querySelectorAll('[data-rm]').forEach(b=>b.onclick=()=>{saKeep();const[k,i]=b.dataset.rm.split(':');SA.f[k].splice(+i,1);render(true)});
+  document.querySelectorAll('[data-chip]').forEach(b=>b.onclick=()=>{saKeep();const k=b.dataset.chip,v=b.dataset.val;
+    if(b.dataset.multi){const a=SA.f[k]=SA.f[k]||[];const i=a.indexOf(v);i<0?a.push(v):a.splice(i,1)}else SA.f[k]=v;render(true)});
+  document.querySelectorAll('[data-inc],[data-dec]').forEach(b=>b.onclick=()=>{saKeep();const k=b.dataset.inc||b.dataset.dec;SA.f[k]=Math.max(0,(SA.f[k]||0)+(b.dataset.inc?1:-1));render(true)});
+  const go=$('#sa-send');if(!go)return;
+  go.onclick=async()=>{saKeep();const f=SA.f,cid=saCust(),c=custById(cid),site=String(c.sites||'').split(',')[0].trim(),st=SA.step;
+    const prog=t=>{$('#sa-prog').textContent=t};
+    if(st==='load'){if(!(f.card||[]).length){toast('Take a photo of the job card first');return}if(!f.what.length){toast('Choose what is on the truck');return}}
+    if(st==='book'&&!f.what.length){toast('Choose what must be collected');return}
+    if(st==='book'&&f.when==='Other day'&&!f.date){toast('Pick the day');return}
+    if(st==='wash'&&!f.bins){toast('How many bins? Tap +');return}
+    if(st==='photo'&&!(f.pics||[]).length){toast('Take the photo first');return}
+    go.disabled=true;go.textContent='Sending…';
+    try{
+      const up=async(list,kind)=>{const out=[];for(const x of list||[]){prog(`Sending photo ${out.length+1} of ${list.length}…`);out.push(await uploadMedia(cid,kind,x.file))}return out};
+      if(st==='load'){
+        const cards=await up(f.card,'jobcard'),loads=await up(f.load,'load');prog('Saving…');
+        await DB.insert('job_cards',{customerId:cid,site,date:today(),what:f.what.join(', '),loads:f.loads||0,ref:(f.ref||'').trim(),notes:(f.notes||'').trim(),
+          photos:[...cards.map(p=>({path:p,kind:'jobcard'})),...loads.map(p=>({path:p,kind:'load'}))],status:'submitted',createdByName:myName()});
+        SA.doneMsg='The office will check the job card and capture the weights.';
+      }else if(st==='book'){
+        const d=f.when==='Today'?today():f.when==='Tomorrow'?addDays(today(),1):f.date;
+        await DB.insert('requests',{customerId:cid,customerName:c.name,date:d,site,what:f.what.join(', '),contact:myName(),notes:(f.notes||'').trim(),status:'new',source:'site'});
+        SA.doneMsg='The office will arrange the truck.';
+      }else if(st==='wash'){
+        const pics=await up(f.pics,'wash');prog('Saving…');
+        await DB.insert('bin_washes',{customerId:cid,site,date:today(),bins:f.bins,notes:(f.notes||'').trim(),photos:pics.map(p=>({path:p})),createdByName:myName()});
+        SA.doneMsg=`${f.bins} bins recorded.`;
+      }else if(st==='photo'){
+        const pics=await up(f.pics,'site');prog('Saving…');
+        await DB.insert('site_photos',pics.map(p=>({customerId:cid,takenOn:today(),tag:f.tag||'',caption:(f.caption||'').trim(),filePath:p,visible:false,createdByName:myName()})));
+        SA.doneMsg='Thank you. The office will check the photo.';
+      }
+      SA.step='done';SA.f={};render(true);scrollTo(0,0);
+    }catch(e){go.disabled=false;go.textContent='Try again';prog('Could not send. Check your signal and tap Try again. ('+((e&&e.message)||e)+')')}
+  };
+};
+
+// ---------- Office: site uploads ----------
+let IB={tab:'jobs',show:'open'};
+let CAPJOB=null;
+function vInbox(){
+  const open=S.jobCards.filter(j=>j.status!=='captured').length;const hidden=S.sitePhotos.filter(p=>!p.visible).length;
+  const tabs=`<div class="pv-tabs">${[['jobs',`Job cards${open?` <span class="pill landfill">${open}</span>`:''}`],['photos',`Site photos${hidden?` <span class="pill">${hidden} to check</span>`:''}`],['washes','Bin washing']].map(([k,l])=>`<button data-ib="${k}" class="${IB.tab===k?'on':''}">${l}</button>`).join('')}</div>`;
+  let body='';
+  if(IB.tab==='jobs'){
+    const js=S.jobCards.filter(j=>IB.show==='all'||j.status!=='captured').sort((a,b)=>(a.status==='captured'?1:0)-(b.status==='captured'?1:0)||String(b.createdAt).localeCompare(String(a.createdAt)));
+    body=`<div class="row" style="margin-bottom:12px"><label class="f">Show<select id="ib-show"><option value="open" ${IB.show==='open'?'selected':''}>Waiting to be captured</option><option value="all" ${IB.show==='all'?'selected':''}>All job cards</option></select></label>
+      <a class="btn right" href="#site">Open site app ↗</a></div>
+    ${js.length?js.map(j=>{const c=custById(j.customerId);return `<div class="card jc ${j.status}">
+      <div class="jc-ph">${(j.photos||[]).map(p=>thumb(p.path,(p.kind==='jobcard'?'Job card':'Load')+' · '+(c?.name||'')+' · '+j.date)).join('')||'<span class="muted">No photos</span>'}</div>
+      <div class="jc-b"><div class="row" style="align-items:center"><b>${esc(c?.name||j.customerId)}</b><span class="muted">${esc(j.site)}</span>
+        ${j.status==='captured'?'<span class="pill organic right">Captured</span>':j.status==='query'?'<span class="pill landfill right">Query sent</span>':'<span class="pill right" style="background:#fff3d6;color:#8a5a00">Waiting</span>'}</div>
+        <div style="margin:6px 0"><b>${esc(j.what)}</b>${j.loads?` · ${nf0.format(j.loads)} load(s)`:''}${j.ref?` · Job card ${esc(j.ref)}`:''}</div>
+        <div class="muted" style="font-size:12px">${fmtD(j.date)} · sent by ${esc(j.createdByName||'site')} at ${fmtDT(j.createdAt)}</div>
+        ${j.notes?`<div style="margin-top:6px">“${esc(j.notes)}”</div>`:''}
+        ${j.status==='query'&&j.queryNote?`<div class="banner w" style="margin:8px 0 0">Question to site: ${esc(j.queryNote)}</div>`:''}
+        <div class="row" style="margin-top:12px;align-items:center">
+          <label class="tick"><input type="checkbox" data-jtick="${esc(j.id)}" ${j.status==='captured'?'checked':''} ${S.readOnly?'disabled':''}> Captured on system</label>
+          ${j.status==='captured'?`<span class="muted" style="font-size:12px">by ${esc(j.capturedByName)} · ${fmtDT(j.capturedAt)}</span>`:`<button class="btn sm p" data-jcap="${esc(j.id)}">Capture weights</button><button class="btn sm" data-jq="${esc(j.id)}">Ask site a question</button>`}
+          ${isAdmin()?`<button class="btn sm d right" data-jdel="${esc(j.id)}">Delete</button>`:''}</div></div></div>`}).join(''):'<div class="card"><p class="muted">All job cards are captured. Nice.</p></div>'}`;
+  }else if(IB.tab==='photos'){
+    const byDay={};[...S.sitePhotos].sort((a,b)=>String(b.takenOn).localeCompare(String(a.takenOn))||String(b.createdAt).localeCompare(String(a.createdAt))).forEach(p=>{(byDay[p.takenOn]=byDay[p.takenOn]||[]).push(p)});
+    body=`<div class="banner ok">Photos from site stay internal until you tick <b>Show to client</b>. Clients see published photos under <b>Site updates</b> in their portal.</div>
+      <div class="row" style="margin-bottom:12px">${hidden?`<button class="btn p" id="ph-all">Show all ${hidden} unchecked photos to clients</button>`:''}<a class="btn right" href="#site">+ Add a photo</a></div>
+      ${Object.keys(byDay).length?Object.entries(byDay).map(([d,ps])=>`<h2 style="margin:18px 0 8px">${fmtD(d)}</h2><div class="ph-grid">${ps.map(p=>`<div class="ph"><div class="ph-img">${thumb(p.filePath,(custById(p.customerId)?.name||'')+' · '+(p.tag||'')+(p.caption?' · '+p.caption:''),'')}</div>
+        <div class="ph-m"><b>${esc(custById(p.customerId)?.name||'')}</b> · ${esc(p.tag)}${p.caption?`<br>${esc(p.caption)}`:''}<br><span class="muted">${esc(p.createdByName)}</span></div>
+        <div class="row" style="padding:0 10px 10px;align-items:center"><label class="tick"><input type="checkbox" data-pvis="${esc(p.id)}" ${p.visible?'checked':''}> Show to client</label><button class="btn sm d right" data-pdel="${esc(p.id)}">Delete</button></div></div>`).join('')}</div>`).join(''):'<div class="card"><p class="muted">No site photos yet.</p></div>'}`;
+  }else{
+    const ws=[...S.binWashes].sort((a,b)=>String(b.date).localeCompare(String(a.date)));
+    const m=today().slice(0,7);const tot=ws.filter(w=>String(w.date).slice(0,7)===m).reduce((a,w)=>a+(w.bins||0),0);
+    body=`<div class="grid kpis" style="margin-bottom:16px"><div class="kpi"><div class="l">Bins washed this month</div><div class="v">${nf0.format(tot)}</div></div></div>
+    <div class="card">${ws.length?`<div class="tbl-wrap"><table><thead><tr><th>Date</th><th>Client</th><th class="n">Bins</th><th>Photos</th><th>Notes</th><th>By</th><th></th></tr></thead><tbody>${ws.map(w=>`<tr><td>${esc(w.date)}</td><td>${esc(custById(w.customerId)?.name||'')}</td><td class="n">${nf0.format(w.bins)}</td><td>${(w.photos||[]).map(p=>thumb(p.path,'Bins washed '+w.date,'th sm')).join('')}</td><td>${esc(w.notes)}</td><td>${esc(w.createdByName)}</td><td>${isAdmin()?`<button class="btn sm d" data-wdel="${esc(w.id)}">Delete</button>`:''}</td></tr>`).join('')}</tbody></table></div>`:'<p class="muted">No bin washes logged yet. Sorters log them in the site app.</p>'}</div>`;
+  }
+  return `<h1>Site uploads</h1><p class="lead">Job cards, photos and bin washing sent from client sites by the sorters.</p>${tabs}${body}`;
+}
+AFTER.inbox=()=>{
+  document.querySelectorAll('[data-ib]').forEach(b=>b.onclick=()=>{IB.tab=b.dataset.ib;render(true)});
+  const sh=$('#ib-show');if(sh)sh.onchange=()=>{IB.show=sh.value;render(true)};
+  document.querySelectorAll('[data-jtick]').forEach(cb=>cb.onchange=async()=>{const d=cb.checked?{status:'captured',capturedBy:S.user.id,capturedByName:myName(),capturedAt:new Date().toISOString()}:{status:'submitted',capturedBy:null,capturedByName:'',capturedAt:null};
+    try{await DB.update('job_cards',cb.dataset.jtick,d);toast(cb.checked?'Marked as captured':'Marked as waiting')}catch(e){dbErr(e);cb.checked=!cb.checked}});
+  document.querySelectorAll('[data-jcap]').forEach(b=>b.onclick=()=>{CAPJOB=b.dataset.jcap;location.hash='capture'});
+  document.querySelectorAll('[data-jq]').forEach(b=>b.onclick=()=>modal(`<h2>Question for the site</h2><p class="muted" style="margin-top:-6px">The sorter sees this on their phone when they open the site app.</p><textarea id="q-t" rows="3" style="width:100%" placeholder="e.g. Job card photo is blurry, please send again"></textarea><div class="row" style="margin-top:12px"><button class="btn right" onclick="closeModal()">Cancel</button><button class="btn p" id="q-s">Send question</button></div>`,()=>{$('#q-s').onclick=async()=>{const t=$('#q-t').value.trim();if(!t){toast('Type the question');return}closeModal();try{await DB.update('job_cards',b.dataset.jq,{status:'query',queryNote:t});toast('Question sent to site')}catch(e){dbErr(e)}}}));
+  document.querySelectorAll('[data-jdel]').forEach(b=>b.onclick=()=>confirmBox('Delete this job card?',async()=>{const j=S.jobCards.find(x=>x.id===b.dataset.jdel);try{if(j&&(j.photos||[]).length)await db.storage.from(MEDIA).remove(j.photos.map(p=>p.path));await DB.del('job_cards',j.id);toast('Deleted')}catch(e){dbErr(e)}}));
+  document.querySelectorAll('[data-pvis]').forEach(cb=>cb.onchange=async()=>{try{await DB.update('site_photos',cb.dataset.pvis,{visible:cb.checked});toast(cb.checked?'Client can see this photo':'Hidden from client')}catch(e){dbErr(e);cb.checked=!cb.checked}});
+  const pa=$('#ph-all');if(pa)pa.onclick=async()=>{try{await DB.updateWhere('site_photos',{visible:false},{visible:true});toast('Photos published to clients')}catch(e){dbErr(e)}};
+  document.querySelectorAll('[data-pdel]').forEach(b=>b.onclick=()=>confirmBox('Delete this photo?',async()=>{const p=S.sitePhotos.find(x=>x.id===b.dataset.pdel);try{await db.storage.from(MEDIA).remove([p.filePath]);await DB.del('site_photos',p.id);toast('Deleted')}catch(e){dbErr(e)}}));
+  document.querySelectorAll('[data-wdel]').forEach(b=>b.onclick=()=>confirmBox('Delete this bin wash entry?',async()=>{const w=S.binWashes.find(x=>x.id===b.dataset.wdel);try{if((w.photos||[]).length)await db.storage.from(MEDIA).remove(w.photos.map(p=>p.path));await DB.del('bin_washes',w.id);toast('Deleted')}catch(e){dbErr(e)}}));
+  fillThumbs();
+};
+
+// ---------- Client portal: site updates ----------
+function siteUpdatesCard(cid,from,to){
+  const tm=today().slice(0,7);if(to<tm)to=tm;
+  const ps=S.sitePhotos.filter(p=>p.customerId===cid&&p.visible&&String(p.takenOn).slice(0,7)>=from&&String(p.takenOn).slice(0,7)<=to).sort((a,b)=>String(b.takenOn).localeCompare(String(a.takenOn))||String(b.createdAt).localeCompare(String(a.createdAt)));
+  const ws=S.binWashes.filter(w=>w.customerId===cid&&String(w.date).slice(0,7)>=from&&String(w.date).slice(0,7)<=to).sort((a,b)=>String(b.date).localeCompare(String(a.date)));
+  const bins=ws.reduce((a,w)=>a+(w.bins||0),0);
+  const byDay={};ps.forEach(p=>{(byDay[p.takenOn]=byDay[p.takenOn]||[]).push(p)});
+  return `<div class="grid kpis" style="margin-bottom:18px">
+      <div class="kpi"><div class="l">Site photos</div><div class="v">${nf0.format(ps.length)}</div><div class="s">${Object.keys(byDay).length} day(s) documented</div></div>
+      <div class="kpi"><div class="l">Bins washed</div><div class="v">${nf0.format(bins)}</div><div class="s">${ws.length} wash day(s)</div></div>
+      <div class="kpi"><div class="l">Latest update</div><div class="v" style="font-size:18px">${ps[0]?fmtD(ps[0].takenOn):'–'}</div></div></div>
+    <div class="card"><h2>Photos from your site</h2>${Object.keys(byDay).length?Object.entries(byDay).map(([d,l])=>`<div class="feed-day">${fmtD(d)}</div><div class="ph-grid">${l.map(p=>`<div class="ph"><div class="ph-img">${thumb(p.filePath,(p.tag||'')+(p.caption?' · '+p.caption:'')+' · '+fmtD(d),'')}</div><div class="ph-m"><b>${esc(p.tag)}</b>${p.caption?` · ${esc(p.caption)}`:''}</div></div>`).join('')}</div>`).join(''):'<p class="muted">Photos of your site will appear here as our team shares them.</p>'}</div>
+    ${ws.length?`<div class="card"><h2>Bin washing</h2><div class="tbl-wrap"><table><thead><tr><th>Date</th><th class="n">Bins washed</th><th>Photos</th></tr></thead><tbody>${ws.map(w=>`<tr><td>${fmtD(w.date)}</td><td class="n">${nf0.format(w.bins)}</td><td>${(w.photos||[]).map(p=>thumb(p.path,'Bins washed · '+fmtD(w.date),'th sm')).join('')}</td></tr>`).join('')}<tr class="tot"><td>Total</td><td class="n">${nf0.format(bins)}</td><td></td></tr></tbody></table></div></div>`:''}`;
+}
 
 // ---------- auth ----------
 function showAuth(mode,msg){
@@ -861,7 +1112,7 @@ async function enter(){
   const {data:p,error}=await db.from('profiles').select('*').eq('id',user.id).maybeSingle();
   if(error){showAuth('login',['e',error.message]);return}
   S.profile=p?fromRow(p):{role:'pending'};S.role=S.profile.role;
-  if(S.role==='pending'||(S.role==='customer'&&!S.profile.customerId)){showAuth('pending');return}
+  if(S.role==='pending'||((S.role==='customer'||S.role==='sorter')&&!S.profile.customerId)){showAuth('pending');return}
   $('#auth').hidden=true;$('#shell').hidden=false;
   $('#who').textContent=S.profile.fullName||user.email;
   document.querySelectorAll('[data-admin]').forEach(a=>a.style.display=isAdmin()?'':'none');
