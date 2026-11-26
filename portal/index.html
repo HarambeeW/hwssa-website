@@ -206,7 +206,10 @@ const SITE=(window.HWS_CONFIG&&HWS_CONFIG.site)||{};
 
 const S={custRates:[],inspections:[],jobCards:[],sitePhotos:[],ashBins:[],documents:[],requests:[],customers:[],materials:[],entries:[],factors:null,enquiries:[],profiles:[],role:null,profile:null,user:null,readOnly:false,loading:true};
 let db=null;const isStaff=()=>S.role==='staff'||S.role==='admin';const isAdmin=()=>S.role==='admin';
-const DEF_F={paperCO2:3.66,plasticCO2:0.86,metalCO2:0.6173,landfillDensity:940.22,treesPerTonnePaper:17,waterPerKgPaper:26.5,energyPaper:4100,energyPlastic:5774,energyMetal:1400,carbonTax:{"2025":236,"2026":308},vatRate:15};
+// Environmental factors (v2, Nov 2026). Avoided = landfilling factor minus recycling/composting factor, US EPA WARM v16 (Dec 2023),
+// converted from per short ton (907.18 kg) to per metric tonne. Energy: WARM v16 Exhibit 7-7/7-11/7-12, 1 million Btu = 293.07 kWh.
+const DEF_F={v:2,co2Paper:3.6597,co2Plastic:0.8598,co2Metal:2.0393,co2Organic:0.7165,co2Wood:0.8157,
+  enPaper:4810,enPlastic:14554,enMetal:6539,enOrganic:-242,enWood:1770,landfillDensity:940.22,carbonTax:{"2025":236,"2026":308},vatRate:15};
 const CATS={paper:'Paper & cardboard',plastic:'Plastics',metal:'Metals',other:'Other recyclables',organic:'Organic / food',landfill:'Landfill'};
 const CAT_ORDER=['paper','plastic','metal','other','organic','landfill'];
 
@@ -227,7 +230,7 @@ const today=()=>{const d=new Date();d.setMinutes(d.getMinutes()-d.getTimezoneOff
 function addMonths(m,n){let[y,mm]=m.split('-').map(Number);mm+=n;while(mm>12){mm-=12;y++}while(mm<1){mm+=12;y--}return y+'-'+String(mm).padStart(2,'0')}
 function monthRange(a,b){const out=[];let m=a;while(m<=b&&out.length<120){out.push(m);m=addMonths(m,1)}return out}
 function toast(t){const d=document.createElement('div');d.className='toast';d.textContent=t;document.body.appendChild(d);setTimeout(()=>d.remove(),2600)}
-const F=()=>Object.assign({},DEF_F,S.factors||{});
+const F=()=>{const sf=S.factors||{};return Object.assign({},DEF_F,sf.v===2?sf:{carbonTax:sf.carbonTax||DEF_F.carbonTax,vatRate:sf.vatRate??DEF_F.vatRate,landfillDensity:sf.landfillDensity??DEF_F.landfillDensity})};
 const matById=id=>S.materials.find(m=>m.id===id);
 const custById=id=>S.customers.find(c=>c.id===id);
 const slug=s=>s.toLowerCase().replace(/[^a-z0-9]+/g,'-').replace(/^-|-$/g,'').slice(0,60)||'item';
@@ -247,15 +250,16 @@ function summarise(list){
   s.pct=s.gen?s.rec/s.gen:NaN;return s;
 }
 function envMetrics(list){
-  const f=F();let P=0,Mt=0,O=0,co2=0,tax=0;
+  const f=F();let P=0,Mt=0,O=0,Pl=0,Org=0,Wd=0,co2=0,tax=0,en=0;
+  const K={paper:['co2Paper','enPaper'],plastic:['co2Plastic','enPlastic'],metal:['co2Metal','enMetal'],organic:['co2Organic','enOrganic'],other:['co2Wood','enWood']};
   for(const e of list){
-    if(!isRecycled(e))continue;const k=num(e.kg);let c;
-    if(e.category==='paper'){P+=k;c=k*f.paperCO2}else if(e.category==='metal'){Mt+=k;c=k*f.metalCO2}else{O+=k;c=k*f.plasticCO2}
+    if(!isRecycled(e))continue;const k=num(e.kg);const [ck,ek]=K[e.category]||K.other;const c=k*f[ck];en+=k/1000*f[ek];
+    if(e.category==='paper')P+=k;else if(e.category==='metal')Mt+=k;else{O+=k;if(e.category==='plastic')Pl+=k;else if(e.category==='organic')Org+=k;else Wd+=k}
     co2+=c;const rate=(f.carbonTax||{})[String(e.month||'').slice(0,4)]??Object.values(f.carbonTax||{}).slice(-1)[0]??0;
     tax+=c/1000*rate;
   }
   const rec=P+Mt+O;
-  return{rec,P,Mt,O,co2,space:rec/f.landfillDensity,tax,trees:P/1000*f.treesPerTonnePaper,water:P*f.waterPerKgPaper,energy:(P*f.energyPaper+O*f.energyPlastic+Mt*f.energyMetal)/1000};
+  return{rec,P,Mt,O,Pl,Org,Wd,co2,space:rec/f.landfillDensity,tax,energy:en};
 }
 
 // ---------- routing ----------
@@ -516,11 +520,9 @@ function vReports(){
   <div class="grid env kpis">
     <div class="kpi"><div class="l">CO₂e avoided</div><div class="v">${nf1.format(env.co2/1000)} t</div></div>
     <div class="kpi"><div class="l">Landfill space saved</div><div class="v">${nf1.format(env.space)} m³</div></div>
-    <div class="kpi"><div class="l">Carbon tax equivalent</div><div class="v">${R(env.tax)}</div></div>
-    <div class="kpi"><div class="l">Trees saved</div><div class="v">${nf0.format(env.trees)}</div></div>
-    <div class="kpi"><div class="l">Water saved</div><div class="v">${nf0.format(env.water)} L</div></div>
-    <div class="kpi"><div class="l">Energy saved</div><div class="v">${nf0.format(env.energy)} kWh</div></div>
-  </div><p class="muted" style="margin:10px 0 0;font-size:12px">Based on the conversion factors under <a href="#settings">Report factors</a>. Paper ${kg(env.P)} · metals ${kg(env.Mt)} · plastics &amp; other ${kg(env.O)}.</p></div>
+    <div class="kpi"><div class="l">Carbon tax value of avoided CO₂e</div><div class="v">${R(env.tax)}</div><div class="s">notional, at the headline rate</div></div>
+            <div class="kpi"><div class="l">Energy saved</div><div class="v">${nf0.format(env.energy/1000)} MWh</div><div class="s">primary energy</div></div>
+  </div><p class="muted" style="margin:10px 0 0;font-size:12px">Based on the factors under <a href="#settings">Report factors</a>. Paper ${kg(env.P)} · plastics ${kg(env.Pl)} · metals ${kg(env.Mt)} · organics ${kg(env.Org)} · wood &amp; other ${kg(env.Wd)}.</p></div>
   <div class="card"><h2>Month by month</h2><div class="tbl-wrap"><table><thead><tr><th>Month</th><th class="n">Generated</th><th class="n">Recycled</th><th class="n">Landfill</th><th class="n">Skips</th><th class="n">Recycled %</th><th class="n">Rebate (excl.)</th></tr></thead><tbody>
   ${mrows.map(r=>`<tr><td>${mLong(r.m)}</td><td class="n">${kg(r.gen)}</td><td class="n">${kg(r.rec)}</td><td class="n">${kg(r.land)}</td><td class="n">${nf0.format(r.skips)}</td><td class="n">${pct(r.pct)}</td><td class="n">${R(r.rebate)}</td></tr>`).join('')}
   <tr class="tot"><td>Total</td><td class="n">${kg(s.gen)}</td><td class="n">${kg(s.rec)}</td><td class="n">${kg(s.land)}</td><td class="n">${nf0.format(s.skips)}</td><td class="n">${pct(s.pct)}</td><td class="n">${R(s.rebate)}</td></tr></tbody></table></div></div>
@@ -618,14 +620,14 @@ function editMaterial(id){
 }
 
 // ---------- Settings ----------
-const FACTORS=[['paperCO2','CO₂e saved: paper & cardboard (kg CO₂e per kg)','US EPA WARM v16, corrugated containers'],['plasticCO2','CO₂e saved: plastics & other recyclables (kg CO₂e per kg)','US EPA WARM v16, HDPE. Also used for pallets, food waste and other recyclables, as in the spreadsheet'],['metalCO2','CO₂e saved: metals (kg CO₂e per kg)','Spreadsheet factor 1/1.62. Source not documented'],['landfillDensity','Compacted landfill density (kg per m³)','Spreadsheet factor'],['treesPerTonnePaper','Trees saved per tonne of paper','US EPA (2008)'],['waterPerKgPaper','Water saved per kg of paper (litres)','26 500 L per tonne'],['energyPaper','Energy saved: paper (kWh per tonne)','US EPA (2008)'],['energyPlastic','Energy saved: plastics (kWh per tonne)','US EPA'],['energyMetal','Energy saved: steel (kWh per tonne)','World Steel Association'],['vatRate','VAT rate (%)','Used only to show incl.-VAT rebate figures']];
+const FACTORS=[['co2Paper','CO₂e avoided: paper & cardboard (kg per kg)','WARM v16 corrugated containers: landfill 0.18 − recycling (3.14) = 3.32 t/short ton'],['co2Plastic','CO₂e avoided: plastics (kg per kg)','WARM v16 HDPE: 0.02 − (0.76) = 0.78 t/short ton. WARM has no LDPE recycling factor'],['co2Metal','CO₂e avoided: metals (kg per kg)','WARM v16 steel cans: 0.02 − (1.83) = 1.85 t/short ton'],['co2Organic','CO₂e avoided: food waste composted (kg per kg)','WARM v16 food waste: landfill 0.50 − composting (0.15) = 0.65 t/short ton'],['co2Wood','CO₂e avoided: pallets & other (kg per kg)','WARM v16 dimensional lumber: landfill (0.92) − reuse (1.66) = 0.74 t/short ton'],['enPaper','Energy saved: paper (kWh per tonne)','WARM v16: 15.10 − 0.21 = 14.89 million Btu/short ton'],['enPlastic','Energy saved: plastics (kWh per tonne)','WARM v16 HDPE: 44.78 + 0.27 = 45.05 million Btu/short ton'],['enMetal','Energy saved: metals (kWh per tonne)','WARM v16 steel cans: 19.97 + 0.27 = 20.24 million Btu/short ton'],['enOrganic','Energy saved: food waste composted (kWh per tonne)','WARM v16: composting uses 0.73, landfill saves 0.02, so composting costs 0.75 million Btu/short ton'],['enWood','Energy saved: pallets & other (kWh per tonne)','WARM v16 dimensional lumber: 5.21 + 0.27 = 5.48 million Btu/short ton'],['landfillDensity','Compacted landfill density (kg per m³)','= 1 585 lb/yd³, inside the US EPA range for compacted landfill waste (1 200–1 700 lb/yd³)'],['vatRate','VAT rate (%)','Used only to show incl.-VAT rebate figures']];
 function vSettings(){
   const f=F();const ct=f.carbonTax||{};
-  return `<h1>Report factors</h1><p class="lead">The conversion factors behind the environmental figures on customer reports. They come straight from the Environmental Impact Metrics tab.</p>
+  return `<h1>Report factors</h1><p class="lead">The conversion factors behind the environmental figures on customer reports. All CO₂e and energy factors are from US EPA WARM v16 (Dec 2023), as the saving compared with landfilling the same material, converted from per short ton (907 kg) to per metric tonne. Change them only if you have a better-sourced factor.</p>
   <div class="card"><div class="tbl-wrap"><table><thead><tr><th>Factor</th><th class="n">Value</th><th>Source / note</th></tr></thead><tbody>
   ${FACTORS.map(([k,l,n])=>`<tr><td>${l}</td><td class="n"><input type="number" step="any" data-f="${k}" value="${f[k]}" style="width:110px"></td><td class="muted">${n}</td></tr>`).join('')}
   ${Object.keys(ct).sort().map(y=>`<tr><td>Carbon tax rate ${y} (R per tonne CO₂e)</td><td class="n"><input type="number" step="any" data-ct="${y}" value="${ct[y]}" style="width:110px"></td><td class="muted">National Treasury carbon tax rate</td></tr>`).join('')}
-  <tr><td>Add a carbon tax year</td><td class="n"><input type="number" id="ct-new" placeholder="${new Date().getFullYear()+1}" style="width:110px"></td><td class="muted">Months with no rate for their year use the latest year's rate.</td></tr>
+  <tr><td>Add a carbon tax year</td><td class="n"><input type="number" id="ct-new" placeholder="${new Date().getFullYear()+1}" style="width:110px"></td><td class="muted">Months with no rate for their year use the latest year's rate. Add 2027 once National Treasury publishes it.</td></tr>
   </tbody></table></div>
   <div class="row" style="margin-top:14px"><button class="btn p right" id="fs" ${S.readOnly?'disabled':''}>Save factors</button></div></div>`;
 }
@@ -633,7 +635,7 @@ AFTER.settings=()=>{$('#fs').onclick=async()=>{
   const d={};document.querySelectorAll('[data-f]').forEach(i=>d[i.dataset.f]=num(i.value));
   const ct={};document.querySelectorAll('[data-ct]').forEach(i=>ct[i.dataset.ct]=num(i.value));
   const ny=$('#ct-new').value.trim();if(/^\d{4}$/.test(ny)&&!ct[ny])ct[ny]=Object.values(ct).slice(-1)[0]||0;
-  d.carbonTax=ct;try{await DB.upsert('settings',{id:'factors',data:d});toast('Factors saved')}catch(e){dbErr(e)}}};
+  d.v=2;d.carbonTax=ct;try{await DB.upsert('settings',{id:'factors',data:d});toast('Factors saved')}catch(e){dbErr(e)}}};
 
 // ---------- Customer portal (preview) ----------
 const PV={cust:'',range:'12',tab:'overview'};
@@ -675,11 +677,9 @@ function vPortal(){
     body=`<div class="card"><h2>Your environmental impact · ${mLong(from)} to ${mLong(to)}</h2><div class="grid env kpis">
       <div class="kpi"><div class="l">CO₂e emissions avoided</div><div class="v">${nf1.format(env.co2/1000)} t</div></div>
       <div class="kpi"><div class="l">Landfill space saved</div><div class="v">${nf1.format(env.space)} m³</div></div>
-      <div class="kpi"><div class="l">Carbon tax equivalent</div><div class="v">${R(env.tax)}</div></div>
-      <div class="kpi"><div class="l">Trees saved</div><div class="v">${nf0.format(env.trees)}</div></div>
-      <div class="kpi"><div class="l">Water saved</div><div class="v">${nf0.format(env.water)} L</div></div>
-      <div class="kpi"><div class="l">Energy saved</div><div class="v">${nf0.format(env.energy)} kWh</div></div></div>
-      <p class="muted" style="font-size:12px;margin:12px 0 0">Calculated from recycled weights using US EPA WARM v16 (paper, plastics), US EPA and World Steel Association energy figures, and the National Treasury carbon tax rate for each year. Figures are estimates for sustainability reporting.</p></div>`;
+      <div class="kpi"><div class="l">Carbon tax value of avoided CO₂e</div><div class="v">${R(env.tax)}</div><div class="s">notional, at the headline rate</div></div>
+                  <div class="kpi"><div class="l">Energy saved</div><div class="v">${nf0.format(env.energy/1000)} MWh</div><div class="s">primary energy</div></div></div>
+      <p class="muted" style="font-size:12px;margin:12px 0 0">Estimates calculated from the recycled weights on this report using US EPA WARM v16 (Dec 2023) factors, compared with sending the same material to landfill and converted to metric tonnes. Material matches: paper &amp; cardboard = corrugated containers; plastics = HDPE (WARM has no recycling factor for LDPE film); metals = steel cans; organics = food waste composted; pallets &amp; other = dimensional lumber. Energy is WARM primary energy (1 million Btu = 293.07 kWh). Landfill space uses a compacted density of 940 kg/m³, within the US EPA range for compacted landfill waste. The carbon tax figure values the avoided CO₂e at South Africa's headline carbon tax rate for each year (R236/t in 2025, R308/t in 2026); it is not a tax saving, as these emissions sit outside your own carbon tax liability.</p></div>`;
   }else if(PV.tab==='statements'){
     const months=[...new Set(list.map(e=>e.month))].sort().reverse();
     body=`<div class="card"><h2>Monthly statements</h2><p class="muted" style="margin-top:-6px">Click <b>PDF</b> to download a statement for your records or auditors.</p><div class="tbl-wrap"><table><thead><tr><th>Month</th><th class="n">Total</th><th class="n">Recycled</th><th class="n">Landfill</th><th class="n">Recycling rate</th><th class="n">Rebate (excl. VAT)</th><th></th></tr></thead><tbody>
@@ -841,13 +841,13 @@ async function statementPDF(custId,month,list){
   y=doc.lastAutoTable.finalY+8;
   doc.setFontSize(10);doc.setFont('helvetica','bold');doc.text('Rebate summary',M,y);doc.text('Environmental impact (estimated)',M+95,y);doc.setFont('helvetica','normal');doc.setFontSize(9.5);
   const rb=[['Rebate excl. VAT',pR(x.rebate)],[`VAT (${vat}%)`,pR(x.rebate*vat/100)],['Rebate incl. VAT',pR(x.rebate*(1+vat/100))]];
-  const en=[['CO2e emissions avoided',pn(nf1.format(ev.co2/1000))+' t'],['Landfill space saved',pn(nf1.format(ev.space))+' m³'],['Carbon tax equivalent',pR(ev.tax)],['Trees saved',pn(nf0.format(ev.trees))],['Water saved',pn(nf0.format(ev.water))+' L'],['Energy saved',pn(nf0.format(ev.energy))+' kWh']];
+  const en=[['CO2e emissions avoided',pn(nf1.format(ev.co2/1000))+' t'],['Landfill space saved',pn(nf1.format(ev.space))+' m³'],['Carbon tax value (notional)',pR(ev.tax)],['Energy saved (primary)',pn(nf1.format(ev.energy/1000))+' MWh']];
   const bwN=S.ashBins.filter(w=>w.customerId===custId&&String(w.date).slice(0,7)===month).reduce((a,w)=>a+(w.bins||0),0);if(bwN)rb.push(['',''],['Ash bins removed this month',pn(nf0.format(bwN))]);
   rb.forEach(([l,v],i)=>{const yy=y+6+i*5.5;doc.text(l,M,yy);doc.text(v,M+80,yy,{align:'right'})});
   en.forEach(([l,v],i)=>{const yy=y+6+i*5.5;doc.text(l,M+95,yy);doc.text(v,W-M,yy,{align:'right'})});
-  y+=6+6*5.5+6;
+  y+=6+Math.max(rb.length,en.length)*5.5+6;
   doc.setFontSize(7.5);doc.setTextColor(110);
-  const note='Rebate amounts are shown excluding VAT unless stated. Weights are as recorded at collection. Environmental figures are estimates calculated from recycled weights using US EPA WARM v16 factors, US EPA and World Steel Association energy figures and the National Treasury carbon tax rate, and are provided for sustainability reporting purposes.';
+  const note='Rebate amounts are shown excluding VAT unless stated. Weights are as recorded at collection. Environmental figures are estimates from the recycled weights using US EPA WARM v16 (Dec 2023) factors versus landfilling, per metric tonne: paper = corrugated containers, plastics = HDPE, metals = steel cans, organics = composted food waste, pallets/other = dimensional lumber. Energy is primary energy. Landfill space assumes 940 kg/m3 compacted. The carbon tax value prices avoided CO2e at the SA headline rate for the year (R236/t 2025, R308/t 2026) and is notional, not a tax saving.';
   doc.text(doc.splitTextToSize(note,W-2*M),M,Math.min(y,270));
   doc.setDrawColor(...green);doc.setLineWidth(0.6);doc.line(M,282,W-M,282);
   doc.setFontSize(8);doc.setTextColor(90);
